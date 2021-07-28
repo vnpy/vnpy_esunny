@@ -2867,22 +2867,36 @@ int TdApi::exit()
 	return 1;
 };
 
+int TdApi::esunny_getloginInfo(const dict&req)
+{
+	LoginInfo myreq = LoginInfo();
+	memset(&myreq, 0, sizeof(myreq));
+	getChar(req, "GatherInfo", myreq.GatherInfo);
+	getInt(req, "KeyVersion", &myreq.KeyVersion);
+	getChar(req, "ItemFalg", myreq.ItemFalg);
+	getChar(req, "GatherLibVersion", myreq.GatherLibVersion);
+	getChar(req, "IsTestKey", &myreq.IsTestKey);
+	getChar(req, "OperatingSystmeType", &myreq.OperatingSystmeType);
+	int i = esunny_getLoginInfo(&myreq);
+	return i;
+}
+
 //void getEsTradeAPIVersion(string pVersion, int nVersionLen)
 //{
-//	string pVersion =this->api->GetEsTradeAPIVersion(nVersionLen);
+//	GetEsTradeAPIVersion(pVersion.c_str(), nVersionLen);
 //};
 
-//int TdApi::setEsTradeAPIDataPath(string pPath)
-//{
-//	int i = SetEsTradeAPIDataPath(pPath.c_str());
-//	return i;
-//};
+int TdApi::setEsTradeAPIDataPath(string pPath)
+{
+	int i = this->api->SetEsTradeAPIDataPath(pPath.c_str());
+	return i;
+};
 
-//int TdApi::setEsTradeAPILogLevel(string LogLevel)
-//{
-//	int i = SetEsTradeAPILogLevel((char)LogLevel.c_str());
-//	return i;
-//}
+int TdApi::setEsTradeAPILogLevel(string LogLevel)
+{
+	int i = this->api->SetEsTradeAPILogLevel((char)LogLevel.c_str());
+	return i;
+}
 
 int TdApi::setUserInfo(const dict &req)
 {
@@ -4114,13 +4128,14 @@ PYBIND11_MODULE(vntaptd, m)
 	class_<TdApi, PyTdApi> TdApi(m, "TdApi", module_local());
 	TdApi
 		.def(init<>())
-		.def("CreateEsTradeAPI", &TdApi::createEsTradeAPI)
+		.def("createEsTradeAPI", &TdApi::createEsTradeAPI)
 		.def("release", &TdApi::release)
 		.def("init", &TdApi::init)
 		.def("exit", &TdApi::exit)
+		.def("esunny_getloginInfo", &TdApi::esunny_getloginInfo)
 		//.def("getITapTradeAPIVersion", &TdApi::getITapTradeAPIVersion)
-		//.def("setEsTradeAPIDataPath", &TdApi::setEsTradeAPIDataPath)
-		//.def("setEsTradeAPILogLevel", &TdApi::setEsTradeAPILogLevel)
+		.def("setEsTradeAPIDataPath", &TdApi::setEsTradeAPIDataPath)
+		.def("setEsTradeAPILogLevel", &TdApi::setEsTradeAPILogLevel)
 		.def("setUserInfo", &TdApi::setUserInfo)
 		.def("setBackUpAddress", &TdApi::setBackUpAddress)
 		.def("requestVerifyIdentity", &TdApi::requestVerifyIdentity)
