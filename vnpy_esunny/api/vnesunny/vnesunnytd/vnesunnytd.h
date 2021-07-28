@@ -6,6 +6,7 @@
 #include "vnesunny.h"
 #include "pybind11/pybind11.h"
 #include "esunny/EsTradeAPI.h"
+#include "esunny/TapDataCollectAPI.h"
 
 
 using namespace pybind11;
@@ -970,11 +971,13 @@ public:
 
 	int exit();
 
+	int esunny_getloginInfo(const dict&req);
+
 	//void getEsTradeAPIVersion(string pVersion, int nVersionLen);
 
-	//int setEsTradeAPIDataPath(string pPath);
+	int setEsTradeAPIDataPath(string pPath);
 
-	//int setEsTradeAPILogLevel(string LogLevel);
+	int setEsTradeAPILogLevel(string LogLevel);
 
 	int setUserInfo(const dict &req);
 
