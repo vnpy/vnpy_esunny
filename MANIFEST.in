@@ -1,0 +1,1 @@
+recursive-include vnpy_esunny *.dll *.so *.pyd *.h *.cpp
