@@ -4066,7 +4066,7 @@ public:
 };
 
 
-PYBIND11_MODULE(vntaptd, m)
+PYBIND11_MODULE(vnesunnytd, m)
 {
 	class_<TdApi, PyTdApi> TdApi(m, "TdApi", module_local());
 	TdApi

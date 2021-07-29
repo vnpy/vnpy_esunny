@@ -717,7 +717,7 @@ public:
 };
 
 
-PYBIND11_MODULE(vntapmd, m)
+PYBIND11_MODULE(vnesunnymd, m)
 {
 	class_<MdApi, PyMdApi> mdapi(m, "MdApi", module_local());
 	mdapi
