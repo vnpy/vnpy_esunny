@@ -1385,11 +1385,9 @@ void TdApi::processRtnContract(Task *task)
 		data["ContractNo2"] = toUtf(task_data->ContractNo2);
 		data["StrikePrice2"] = toUtf(task_data->StrikePrice2);
 		data["CallOrPutFlag2"] = task_data->CallOrPutFlag2;
-		//data["ContractName"] = task_data->ContractName;
 		data["ContractExpDate"] = toUtf(task_data->ContractExpDate);
 		data["LastTradeDate"] = toUtf(task_data->LastTradeDate);
 		data["FirstNoticeDate"] = toUtf(task_data->FirstNoticeDate);
-		//data["FutureContractNo"] = task_data->FutureContractNo;
 		delete task_data;
 	}
 	this->onRtnContract(task->task_string, data);
@@ -1403,7 +1401,6 @@ void TdApi::processRtnFund(Task *task)
 	{
 		TapAPIFundData *task_data = (TapAPIFundData*)task->task_data;
 		data["AccountNo"] = toUtf(task_data->AccountNo);
-		//data["ParentAccountNo"] = task_data->ParentAccountNo;
 		data["CurrencyGroupNo"] = toUtf(task_data->CurrencyGroupNo);
 		data["CurrencyNo"] = toUtf(task_data->CurrencyNo);
 		data["TradeRate"] = task_data->TradeRate;
@@ -1660,7 +1657,6 @@ void TdApi::processRtnFill(Task *task)
 	{
 		TapAPIFillInfo *task_data = (TapAPIFillInfo*)task->task_data;
 		data["AccountNo"] = toUtf(task_data->AccountNo);
-		//data["ParentAccountNo"] = task_data->ParentAccountNo;
 		data["ExchangeNo"] = toUtf(task_data->ExchangeNo);
 		data["CommodityType"] = task_data->CommodityType;
 		data["CommodityNo"] = toUtf(task_data->CommodityNo);
@@ -1694,26 +1690,13 @@ void TdApi::processRtnFill(Task *task)
 		data["IsAddOne"] = task_data->IsAddOne;
 		data["MatchStreamID"] = task_data->MatchStreamID;
 		data["UpperStreamID"] = task_data->UpperStreamID;
-		//data["OpenCloseMode"] = task_data->OpenCloseMode;
-		//data["ContractSize"] = task_data->ContractSize;
-		//data["CommodityCurrencyGroup"] = task_data->CommodityCurrencyGroup;
-		//data["CommodityCurrency"] = task_data->CommodityCurrency;
-		//data["FeeMode"] = task_data->FeeMode;
-		//data["FeeParam"] = task_data->FeeParam;
 		data["FeeCurrencyGroup"] = toUtf(task_data->FeeCurrencyGroup);
 		data["FeeCurrency"] = toUtf(task_data->FeeCurrency);
-		//data["PreSettlePrice"] = task_data->PreSettlePrice;
 		data["FeeValue"] = task_data->FeeValue;
 		data["IsManualFee"] = task_data->IsManualFee;
-		//data["Turnover"] = task_data->Turnover;
 		data["PremiumIncome"] = task_data->PremiumIncome;
 		data["PremiumPay"] = task_data->PremiumPay;
-		//data["OppoMatchNo"] = task_data->OppoMatchNo;
 		data["CloseProfit"] = task_data->CloseProfit;
-		//data["UnExpProfit"] = task_data->UnExpProfit;
-		//data["UpperMatchPrice"] = task_data->UpperMatchPrice;
-		//data["QuotePrice"] = task_data->QuotePrice;
-		//data["ClosePL"] = task_data->ClosePL;
 		data["OrderSystemNo"] = toUtf(task_data->OrderSystemNo);
 		data["UpperMatchNo"] = toUtf(task_data->UpperMatchNo);
 		data["ClosePositionPrice"] = task_data->ClosePositionPrice;
@@ -1746,7 +1729,6 @@ void TdApi::processRtnPosition(Task *task)
 		data["MatchSource"] = task_data->MatchSource;
 		data["MatchDate"] = toUtf(task_data->MatchDate);
 		data["MatchTime"] = toUtf(task_data->MatchTime);
-		//data["UpperMatchTime"] = task_data->UpperMatchTime;
 		data["UpperNo"] = toUtf(task_data->UpperNo);
 		data["UpperSettleNo"] = toUtf(task_data->UpperSettleNo);
 		data["UpperUserNo"] = toUtf(task_data->UpperUserNo);
@@ -1757,17 +1739,12 @@ void TdApi::processRtnPosition(Task *task)
 		data["IsAddOne"] = task_data->IsAddOne;
 		data["MatchStreamID"] = task_data->MatchStreamID;
 		data["PositionStreamId"] = task_data->PositionStreamId;
-		//data["OpenCloseMode"] = task_data->OpenCloseMode;
 		data["ContractSize"] = task_data->ContractSize;
 		data["CommodityCurrencyGroup"] = toUtf(task_data->CommodityCurrencyGroup);
 		data["CommodityCurrency"] = toUtf(task_data->CommodityCurrency);
 		data["PreSettlePrice"] = task_data->PreSettlePrice;
 		data["SettlePrice"] = task_data->SettlePrice;
 		data["Turnover"] = task_data->Turnover;
-		//data["AccountMarginMode"] = task_data->AccountMarginMode;
-		//data["AccountMarginParam"] = task_data->AccountMarginParam;
-		//data["UpperMarginMode"] = task_data->UpperMarginMode;
-		//data["UpperMarginParam"] = task_data->UpperMarginParam;
 		data["AccountInitialMargin"] = task_data->AccountInitialMargin;
 		data["AccountMaintenanceMargin"] = task_data->AccountMaintenanceMargin;
 		data["UpperInitialMargin"] = task_data->UpperInitialMargin;
@@ -1792,19 +1769,12 @@ void TdApi::processRtnClose(Task *task)
 	{
 		TapAPICloseInfo *task_data = (TapAPICloseInfo*)task->task_data;
 		data["AccountNo"] = toUtf(task_data->AccountNo);
-		//data["ParentAccountNo"] = task_data->ParentAccountNo;
 		data["ExchangeNo"] = toUtf(task_data->ExchangeNo);
 		data["CommodityType"] = task_data->CommodityType;
 		data["CommodityNo"] = toUtf(task_data->CommodityNo);
 		data["ContractNo"] = toUtf(task_data->ContractNo);
 		data["StrikePrice"] = toUtf(task_data->StrikePrice);
 		data["CallOrPutFlag"] = task_data->CallOrPutFlag;
-		//data["OpenOrderExchangeNo"] = task_data->OpenOrderExchangeNo;
-		//data["OpenOrderCommodityType"] = task_data->OpenOrderCommodityType;
-		//data["OpenOrderCommodityNo"] = task_data->OpenOrderCommodityNo;
-		//data["CloseOrderExchangeNo"] = task_data->CloseOrderExchangeNo;
-		//data["CloseOrderCommodityType"] = task_data->CloseOrderCommodityType;
-		//data["CloseOrderCommodityNo"] = task_data->CloseOrderCommodityNo;
 		data["OpenMatchSource"] = task_data->OpenMatchSource;
 		data["CloseMatchSource"] = task_data->CloseMatchSource;
 		data["CloseSide"] = task_data->CloseSide;
@@ -1822,13 +1792,8 @@ void TdApi::processRtnClose(Task *task)
 		data["CloseExchangeMatchNo"] = toUtf(task_data->CloseExchangeMatchNo);
 		data["CloseMatchDateTime"] = toUtf(task_data->CloseMatchDateTime);
 		data["CloseStreamId"] = task_data->CloseStreamId;
-		//data["OpenCloseMode"] = task_data->OpenCloseMode;
 		data["ContractSize"] = task_data->ContractSize;
-		//data["CommodityCurrencyGroup"] = task_data->CommodityCurrencyGroup;
-		//data["CommodityCurrency"] = task_data->CommodityCurrency;
 		data["PreSettlePrice"] = task_data->PreSettlePrice;
-		//data["PremiumIncome"] = task_data->PremiumIncome;
-		//data["PremiumPay"] = task_data->PremiumPay;
 		data["CloseProfit"] = task_data->CloseProfit;
 		data["UnExpProfit"] = task_data->UnExpProfit;
 		data["ClosePL"] = task_data->ClosePL;
@@ -2881,10 +2846,12 @@ int TdApi::esunny_getloginInfo(const dict&req)
 	return i;
 }
 
-//void getEsTradeAPIVersion(string pVersion, int nVersionLen)
-//{
-//	GetEsTradeAPIVersion(pVersion.c_str(), nVersionLen);
-//};
+string TdApi::getEsTradeAPIVersion()
+{
+	char buf[9999];
+	GetEsTradeAPIVersion(buf, 9999);
+	return string(buf);
+}
 
 int TdApi::setEsTradeAPIDataPath(string pPath)
 {
@@ -2902,11 +2869,11 @@ int TdApi::setUserInfo(const dict &req)
 {
 	TapAPITradeUserInfo myreq = TapAPITradeUserInfo();
 	memset(&myreq, 0, sizeof(myreq));
-    //getDict(req, "SystemType", &myreq.SystemType);
+    getUnsignedInt(req, "SystemType", &myreq.SystemType);
 	getString(req, "UserNo", myreq.UserNo);
 	getString(req, "LoginIP", myreq.LoginIP);
 	getUnsignedInt(req, "LoginPort", &myreq.LoginPort);
-	//getDict(req, "LoginType", &myreq.LoginType);
+	getUnsignedInt(req, "LoginType", &myreq.LoginType);
 	int i = this->api->SetUserInfo(&myreq);
 	return i;
 }
@@ -2920,9 +2887,8 @@ int TdApi::setBackUpAddress(string UserNo, const dict &req)
 	int i = this->api->SetBackUpAddress((char*)UserNo.c_str(), &myreq);
 }
 
-pybind11::tuple TdApi::requestVerifyIdentity(string UserNo, const dict &req)
+pybind11::tuple TdApi::requestVerifyIdentity(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
-	TAPIUINT32 nRequestID;
 	TapAPIVerifyIdentity myreq = TapAPIVerifyIdentity();
 
 	getString(req, "UserNo", myreq.UserNo);
@@ -2930,7 +2896,7 @@ pybind11::tuple TdApi::requestVerifyIdentity(string UserNo, const dict &req)
 	getString(req, "CertificateNo", myreq.CertificateNo);
 	getString(req, "EMail", myreq.EMail);
 	getString(req, "PhoneNo", myreq.PhoneNo);
-	int i = this->api->RequestVerifyIdentity((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->RequestVerifyIdentity((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
@@ -2941,7 +2907,7 @@ int TdApi::startUser(string UserNo, const dict &req)
 	TapAPITradeLoginAuth myreq = TapAPITradeLoginAuth();
 
 	getString(req, "UserNo", myreq.UserNo);
-	//getDict(req, "UserType", &myreq.UserType);
+	getInt(req, "UserType", &myreq.UserType);
 	getString(req, "AuthCode", myreq.AuthCode);
 	getString(req, "AppID", myreq.AppID);
 	getChar(req, "ISModifyPassword", &myreq.ISModifyPassword);
@@ -2949,7 +2915,7 @@ int TdApi::startUser(string UserNo, const dict &req)
 	getString(req, "NewPassword", myreq.NewPassword);
 	getChar(req, "ISDDA", &myreq.ISDDA);
 	getString(req, "DDASerialNo", myreq.DDASerialNo);
-	//getDict(req, "NoticeIgnoreFlag", &myreq.NoticeIgnoreFlag);
+	getUnsignedInt(req, "NoticeIgnoreFlag", &myreq.NoticeIgnoreFlag);
 	getString(req, "LoginIP", myreq.LoginIP);
 	getString(req, "LoginMac", myreq.LoginMac);
 	int i = this->api->StartUser((char*)UserNo.c_str(), &myreq);
@@ -2963,28 +2929,26 @@ int TdApi::stopUser(string UserNo)
 };
 
 
-pybind11::tuple TdApi::requestVertificateCode(string UserNo, const dict &req)
+pybind11::tuple TdApi::requestVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
-	TAPIUINT32 nRequestID;
 	TapAPISecondInfo myreq = TapAPISecondInfo();
 
 	getChar(req, "SendType", &myreq.SendType);
 	getString(req, "SendAccount", myreq.SendAccount);
-	int i = this->api->RequestVertificateCode((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->RequestVertificateCode((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 }
 
-pybind11::tuple TdApi::setVertificateCode(string UserNo, const dict &req)
+pybind11::tuple TdApi::setVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
-	TAPIUINT32 nRequestID;
 	TapAPISecondCertificationReq myreq = TapAPISecondCertificationReq();
 
     getChar(req, "PasswordType", &myreq.PasswordType);
 	getString(req, "VertificateCode", myreq.VertificateCode);
 	getChar(req, "LoginType", &myreq.LoginType);
-	int i = this->api->SetVertificateCode((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->SetVertificateCode((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
@@ -2998,9 +2962,8 @@ pybind11::tuple TdApi::setVertificateCode(string UserNo, const dict &req)
 
 //pybind11::tuple TdApi::getContract(const dict &req)
 
-pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req)
+pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
-	TAPIUINT32 nRequestID;
 	TapAPINewOrder myreq = TapAPINewOrder();
 
 	getString(req, "AccountNo", myreq.AccountNo);  
@@ -3046,20 +3009,19 @@ pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req)
 
 	getDouble(req, "StopPrice", &myreq.StopPrice);
 	getChar(req, "AddOneIsValid", &myreq.AddOneIsValid);
-	//getDict(req, "MarketLevel", &myreq.MarketLevel);
+	getUnsignedChar(req, "MarketLevel", &myreq.MarketLevel);
 	getChar(req, "FutureAutoCloseFlag", &myreq.FutureAutoCloseFlag);
 	getString(req, "UpperChannelNo", myreq.UpperChannelNo);
 	getString(req, "ClientID", myreq.ClientID);
 
-	int i = this->api->InsertOrder((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->InsertOrder((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 }
 
-pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req)
+pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
-	TAPIUINT32 nRequestID;
 	TapAPIOrderCancelReq myreq = TapAPIOrderCancelReq();
 
 	getInt(req, "RefInt", &myreq.RefInt);
@@ -3067,7 +3029,7 @@ pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req)
 	getChar(req, "ServerFlag", &myreq.ServerFlag);
 	getString(req, "OrderNo", myreq.OrderNo);
 
-	int i = this->api->CancelOrder((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->CancelOrder((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
@@ -3084,7 +3046,6 @@ pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req)
 //
 //	TapAPIFundData myreq_ = TapAPIFundData();
 //	getString(req, "AccountNo", myreq_.AccountNo);
-//	//getDict(req, "ParentAccountNo", &myreq_.ParentAccountNo);
 //	getString(req, "CurrencyGroupNo", myreq_.CurrencyGroupNo);
 //	getString(req, "CurrencyNo", myreq_.CurrencyNo);
 //	getDouble(req, "TradeRate", &myreq_.TradeRate);
@@ -3154,40 +3115,40 @@ pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req)
 //pybind11::tuple TdApi::getOrder(const dict &req)
 
 //-----------------------------------------
-pybind11::tuple TdApi::qryOrderProcess(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryOrderProcess(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {   
-	TAPIUINT32 nRequestID;
 	TapAPIOrderProcessQryReq myreq = TapAPIOrderProcessQryReq();
 	
 	getChar(req, "ServerFlag", &myreq.ServerFlag);
 	getString(req, "OrderNo", myreq.OrderNo);
-	int i = this->api->QryOrderProcess((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryOrderProcess((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryDeepQuote(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryDeepQuote(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIContract myreq = TapAPIContract();
 
-	//getDict(req, "Commodity", &myreq.Commodity);
+	getString(req, "Commodity.ExchangeNo", myreq.Commodity.ExchangeNo);
+	getChar(req, "Commodity.CommodityType", &myreq.Commodity.CommodityType);
+	getString(req, "Commodity.CommodityNo", myreq.Commodity.CommodityNo);
+	getString(req, "ContractNo1", myreq.ContractNo1);
 	getString(req, "ContractNo1", myreq.ContractNo1);
 	getString(req, "StrikePrice1", myreq.StrikePrice1);
 	getChar(req, "CallOrPutFlag1", &myreq.CallOrPutFlag1);
 	getString(req, "ContractNo2", myreq.ContractNo2);
 	getString(req, "StrikePrice2", myreq.StrikePrice2);
 	getChar(req, "CallOrPutFlag2", &myreq.CallOrPutFlag2);
-	int i = this->api->QryDeepQuote((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryDeepQuote((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryAccountRent(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryAccountRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIAccountRentQryReq myreq = TapAPIAccountRentQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
@@ -3195,43 +3156,39 @@ pybind11::tuple TdApi::qryAccountRent(string UserNo, const dict &req)
 	getChar(req, "CommodityType", &myreq.CommodityType);
 	getString(req, "CommodityNo", myreq.CommodityNo);
 	getString(req, "ContractNo", myreq.ContractNo);
-	int i = this->api->QryAccountRent((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryAccountRent((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryAccountFeeRent(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryAccountFeeRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIAccountFeeRentQryReq myreq = TapAPIAccountFeeRentQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
-	int i = this->api->QryAccountFeeRent((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryAccountFeeRent((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryAccountMarginRent(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryAccountMarginRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIAccountMarginRentQryReq myreq = TapAPIAccountMarginRentQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "ExchangeNo", myreq.ExchangeNo);
 	getChar(req, "CommodityType", &myreq.CommodityType);
 	getString(req, "CommodityNo", myreq.CommodityNo);
-	//getDict(req, "ContractNo", &myreq.ContractNo);
-	int i = this->api->QryAccountMarginRent((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryAccountMarginRent((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryAccountCashAdjust(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryAccountCashAdjust(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIAccountCashAdjustQryReq myreq = TapAPIAccountCashAdjustQryReq();
 
 	getUnsignedInt(req, "SerialID", &myreq.SerialID);
@@ -3239,58 +3196,54 @@ pybind11::tuple TdApi::qryAccountCashAdjust(string UserNo, const dict &req)
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
-	int i = this->api->QryAccountCashAdjust((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryAccountCashAdjust((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryBill(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryBill(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIBillQryReq myreq = TapAPIBillQryReq();
 
 	getString(req, "UserNo", myreq.UserNo);
 	getChar(req, "BillType", &myreq.BillType);
 	getString(req, "BillDate", myreq.BillDate);
 	getChar(req, "BillFileType", &myreq.BillFileType);
-	int i = this->api->QryBill((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryBill((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryHisOrder(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryHisOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIHisOrderQryReq myreq = TapAPIHisOrderQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
-	int i = this->api->QryHisOrder((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryHisOrder((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryHisOrderProcess(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryHisOrderProcess(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIHisOrderProcessQryReq myreq = TapAPIHisOrderProcessQryReq();
 
 	getString(req, "Date", myreq.Date);
 	getString(req, "OrderNo", myreq.OrderNo);
-	int i = this->api->QryHisOrderProcess((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryHisOrderProcess((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryHisFill(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryHisFill(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIHisFillQryReq myreq = TapAPIHisFillQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
@@ -3298,29 +3251,27 @@ pybind11::tuple TdApi::qryHisFill(string UserNo, const dict &req)
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
 	getChar(req, "CountType", &myreq.CountType);
-	int i = this->api->QryHisFill((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryHisFill((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryHisPosition(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryHisPosition(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIHisPositionQryReq myreq = TapAPIHisPositionQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "Date", myreq.Date);
 	getChar(req, "SettleFlag", &myreq.SettleFlag);
-	int i = this->api->QryHisPosition((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryHisPosition((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryHisDelivery(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryHisDelivery(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIHisDeliveryQryReq myreq = TapAPIHisDeliveryQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
@@ -3328,54 +3279,50 @@ pybind11::tuple TdApi::qryHisDelivery(string UserNo, const dict &req)
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
 	getChar(req, "CountType", &myreq.CountType);
-	int i = this->api->QryHisDelivery((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryHisDelivery((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qryManageInfoForEStar(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryManageInfoForEStar(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIManageInfoQryReq myreq = TapAPIManageInfoQryReq();
 
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
-	int i = this->api->QryManageInfoForEStar((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryManageInfoForEStar((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 };
 
-pybind11::tuple TdApi::qrySystemParameter(string UserNo, const dict &req)
+pybind11::tuple TdApi::qrySystemParameter(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPISystemParameterQryReq myreq = TapAPISystemParameterQryReq();
 
-	int i = this->api->QrySystemParameter((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QrySystemParameter((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qryTradeCenterFrontAddress(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryTradeCenterFrontAddress(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPITradeCenterFrontAddressQryReq myreq = TapAPITradeCenterFrontAddressQryReq();
 
 	getString(req, "FrontAddress", myreq.FrontAddress);
 	getString(req, "FrontPort", myreq.FrontPort);
 	getChar(req, "TradeCenter", &myreq.TradeCenter);
 	getChar(req, "IsSSL", &myreq.IsSSL);
-	int i = this->api->QryTradeCenterFrontAddress((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryTradeCenterFrontAddress((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qryTradeMessage(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryTradeMessage(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPITradeMessageQryReq myreq = TapAPITradeMessageQryReq();
 
 	getUnsignedInt(req, "SerialID", &myreq.SerialID);
@@ -3383,56 +3330,52 @@ pybind11::tuple TdApi::qryTradeMessage(string UserNo, const dict &req)
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "BeginSendDateTime", myreq.BeginSendDateTime);
 	getString(req, "EndSendDateTime", myreq.EndSendDateTime);
-	int i = this->api->QryTradeMessage((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryTradeMessage((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qryAccountStorage(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryAccountStorage(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIAccountStorageQryReq myreq = TapAPIAccountStorageQryReq();
 
 	getString(req, "AccountNo", myreq.AccountNo);
-	int i = this->api->QryAccountStorage((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryAccountStorage((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qrySpotLock(string UserNo, const dict &req)
+pybind11::tuple TdApi::qrySpotLock(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPISpotLockQryReq myreq = TapAPISpotLockQryReq();
 
 	getString(req, "StreamAccountNo", myreq.StreamAccountNo);
 	getString(req, "AccountNo", myreq.AccountNo);
-	int i = this->api->QrySpotLock((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QrySpotLock((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qryTrustDevice(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryTrustDevice(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPITrustDeviceQryReq myreq = TapAPITrustDeviceQryReq();
 
-	int i = this->api->QryTrustDevice((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryTrustDevice((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
 };
 
-pybind11::tuple TdApi::qryManagerConfigFile(string UserNo, const dict &req)
+pybind11::tuple TdApi::qryManagerConfigFile(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
-	TAPIUINT32 nRequestID;
 	TapAPIManagerConfigFileQryReq myreq = TapAPIManagerConfigFileQryReq();
 
 	getString(req, "FileName", myreq.FileName);
 	getString(req, "FileDirectory", myreq.FileDirectory);
-	int i = this->api->QryManagerConfigFile((char*)UserNo.c_str(), &nRequestID, &myreq);
+	int i = this->api->QryManagerConfigFile((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;	
@@ -4133,7 +4076,7 @@ PYBIND11_MODULE(vntaptd, m)
 		.def("init", &TdApi::init)
 		.def("exit", &TdApi::exit)
 		.def("esunny_getloginInfo", &TdApi::esunny_getloginInfo)
-		//.def("getITapTradeAPIVersion", &TdApi::getITapTradeAPIVersion)
+		.def("getEsTradeAPIVersion", &TdApi::getEsTradeAPIVersion)
 		.def("setEsTradeAPIDataPath", &TdApi::setEsTradeAPIDataPath)
 		.def("setEsTradeAPILogLevel", &TdApi::setEsTradeAPILogLevel)
 		.def("setUserInfo", &TdApi::setUserInfo)

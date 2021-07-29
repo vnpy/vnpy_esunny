@@ -973,7 +973,7 @@ public:
 
 	int esunny_getloginInfo(const dict&req);
 
-	//void getEsTradeAPIVersion(string pVersion, int nVersionLen);
+	string getEsTradeAPIVersion();
 
 	int setEsTradeAPIDataPath(string pPath);
 
@@ -983,15 +983,15 @@ public:
 
 	int setBackUpAddress(string UserNo, const dict &req);
 
-	pybind11::tuple requestVerifyIdentity(string UserNo, const dict &req);
+	pybind11::tuple requestVerifyIdentity(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
 	int startUser(string UserNo, const dict &req);
 
 	int stopUser(string UserNo);
 
-	pybind11::tuple requestVertificateCode(string UserNo, const dict &req);
+	pybind11::tuple requestVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
-	pybind11::tuple setVertificateCode(string UserNo, const dict &req);
+	pybind11::tuple setVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
     //pybind11::tuple getAccount(const dict &req);
 
@@ -1001,52 +1001,52 @@ public:
 
 	//pybind11::tuple getContract(const dict &req);
 
-	pybind11::tuple insertOrder(string UserNo, const dict &req);
+	pybind11::tuple insertOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
-	pybind11::tuple cancelOrder(string UserNo, const dict &req);
+	pybind11::tuple cancelOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
 	//pybind11::tuple getFund(string UserNo, const dict &req);
 
 	//pybind11::tuple getOrder(const dict &req);
 
-    pybind11::tuple qryOrderProcess(string UserNo, const dict &data);
+    pybind11::tuple qryOrderProcess(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryDeepQuote(string UserNo, const dict &data);
+    pybind11::tuple qryDeepQuote(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryAccountRent(string UserNo, const dict &data);
+    pybind11::tuple qryAccountRent(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryAccountFeeRent(string UserNo, const dict &data);
+    pybind11::tuple qryAccountFeeRent(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryAccountMarginRent(string UserNo, const dict &data);
+    pybind11::tuple qryAccountMarginRent(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryAccountCashAdjust(string UserNo, const dict &data);
+    pybind11::tuple qryAccountCashAdjust(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryBill(string UserNo, const dict &data);
+    pybind11::tuple qryBill(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryHisOrder(string UserNo, const dict &data);
+    pybind11::tuple qryHisOrder(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryHisOrderProcess(string UserNo, const dict &data);
+    pybind11::tuple qryHisOrderProcess(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryHisFill(string UserNo, const dict &data);
+    pybind11::tuple qryHisFill(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryHisPosition(string UserNo, const dict &data);
+    pybind11::tuple qryHisPosition(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryHisDelivery(string UserNo, const dict &data);
+    pybind11::tuple qryHisDelivery(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryManageInfoForEStar(string UserNo, const dict &data);
+    pybind11::tuple qryManageInfoForEStar(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qrySystemParameter(string UserNo, const dict &data);
+    pybind11::tuple qrySystemParameter(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryTradeCenterFrontAddress(string UserNo, const dict &data);
+    pybind11::tuple qryTradeCenterFrontAddress(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryTradeMessage(string UserNo, const dict &data);
+    pybind11::tuple qryTradeMessage(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryAccountStorage(string UserNo, const dict &data);
+    pybind11::tuple qryAccountStorage(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qrySpotLock(string UserNo, const dict &data);
+    pybind11::tuple qrySpotLock(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryTrustDevice(string UserNo, const dict &data);
+    pybind11::tuple qryTrustDevice(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
-    pybind11::tuple qryManagerConfigFile(string UserNo, const dict &data);
+    pybind11::tuple qryManagerConfigFile(string UserNo, const dict &data, TAPIUINT32 nRequestID);
 
 };
