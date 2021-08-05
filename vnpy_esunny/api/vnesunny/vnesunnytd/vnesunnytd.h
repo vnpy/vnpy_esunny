@@ -993,21 +993,9 @@ public:
 
 	pybind11::tuple setVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
-    //pybind11::tuple getAccount(const dict &req);
-
-	//pybind11::tuple getExchange(const dict &req);
-
-	//pybind11::tuple getCommodity(const dict &req);
-
-	//pybind11::tuple getContract(const dict &req);
-
 	pybind11::tuple insertOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID);
 
 	pybind11::tuple cancelOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID);
-
-	//pybind11::tuple getFund(string UserNo, const dict &req);
-
-	//pybind11::tuple getOrder(const dict &req);
 
     pybind11::tuple qryOrderProcess(string UserNo, const dict &data, TAPIUINT32 nRequestID);
     
