@@ -4,7 +4,6 @@
 
 #include "vnesunnytd.h"
 
-
 ///-------------------------------------------------------------------------------------
 ///C++的回调函数将数据保存到队列中
 ///-------------------------------------------------------------------------------------
@@ -872,6 +871,9 @@ void TdApi::processTask()
 		while (this->active)
 		{
 			Task task = this->task_queue.pop();
+
+			//cout << task.task_name << endl;
+
 			switch (task.task_name)
 			{
             case ONCONNECT:
@@ -1558,7 +1560,79 @@ void TdApi::processRspOrderAction(Task *task)
 	{
 		TapAPIOrderActionRsp *task_data = (TapAPIOrderActionRsp*)task->task_data;
 		data["ActionType"] = task_data->ActionType;
-		data["OrderInfo"] = task_data->OrderInfo;
+		data["AccountNo"] = toUtf(task_data->OrderInfo.AccountNo);
+		data["ExchangeNo"] = toUtf(task_data->OrderInfo.ExchangeNo);
+		data["CommodityType"] = task_data->OrderInfo.CommodityType;
+		data["CommodityNo"] = toUtf(task_data->OrderInfo.CommodityNo);
+		data["ContractNo"] = toUtf(task_data->OrderInfo.ContractNo);
+		data["StrikePrice"] = toUtf(task_data->OrderInfo.StrikePrice);
+		data["CallOrPutFlag"] = task_data->OrderInfo.CallOrPutFlag;
+		data["ContractNo2"] = toUtf(task_data->OrderInfo.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->OrderInfo.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->OrderInfo.CallOrPutFlag2;
+		data["OrderType"] = task_data->OrderInfo.OrderType;
+		data["OrderSource"] = task_data->OrderInfo.OrderSource;
+		data["TimeInForce"] = task_data->OrderInfo.TimeInForce;
+		data["ExpireTime"] = toUtf(task_data->OrderInfo.ExpireTime);
+		data["IsRiskOrder"] = task_data->OrderInfo.IsRiskOrder;
+		data["OrderSide"] = task_data->OrderInfo.OrderSide;
+		data["PositionEffect"] = task_data->OrderInfo.PositionEffect;
+		data["PositionEffect2"] = task_data->OrderInfo.PositionEffect2;
+		data["InquiryNo"] = toUtf(task_data->OrderInfo.InquiryNo);
+		data["HedgeFlag"] = task_data->OrderInfo.HedgeFlag;
+		data["HedgeFlag2"] = task_data->OrderInfo.HedgeFlag2;
+		data["OrderPrice"] = task_data->OrderInfo.OrderPrice;
+		data["OrderPrice2"] = task_data->OrderInfo.OrderPrice2;
+		data["StopPrice"] = task_data->OrderInfo.StopPrice;
+		data["OrderQty"] = task_data->OrderInfo.OrderQty;
+		data["OrderQty2"] = task_data->OrderInfo.OrderQty2;
+		data["OrderMinQty"] = task_data->OrderInfo.OrderMinQty;
+		data["MinClipSize"] = task_data->OrderInfo.MinClipSize;
+		data["MaxClipSize"] = task_data->OrderInfo.MaxClipSize;
+		data["RefInt"] = task_data->OrderInfo.RefInt;
+		data["RefDouble"] = task_data->OrderInfo.RefDouble;
+		data["RefString"] = toUtf(task_data->OrderInfo.RefString);
+		data["TacticsType"] = task_data->OrderInfo.TacticsType;
+		data["TriggerCondition"] = task_data->OrderInfo.TriggerCondition;
+		data["TriggerPriceType"] = task_data->OrderInfo.TriggerPriceType;
+		data["AddOneIsValid"] = task_data->OrderInfo.AddOneIsValid;
+		data["MarketLevel"] = task_data->OrderInfo.MarketLevel;
+		data["FutureAutoCloseFlag"] = task_data->OrderInfo.FutureAutoCloseFlag;
+		data["OrderCanceledQty"] = task_data->OrderInfo.OrderCanceledQty;
+		data["LicenseNo"] = toUtf(task_data->OrderInfo.LicenseNo);
+		data["ParentAccountNo"] = toUtf(task_data->OrderInfo.ParentAccountNo);
+		data["ServerFlag"] = task_data->OrderInfo.ServerFlag;
+		data["OrderNo"] = toUtf(task_data->OrderInfo.OrderNo);
+		data["ClientOrderNo"] = toUtf(task_data->OrderInfo.ClientOrderNo);
+		data["OrderLocalNo"] = toUtf(task_data->OrderInfo.OrderLocalNo);
+		data["OrderSystemNo"] = toUtf(task_data->OrderInfo.OrderSystemNo);
+		data["OrderExchangeSystemNo"] = toUtf(task_data->OrderInfo.OrderExchangeSystemNo);
+		data["TradeNo"] = toUtf(task_data->OrderInfo.TradeNo);
+		data["UpperNo"] = toUtf(task_data->OrderInfo.UpperNo);
+		data["UpperChannelNo"] = toUtf(task_data->OrderInfo.UpperChannelNo);
+		data["UpperSettleNo"] = toUtf(task_data->OrderInfo.UpperSettleNo);
+		data["UpperUserNo"] = toUtf(task_data->OrderInfo.UpperUserNo);
+		data["OrderInsertUserNo"] = toUtf(task_data->OrderInfo.OrderInsertUserNo);
+		data["OrderInsertTime"] = toUtf(task_data->OrderInfo.OrderInsertTime);
+		data["OrderCommandUserNo"] = toUtf(task_data->OrderInfo.OrderCommandUserNo);
+		data["OrderUpdateUserNo"] = toUtf(task_data->OrderInfo.OrderUpdateUserNo);
+		data["OrderUpdateTime"] = toUtf(task_data->OrderInfo.OrderUpdateTime);
+		data["OrderState"] = task_data->OrderInfo.OrderState;
+		data["OrderMatchPrice"] = task_data->OrderInfo.OrderMatchPrice;
+		data["OrderMatchPrice2"] = task_data->OrderInfo.OrderMatchPrice2;
+		data["OrderMatchQty"] = task_data->OrderInfo.OrderMatchQty;
+		data["OrderMatchQty2"] = task_data->OrderInfo.OrderMatchQty2;
+		data["ErrorCode"] = task_data->OrderInfo.ErrorCode;
+		data["ErrorText"] = toUtf(task_data->OrderInfo.ErrorText);
+		data["IsBackInput"] = task_data->OrderInfo.IsBackInput;
+		data["IsDeleted"] = task_data->OrderInfo.IsDeleted;
+		data["IsAddOne"] = task_data->OrderInfo.IsAddOne;
+		data["OrderStreamID"] = task_data->OrderInfo.OrderStreamID;
+		data["UpperStreamID"] = task_data->OrderInfo.UpperStreamID;
+		data["ClientID"] = toUtf(task_data->OrderInfo.ClientID);
+		data["FeeValue"] = task_data->OrderInfo.FeeValue;
+		data["MarginValue"] = task_data->OrderInfo.MarginValue;
+		data["OrderParentSystemNo"] = toUtf(task_data->OrderInfo.OrderParentSystemNo);
 		delete task_data;
 	}
 	this->onRspOrderAction(task->task_string, task->task_id, task->task_int, data);
@@ -1810,7 +1884,7 @@ void TdApi::processRtnPositionProfit(Task *task)
 	{
 		TapAPIPositionProfitNotice *task_data = (TapAPIPositionProfitNotice*)task->task_data;
 		data["IsLast"] = task_data->IsLast;
-		data["Data"] = task_data->Data;
+		//data["Data"] = task_data->Data;
 		delete task_data;
 	}
 	this->onRtnPositionProfit(task->task_string, data);
@@ -1823,8 +1897,8 @@ void TdApi::processRspQryDeepQuote(Task *task)
 	if (task->task_data)
 	{
 		TapAPIDeepQuoteQryRsp *task_data = (TapAPIDeepQuoteQryRsp*)task->task_data;
-		data["Contract"] = task_data->Contract;
-		data["DeepQuote"] = task_data->DeepQuote;
+		//data["Contract"] = task_data->Contract;
+		//data["DeepQuote"] = task_data->DeepQuote;
 		delete task_data;
 	}
 	this->onRspQryDeepQuote(task->task_string, task->task_id, task->task_int, task->task_last, data);
@@ -1838,7 +1912,12 @@ void TdApi::processRtnExchangeStateInfo(Task *task)
 	{
 		TapAPIExchangeStateInfoNotice *task_data = (TapAPIExchangeStateInfoNotice*)task->task_data;
 		data["IsLast"] = task_data->IsLast;
-		data["ExchangeStateInfo"] = task_data->ExchangeStateInfo;
+		data["UpperChannelNo"] = toUtf(task_data->ExchangeStateInfo.UpperChannelNo);
+		data["ExchangeNo"] = toUtf(task_data->ExchangeStateInfo.ExchangeNo);
+		data["CommodityType"] = task_data->ExchangeStateInfo.CommodityType;
+		data["CommodityNo"] = toUtf(task_data->ExchangeStateInfo.CommodityNo);
+		data["ExchangeTime"] = toUtf(task_data->ExchangeStateInfo.ExchangeTime);
+		data["TradingState"] = task_data->ExchangeStateInfo.TradingState;
 		delete task_data;
 	}
 	this->onRtnExchangeStateInfo(task->task_string, data);
@@ -2279,7 +2358,10 @@ void TdApi::processRspQryBill(Task *task)
 	if (task->task_data)
 	{
 		TapAPIBillQryRsp *task_data = (TapAPIBillQryRsp*)task->task_data;
-		data["Reqdata"] = task_data->Reqdata;
+		data["UserNo"] = toUtf(task_data->Reqdata.UserNo);
+		data["BillType"] = task_data->Reqdata.BillType;
+		data["BillDate"] = toUtf(task_data->Reqdata.BillDate);
+		data["BillFileType"] = task_data->Reqdata.BillFileType;
 		data["BillLen"] = task_data->BillLen;
 		data["BillText"] = task_data->BillText;
 		delete task_data;
@@ -2788,7 +2870,8 @@ void TdApi::processRspQryManagerConfigFile(Task *task)
 	if (task->task_data)
 	{
 		TapAPIManagerConfigFileQryRsp *task_data = (TapAPIManagerConfigFileQryRsp*)task->task_data;
-		data["Reqdata"] = task_data->Reqdata;
+		data["FileName"] = toUtf(task_data->Reqdata.FileName);
+        data["FileDirectory"] = toUtf(task_data->Reqdata.FileDirectory);
 		data["ManagerConfigFileLen"] = task_data->ManagerConfigFileLen;
 		data["ManagerConfigFileText"] = task_data->ManagerConfigFileText;
 		delete task_data;
@@ -2861,7 +2944,7 @@ int TdApi::setEsTradeAPIDataPath(string pPath)
 
 int TdApi::setEsTradeAPILogLevel(string LogLevel)
 {
-	int i = this->api->SetEsTradeAPILogLevel((char)LogLevel.c_str());
+	int i = this->api->SetEsTradeAPILogLevel(APILOGLEVEL_DEBUG);
 	return i;
 }
 
@@ -2915,7 +2998,8 @@ int TdApi::startUser(string UserNo, const dict &req)
 	getString(req, "NewPassword", myreq.NewPassword);
 	getChar(req, "ISDDA", &myreq.ISDDA);
 	getString(req, "DDASerialNo", myreq.DDASerialNo);
-	getUnsignedInt(req, "NoticeIgnoreFlag", &myreq.NoticeIgnoreFlag);
+	//getUnsignedInt(req, "NoticeIgnoreFlag", &myreq.NoticeIgnoreFlag);
+	myreq.NoticeIgnoreFlag = TAPI_NOTICE_IGNORE_POSITIONPROFIT;
 	getString(req, "LoginIP", myreq.LoginIP);
 	getString(req, "LoginMac", myreq.LoginMac);
 	int i = this->api->StartUser((char*)UserNo.c_str(), &myreq);
@@ -2954,14 +3038,6 @@ pybind11::tuple TdApi::setVertificateCode(string UserNo, const dict &req, TAPIUI
 	return result;	
 }
 
-//pybind11::tuple TdApi::getAccount(const dict &req)
-
-//pybind11::tuple TdApi::getExchange(const dict &req)
-
-//pybind11::tuple TdApi::getCommodity(const dict &req)
-
-//pybind11::tuple TdApi::getContract(const dict &req)
-
 pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
 	TapAPINewOrder myreq = TapAPINewOrder();
@@ -2989,7 +3065,7 @@ pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req, TAPIUINT32 nR
 	getChar(req, "PositionEffect2", &myreq.PositionEffect2);
 	getString(req, "InquiryNo", myreq.InquiryNo);
 	getChar(req, "HedgeFlag", &myreq.HedgeFlag);
-	getChar(req, "HedgeFlag", &myreq.HedgeFlag);
+	getChar(req, "HedgeFlag2", &myreq.HedgeFlag2);
 
 	getDouble(req, "OrderPrice", &myreq.OrderPrice);
 	getDouble(req, "OrderPrice2", &myreq.OrderPrice2);
@@ -3034,85 +3110,6 @@ pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req, TAPIUINT32 nR
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
 	return result;
 }
-
-//pybind11::tuple TdApi::getFund(string UserNo, const dict &req)
-//{
-//	TAPIUINT32 nOutLen;
-//	TAPIYNFLAG isLast;
-//
-//	TapAPIFundReq myreq = TapAPIFundReq();
-//	getString(req, "AccountNo", myreq.AccountNo);
-//	getUnsignedInt(req, "DataSeqID", &myreq.DataSeqID);
-//
-//	TapAPIFundData myreq_ = TapAPIFundData();
-//	getString(req, "AccountNo", myreq_.AccountNo);
-//	getString(req, "CurrencyGroupNo", myreq_.CurrencyGroupNo);
-//	getString(req, "CurrencyNo", myreq_.CurrencyNo);
-//	getDouble(req, "TradeRate", &myreq_.TradeRate);
-//	getChar(req, "FutureAlg", &myreq_.FutureAlg);
-//	getChar(req, "OptionAlg", &myreq_.OptionAlg);
-//	getDouble(req, "PreBalance", &myreq_.PreBalance);
-//	getDouble(req, "PreUnExpProfit", &myreq_.PreUnExpProfit);
-//	getDouble(req, "PreLMEPositionProfit", &myreq_.PreLMEPositionProfit);
-//	getDouble(req, "PreEquity", &myreq_.PreEquity);
-//	getDouble(req, "PreAvailable1", &myreq_.PreAvailable1);
-//	getDouble(req, "PreMarketEquity", &myreq_.PreMarketEquity);
-//	getDouble(req, "CashInValue", &myreq_.CashInValue);
-//	getDouble(req, "CashOutValue", &myreq_.CashOutValue);
-//	getDouble(req, "CashAdjustValue", &myreq_.CashAdjustValue);
-//	getDouble(req, "CashPledged", &myreq_.CashPledged);
-//	getDouble(req, "FrozenFee", &myreq_.FrozenFee);
-//	getDouble(req, "FrozenDeposit", &myreq_.FrozenDeposit);
-//	getDouble(req, "AccountFee", &myreq_.AccountFee);
-//	getDouble(req, "ExchangeFee", &myreq_.ExchangeFee);
-//	getDouble(req, "AccountDeliveryFee", &myreq_.AccountDeliveryFee);
-//	getDouble(req, "PremiumIncome", &myreq_.PremiumIncome);
-//	getDouble(req, "PremiumPay", &myreq_.PremiumPay);
-//	getDouble(req, "CloseProfit", &myreq_.CloseProfit);
-//	getDouble(req, "DeliveryProfit", &myreq_.DeliveryProfit);
-//	getDouble(req, "UnExpProfit", &myreq_.UnExpProfit);
-//	getDouble(req, "ExpProfit", &myreq_.ExpProfit);
-//	getDouble(req, "PositionProfit", &myreq_.PositionProfit);
-//	getDouble(req, "LmePositionProfit", &myreq_.LmePositionProfit);
-//	getDouble(req, "OptionMarketValue", &myreq_.OptionMarketValue);
-//	getDouble(req, "AccountInitialMargin", &myreq_.AccountInitialMargin);
-//	getDouble(req, "AccountMaintenanceMargin", &myreq_.AccountMaintenanceMargin);
-//	getDouble(req, "UpperInitialMargin", &myreq_.UpperInitialMargin);
-//	getDouble(req, "UpperMaintenanceMargin", &myreq_.UpperMaintenanceMargin);
-//	getDouble(req, "Discount", &myreq_.Discount);
-//	getDouble(req, "Balance", &myreq_.Balance);
-//	getDouble(req, "Equity", &myreq_.Equity);
-//	getDouble(req, "Available", &myreq_.Available);
-//	getDouble(req, "CanDraw", &myreq_.CanDraw);
-//	getDouble(req, "MarketEquity", &myreq_.MarketEquity);
-//	getDouble(req, "AuthMoney", &myreq_.AuthMoney);
-//	getDouble(req, "OriginalCashInOut", &myreq_.OriginalCashInOut);
-//	getDouble(req, "FloatingPL", &myreq_.FloatingPL);
-//	getDouble(req, "FrozenRiskFundValue", &myreq_.FrozenRiskFundValue);
-//	getDouble(req, "ClosePL", &myreq_.ClosePL);
-//	getDouble(req, "NoCurrencyPledgeValue", &myreq_.NoCurrencyPledgeValue);
-//	getDouble(req, "PrePledgeValue", &myreq_.PrePledgeValue);
-//	getDouble(req, "PledgeIn", &myreq_.PledgeIn);
-//	getDouble(req, "PledgeOut", &myreq_.PledgeOut);
-//	getDouble(req, "PledgeValue", &myreq_.PledgeValue);
-//	getDouble(req, "BorrowValue", &myreq_.BorrowValue);
-//	getDouble(req, "SpecialAccountFrozenMargin", &myreq_.SpecialAccountFrozenMargin);
-//	getDouble(req, "SpecialAccountMargin", &myreq_.SpecialAccountMargin);
-//	getDouble(req, "SpecialAccountFrozenFee", &myreq_.SpecialAccountFrozenFee);
-//	getDouble(req, "SpecialAccountFee", &myreq_.SpecialAccountFee);
-//	getDouble(req, "SpecialFloatProfit", &myreq_.SpecialFloatProfit);
-//	getDouble(req, "SpecialCloseProfit", &myreq_.SpecialCloseProfit);
-//	getDouble(req, "SpecialFloatPL", &myreq_.SpecialFloatPL);
-//	getDouble(req, "SpecialClosePL", &myreq_.SpecialClosePL);
-//	getDouble(req, "RiskRate", &myreq_.RiskRate);
-//
-//	int i = this->api->CancelOrder((char*)UserNo.c_str(), nOutLen, &isLast, &myreq, &myreq_);
-//
-//	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nOutLen, isLast);
-//	return result;
-//}
-
-//pybind11::tuple TdApi::getOrder(const dict &req)
 
 //-----------------------------------------
 pybind11::tuple TdApi::qryOrderProcess(string UserNo, const dict &req, TAPIUINT32 nRequestID)
@@ -4086,14 +4083,8 @@ PYBIND11_MODULE(vnesunnytd, m)
 		.def("stopUser", &TdApi::stopUser)
 		.def("requestVertificateCode", &TdApi::requestVertificateCode)
 		.def("setVertificateCode", &TdApi::setVertificateCode)
-		//.def("getAccount", &TdApi::getAccount)
-		//.def("getExchange", &TdApi:: getExchange)
-		//.def("getCommodity", &TdApi:: getCommodity)
-		//.def("getContract", &TdApi:: getContract)
 		.def("insertOrder", &TdApi:: insertOrder)
 		.def("cancelOrder", &TdApi:: cancelOrder)
-		//.def("getFund", &TdApi:: getFund)
-		//.def("getOrder", &TdApi:: getOrder)
 
 
         .def("qryOrderProcess", &TdApi::qryOrderProcess)
