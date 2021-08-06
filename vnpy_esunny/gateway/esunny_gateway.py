@@ -196,7 +196,7 @@ class EsunnyGateway(BaseGateway):
         trade_host: str = setting["交易服务器"]
         trade_port: int = setting["交易端口"]
         trade_appid: str = setting["交易产品名称"]
-        trade_authcode: str = setting["行情授权编码"]
+        trade_authcode: str = setting["交易授权编码"]
 
         self.md_api.connect(
             quote_username,
@@ -521,8 +521,6 @@ class EsTradeApi(TdApi):
         self.sys_local_map: Dict[str, str] = {}
         self.local_sys_map: Dict[str, str] = {}
         self.positions: Dict[Tuple, Dict[str, Dict]] = {}
-        self.yd_volume: Dict[Tuple, int] = {}
-        self.positionid: Set[str] = set()
         self.cost: Dict[Tuple, float] = {}
 
     def onConnect(self, userno: str) -> None:
@@ -551,10 +549,7 @@ class EsTradeApi(TdApi):
 
     def onRtnPosition(self, userno: str, data: dict) -> None:
         """持仓更新推送"""
-
         if data:
-            self.positionid.add(data["PositionNo"])
-
             if data["ExchangeNo"] == "SGE":
                 symbol = data["CommodityNo"]
             else:
@@ -564,38 +559,33 @@ class EsTradeApi(TdApi):
                 symbol=symbol,
                 exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
                 direction=DIRECTION_ES2VT[data["MatchSide"]],
-                gateway_name=self.gateway_name)
+                gateway_name=self.gateway_name
+            )
 
-            key: str = (symbol, data["MatchSide"])
-            position_data: Dict = self.positions.get(key, None)
+            key_: str = (symbol, data["MatchSide"])
+            self.cost[key_] = 0
+            position_data: Dict = self.positions.get(key_, None)
             if not position_data:
-                self.yd_volume[key] = 0
-                self.cost[key] = 0
                 position_data = {}
                 position.volume=data["PositionQty"]
                 position.price=data["PositionPrice"]
                 if data["IsHistory"] == "Y":
                     position.yd_volume = data["PositionQty"]
-                else:
-                    position.yd_volume = 0
                 position_data[data["PositionNo"]] = data
-                self.positions[key] = position_data
+                self.positions[key_] = position_data
                 self.gateway.on_position(position)
 
             else:
                 position_data[data["PositionNo"]] = data
-                self.positions[key] = position_data
-                for id in self.positionid:
-                    pos_data = position_data.get(id, None)
-                    if not pos_data:
-                        return
+                self.positions[key_] = position_data
+                for key in position_data:
+                    pos_data = position_data[key]
                     position.volume += pos_data["PositionQty"]
                     if pos_data["IsHistory"] == "Y":
-                        self.yd_volume[key] += pos_data["PositionQty"]
-                        position.yd_volume = self.yd_volume[key]
+                        position.yd_volume += pos_data["PositionQty"]
                     
-                    self.cost[key] += pos_data["PositionPrice"] * position.volume * pos_data["ContractSize"]
-                    position.price = self.cost[key] / (position.volume * pos_data["ContractSize"])
+                    self.cost[key_] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
+                    position.price = self.cost[key_] / (position.volume * pos_data["ContractSize"])
                     
                 self.gateway.on_position(position)
 
@@ -699,6 +689,7 @@ class EsTradeApi(TdApi):
         auth_code: str
     ) -> None:
         """连接交易接口"""
+        # 禁止重复发起连接，会导致异常崩溃
         if self.connect_status:
             return
 
@@ -728,8 +719,8 @@ class EsTradeApi(TdApi):
         data: dict = {
             "UserNo": self.userno,
             "Password": password,
-            "AuthCode": "Demo_TestCollect",
-            "AppID": "Demo_TestCollect",
+            "AuthCode": auth_code,
+            "AppID": appid,
             "UserType": 10000,
             "ISModifyPassword": FLAG_VT2ES["APIYNFLAG_NO"],
             "ISDDA": FLAG_VT2ES["APIYNFLAG_NO"],
