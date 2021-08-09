@@ -567,33 +567,24 @@ class EsTradeApi(TdApi):
             position_data: Dict = self.positions.get(key_, None)
             if not position_data:
                 position_data = {}
-                position.volume=data["PositionQty"]
-                position.price=data["PositionPrice"]
-                if data["IsHistory"] == "Y":
-                    position.yd_volume = data["PositionQty"]
-                position_data[data["PositionNo"]] = data
-                self.positions[key_] = position_data
-                self.gateway.on_position(position)
+            position_data[data["PositionNo"]] = data
+            self.positions[key_] = position_data
+            for key in position_data:
+                pos_data = position_data[key]
+                position.volume += pos_data["PositionQty"]
+                if pos_data["IsHistory"] == "Y":
+                    position.yd_volume += pos_data["PositionQty"]
+                    
+                self.cost[key_] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
+                position.price = self.cost[key_] / (position.volume * pos_data["ContractSize"])
 
-            else:
-                position_data[data["PositionNo"]] = data
-                self.positions[key_] = position_data
-                for key in position_data:
-                    pos_data = position_data[key]
-                    position.volume += pos_data["PositionQty"]
-                    if pos_data["IsHistory"] == "Y":
-                        position.yd_volume += pos_data["PositionQty"]
-                    
-                    self.cost[key_] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
-                    position.price = self.cost[key_] / (position.volume * pos_data["ContractSize"])
-                    
-                self.gateway.on_position(position)
+            self.gateway.on_position(position)
 
     def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
         """委托更新推送"""
         if data:
             if data["ErrorCode"] != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
-                self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}")
+                self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
                 if not data["RefString"]:
                     return
                 order: OrderData = self.gateway.get_order(data["RefString"])
