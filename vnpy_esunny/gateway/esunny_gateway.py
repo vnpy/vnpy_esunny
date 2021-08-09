@@ -1,13 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
-from os import error, name, symlink
 from pathlib import Path
-from sys import path, prefix
-from typing import Dict, Tuple, Set
+from typing import Dict, Tuple
 from copy import copy
 import pytz
 
-from ..api import MdApi, TdApi
 from vnpy.event import EventEngine
 from vnpy.trader.utility import get_folder_path
 from vnpy.trader.constant import (
@@ -30,6 +27,9 @@ from vnpy.trader.object import (
     PositionData,
     AccountData
 )
+
+from ..api import MdApi, TdApi
+
 
 # 委托状态映射
 STATUS_ES2VT: Dict[str, Status] = {
@@ -98,11 +98,6 @@ PRODUCT_TYPE_ES2VT: Dict[str, Product] = {
 }
 PRODUCT_TYPE_VT2ES: Dict[Product, str] = {v: k for k, v in PRODUCT_TYPE_ES2VT.items()}
 
-# 报错信息映射
-ERROR_VT2ES: Dict[str, int] = {
-    "TAPIERROR_SUCCEED": 0
-}
-
 # 行情接口日志级别映射
 MDLOGLEVEL_VT2ES: Dict[str, str] = {
     "APILOGLEVEL_NONE": "N",
@@ -127,16 +122,6 @@ FLAG_VT2ES: Dict[str, str] = {
     "TAPI_CALLPUT_FLAG_NONE": "N"
 }
 
-# 后台系统类型映射
-SYSTEM_VT2ES: Dict[str, int] = {
-    "TAPI_SYSTEM_TYPE_ESUNNY": 1
-}
-
-# 登录类型映射
-LOGINTYPE_VT2ES: Dict[str, int] = {
-    "TAPI_LOGINTYPE_NORMAL": 1
-}
-
 # 投机保值类型映射
 HEDGETYPE_VT2ES: Dict[str, str] = {
     "TAPI_HEDGEFLAG_NONE": "N",
@@ -156,7 +141,7 @@ contract_infos: Dict[Tuple[str, "Exchange"], "ContractInfo"] = {}
 
 class EsunnyGateway(BaseGateway):
     """
-    vn.py用于对接易盛内盘的交易接口。
+    vn.py用于对接易盛柜台的交易接口。
     """
 
     default_setting = {
@@ -250,7 +235,7 @@ class EsunnyGateway(BaseGateway):
 
 
 class QuoteApi(MdApi):
-    """"""
+    """行情API"""
 
     def __init__(self, gateway: EsunnyGateway) -> None:
         """构造函数"""
@@ -263,7 +248,7 @@ class QuoteApi(MdApi):
 
     def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"行情服务器登录失败：{error}")
         else:
             self.connect_status = True
@@ -286,7 +271,7 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """订阅行情回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"订阅行情失败：{error}")
         else:
             self.update_tick(data)
@@ -303,10 +288,11 @@ class QuoteApi(MdApi):
         data: dict,
     ) -> None:
         """交易品种查询回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log("查询交易品种信息失败")
             return
 
+        # 对于金交所的现货，则直接推送合约信息
         if data["CommodityType"] == "Y":
             contract: ContractData = ContractData(
                 symbol=data["CommodityNo"],
@@ -318,7 +304,8 @@ class QuoteApi(MdApi):
                 gateway_name=self.gateway.gateway_name
             )
             self.gateway.on_contract(contract)
-            
+
+        # 缓存交易品种的信息
         commodity_info: CommodityInfo = CommodityInfo(
             size=int(data["ContractSize"]),
             pricetick=data["CommodityTickSize"],
@@ -326,7 +313,7 @@ class QuoteApi(MdApi):
             commodity_no=data["CommodityNo"],
             exchange_no=data["ExchangeNo"]
         )
-        key: str = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
+        key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
         commodity_infos[key] = commodity_info
 
         if last == "Y":
@@ -342,12 +329,12 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """交易合约查询回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log("查询交易合约信息失败")
             return
 
         exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], None)
-        key: str = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
+        key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
         commodity_info: CommodityInfo = commodity_infos.get(key, None)
 
         if not data or not exchange or not commodity_info:
@@ -442,8 +429,9 @@ class QuoteApi(MdApi):
         # 禁止重复发起连接，会导致异常崩溃
         if self.connect_status:
             return
-        
+
         self.init()
+
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
         self.setTapQuoteAPIDataPath(str(path))
@@ -468,12 +456,12 @@ class QuoteApi(MdApi):
         }
         self.login(data)
 
-    def subscribe(self, req: SubscribeRequest):
+    def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
         contract_info = contract_infos.get((req.symbol, req.exchange), None)
         if not contract_info:
             if req.exchange == Exchange.SGE:
-                key: str = ("SGE", req.symbol, "Y")
+                key: tuple = ("SGE", req.symbol, "Y")
                 commodity_info: CommodityInfo = commodity_infos[key]
             else:
                 self.gateway.write_log(f"找不到匹配的合约：{req.symbol}和{req.exchange.value}")
@@ -503,7 +491,7 @@ class QuoteApi(MdApi):
 
 
 class EsTradeApi(TdApi):
-    """"""
+    """交易API"""
 
     def __init__(self, gateway: EsunnyGateway) -> None:
         """构造函数"""
@@ -530,7 +518,7 @@ class EsTradeApi(TdApi):
 
     def onRspLogin(self, userno: str, error: int, data: dict) -> None:
         """用户登录请求回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"交易服务器登录失败，错误码：{error}")
         else:
             self.gateway.write_log("交易服务器登录成功")
@@ -549,58 +537,66 @@ class EsTradeApi(TdApi):
 
     def onRtnPosition(self, userno: str, data: dict) -> None:
         """持仓更新推送"""
-        if data:
-            if data["ExchangeNo"] == "SGE":
-                symbol = data["CommodityNo"]
-            else:
-                symbol = data["CommodityNo"] + data["ContractNo"]
+        if not data:
+            return
 
-            position: PositionData = PositionData(
-                symbol=symbol,
-                exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
-                direction=DIRECTION_ES2VT[data["MatchSide"]],
-                gateway_name=self.gateway_name
-            )
+        if data["ExchangeNo"] == "SGE":
+            symbol = data["CommodityNo"]
+        else:
+            symbol = data["CommodityNo"] + data["ContractNo"]
 
-            key_: str = (symbol, data["MatchSide"])
-            self.cost[key_] = 0
-            position_data: Dict = self.positions.get(key_, None)
-            if not position_data:
-                position_data = {}
-            position_data[data["PositionNo"]] = data
-            self.positions[key_] = position_data
-            for key in position_data:
-                pos_data = position_data[key]
-                position.volume += pos_data["PositionQty"]
-                if pos_data["IsHistory"] == "Y":
-                    position.yd_volume += pos_data["PositionQty"]
-                    
-                self.cost[key_] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
-                position.price = self.cost[key_] / (position.volume * pos_data["ContractSize"])
+        position: PositionData = PositionData(
+            symbol=symbol,
+            exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
+            direction=DIRECTION_ES2VT[data["MatchSide"]],
+            gateway_name=self.gateway_name
+        )
 
-            self.gateway.on_position(position)
+        key: tuple = (symbol, data["MatchSide"])
+        self.cost[key] = 0
+
+        position_data: Dict = self.positions.get(key, None)
+        if not position_data:
+            position_data = {}
+        position_data[data["PositionNo"]] = data
+        self.positions[key] = position_data
+        for key in position_data:
+            pos_data = position_data[key]
+            position.volume += pos_data["PositionQty"]
+            if pos_data["IsHistory"] == "Y":
+                position.yd_volume += pos_data["PositionQty"]
+
+            self.cost[key] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
+            position.price = self.cost[key] / (position.volume * pos_data["ContractSize"])
+
+        self.gateway.on_position(position)
 
     def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
         """委托更新推送"""
-        if data:
-            if data["ErrorCode"] != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
-                self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
-                if not data["RefString"]:
-                    return
-                order: OrderData = self.gateway.get_order(data["RefString"])
-                if not order:
-                    self.update_order(data)
-                else:
-                    order.status = Status.REJECTED
-                    self.gateway.on_order(copy(order))
+        if not data:
+            return
 
-            else:
+        if data["ErrorCode"] != 0:
+            self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
+            if not data["RefString"]:
+                return
+
+            order: OrderData = self.gateway.get_order(data["RefString"])
+            if not order:
                 self.update_order(data)
+            else:
+                order.status = Status.REJECTED
+                self.gateway.on_order(copy(order))
+
+        else:
+            self.update_order(data)
 
     def onRtnFill(self, userno: str, data: dict) -> None:
         """成交数据推送"""
-        if data:
-            self.update_trade(data)
+        if not data:
+            return
+
+        self.update_trade(data)
 
     def update_account(self, data: dict) -> None:
         """账户资金信息类型转换"""
@@ -685,7 +681,7 @@ class EsTradeApi(TdApi):
             return
 
         self.userno = username
-        
+
         self.init()
 
         # 创建API
@@ -698,11 +694,11 @@ class EsTradeApi(TdApi):
 
         # 设置用户信息
         user_data: dict = {
-            "SystemType": SYSTEM_VT2ES["TAPI_SYSTEM_TYPE_ESUNNY"],
+            "SystemType": 1,            # 易盛内盘
             "UserNo": self.userno,
             "LoginIP": host,
             "LoginPort": port,
-            "LoginType": LOGINTYPE_VT2ES["TAPI_LOGINTYPE_NORMAL"]
+            "LoginType": 1              # 普通登录
         }
         self.setUserInfo(user_data)
 
@@ -724,7 +720,7 @@ class EsTradeApi(TdApi):
         contract_info: ContractInfo = contract_infos.get((req.symbol, req.exchange), None)
         if not contract_info:
             if req.exchange == Exchange.SGE:
-                key: str = ("SGE", req.symbol, "Y")
+                key: tuple = ("SGE", req.symbol, "Y")
                 commodity_info: CommodityInfo = commodity_infos[key]
 
             else:
@@ -798,7 +794,7 @@ class EsTradeApi(TdApi):
         }
 
         self.reqid += 1
-        cancel=self.cancelOrder(self.userno, cancel_req, self.reqid)
+        self.cancelOrder(self.userno, cancel_req, self.reqid)
 
     def close(self) -> None:
         """关闭连接"""
