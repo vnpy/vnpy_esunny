@@ -687,23 +687,34 @@ class EsTradeApi(TdApi):
 
     def send_order(self, req: OrderRequest) -> str:
         """委托下单"""
-        contract_info: ContractInfo = contract_infos.get((req.symbol, req.exchange), None)
-        if not contract_info:
-            if req.exchange == Exchange.SGE:
-                key: tuple = ("SGE", req.symbol, "Y")
-                commodity_info: CommodityInfo = commodity_infos[key]
+        # 验证是否能找到匹配的合约
+        valid = True
 
-            else:
-                self.gateway.write_log(f"找不到匹配的合约：{req.symbol}和{req.exchange.value}")
-                return
+        if req.exchange == Exchange.SGE:
+            key: tuple = ("SGE", req.symbol, "Y")
+            commodity_info: CommodityInfo = commodity_infos.get(key, None)
+            if not commodity_info:
+                valid = False
+        else:
+            key: tuple = (req.symbol, req.exchange)
+            contract_info: ContractInfo = contract_infos.get(key, None)
+            if not contract_info:
+                valid = False
 
+        if not valid:
+            self.gateway.write_log(f"找不到匹配的合约：{req.symbol}和{req.exchange.value}")
+            return
+
+        # 检查委托类型是否支持
         if req.type not in ORDERTYPE_VT2ES:
             self.gateway.write_log(f"不支持的委托类型: {req.type.value}")
             return ""
 
+        # 生成委托号
         self.reqid += 1
         prefix: str = datetime.now().strftime("%Y%m%d_%H%M%S_")
-        orderid: str = f"{prefix}_{self.reqid}"
+        suffix: str = str(self.reqid).rjust(6, "0")
+        orderid: str = f"{prefix}_{suffix}"
 
         order_req: dict = {
             "AccountNo": self.account_no,
@@ -723,31 +734,24 @@ class EsTradeApi(TdApi):
             "FutureAutoCloseFlag": FLAG_VT2ES["APIYNFLAG_NO"]
         }
 
-        if contract_info:
-            order_req["ExchangeNo"] = contract_info.exchange_no
-            order_req["ContractNo"] = contract_info.contract_no
-            order_req["CommodityType"] = contract_info.commodity_type
-            order_req["CommodityNo"] = contract_info.commodity_no
-            order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
-            order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
-        else:
+        if req.exchange == Exchange.SGE:
             order_req["ExchangeNo"] = commodity_info.exchange_no
             order_req["ContractNo"] = commodity_info.commodity_no
             order_req["CommodityType"] = commodity_info.commodity_type
             order_req["CommodityNo"] = commodity_info.commodity_no
             order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
             order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
+        else:
+            order_req["ExchangeNo"] = contract_info.exchange_no
+            order_req["ContractNo"] = contract_info.contract_no
+            order_req["CommodityType"] = contract_info.commodity_type
+            order_req["CommodityNo"] = contract_info.commodity_no
+            order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
+            order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
 
-        error_id, userno, buf = self.insertOrder(self.userno, order_req, self.reqid)
-        order: OrderData = req.create_order_data(
-            orderid,
-            self.gateway_name
-        )
-
-        if error_id:
-            self.gateway.write_log(f"委托请求失败，错误号：{error_id}")
-            order.status = Status.REJECTED
-
+        self.insertOrder(self.userno, order_req, self.reqid)
+        
+        order: OrderData = req.create_order_data(orderid, self.gateway_name)
         self.gateway.on_order(order)
 
         return order.vt_orderid
