@@ -2944,7 +2944,7 @@ int TdApi::setEsTradeAPIDataPath(string pPath)
 
 int TdApi::setEsTradeAPILogLevel(string LogLevel)
 {
-	int i = this->api->SetEsTradeAPILogLevel(APILOGLEVEL_DEBUG);
+	int i = this->api->SetEsTradeAPILogLevel(LogLevel.c_str()[0]);
 	return i;
 }
 
@@ -2973,7 +2973,7 @@ int TdApi::setBackUpAddress(string UserNo, const dict &req)
 pybind11::tuple TdApi::requestVerifyIdentity(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
 	TapAPIVerifyIdentity myreq = TapAPIVerifyIdentity();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "UserNo", myreq.UserNo);
 	getChar(req, "CertificateType", &myreq.CertificateType);
 	getString(req, "CertificateNo", myreq.CertificateNo);
@@ -3016,7 +3016,7 @@ int TdApi::stopUser(string UserNo)
 pybind11::tuple TdApi::requestVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
 	TapAPISecondInfo myreq = TapAPISecondInfo();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getChar(req, "SendType", &myreq.SendType);
 	getString(req, "SendAccount", myreq.SendAccount);
 	int i = this->api->RequestVertificateCode((char*)UserNo.c_str(), nRequestID, &myreq);
@@ -3028,7 +3028,7 @@ pybind11::tuple TdApi::requestVertificateCode(string UserNo, const dict &req, TA
 pybind11::tuple TdApi::setVertificateCode(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
 	TapAPISecondCertificationReq myreq = TapAPISecondCertificationReq();
-
+	memset(&myreq, 0, sizeof(myreq));
     getChar(req, "PasswordType", &myreq.PasswordType);
 	getString(req, "VertificateCode", myreq.VertificateCode);
 	getChar(req, "LoginType", &myreq.LoginType);
@@ -3099,7 +3099,7 @@ pybind11::tuple TdApi::insertOrder(string UserNo, const dict &req, TAPIUINT32 nR
 pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {
 	TapAPIOrderCancelReq myreq = TapAPIOrderCancelReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getInt(req, "RefInt", &myreq.RefInt);
 	getString(req, "RefString", myreq.RefString);
 	getChar(req, "ServerFlag", &myreq.ServerFlag);
@@ -3115,7 +3115,7 @@ pybind11::tuple TdApi::cancelOrder(string UserNo, const dict &req, TAPIUINT32 nR
 pybind11::tuple TdApi::qryOrderProcess(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 {   
 	TapAPIOrderProcessQryReq myreq = TapAPIOrderProcessQryReq();
-	
+	memset(&myreq, 0, sizeof(myreq));
 	getChar(req, "ServerFlag", &myreq.ServerFlag);
 	getString(req, "OrderNo", myreq.OrderNo);
 	int i = this->api->QryOrderProcess((char*)UserNo.c_str(), nRequestID, &myreq);
@@ -3127,7 +3127,7 @@ pybind11::tuple TdApi::qryOrderProcess(string UserNo, const dict &req, TAPIUINT3
 pybind11::tuple TdApi::qryDeepQuote(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIContract myreq = TapAPIContract();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "Commodity.ExchangeNo", myreq.Commodity.ExchangeNo);
 	getChar(req, "Commodity.CommodityType", &myreq.Commodity.CommodityType);
 	getString(req, "Commodity.CommodityNo", myreq.Commodity.CommodityNo);
@@ -3147,7 +3147,7 @@ pybind11::tuple TdApi::qryDeepQuote(string UserNo, const dict &req, TAPIUINT32 n
 pybind11::tuple TdApi::qryAccountRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIAccountRentQryReq myreq = TapAPIAccountRentQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "ExchangeNo", myreq.ExchangeNo);
 	getChar(req, "CommodityType", &myreq.CommodityType);
@@ -3162,7 +3162,7 @@ pybind11::tuple TdApi::qryAccountRent(string UserNo, const dict &req, TAPIUINT32
 pybind11::tuple TdApi::qryAccountFeeRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIAccountFeeRentQryReq myreq = TapAPIAccountFeeRentQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	int i = this->api->QryAccountFeeRent((char*)UserNo.c_str(), nRequestID, &myreq);
 
@@ -3173,7 +3173,7 @@ pybind11::tuple TdApi::qryAccountFeeRent(string UserNo, const dict &req, TAPIUIN
 pybind11::tuple TdApi::qryAccountMarginRent(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIAccountMarginRentQryReq myreq = TapAPIAccountMarginRentQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "ExchangeNo", myreq.ExchangeNo);
 	getChar(req, "CommodityType", &myreq.CommodityType);
@@ -3187,7 +3187,7 @@ pybind11::tuple TdApi::qryAccountMarginRent(string UserNo, const dict &req, TAPI
 pybind11::tuple TdApi::qryAccountCashAdjust(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIAccountCashAdjustQryReq myreq = TapAPIAccountCashAdjustQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getUnsignedInt(req, "SerialID", &myreq.SerialID);
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
@@ -3202,7 +3202,7 @@ pybind11::tuple TdApi::qryAccountCashAdjust(string UserNo, const dict &req, TAPI
 pybind11::tuple TdApi::qryBill(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIBillQryReq myreq = TapAPIBillQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "UserNo", myreq.UserNo);
 	getChar(req, "BillType", &myreq.BillType);
 	getString(req, "BillDate", myreq.BillDate);
@@ -3216,7 +3216,7 @@ pybind11::tuple TdApi::qryBill(string UserNo, const dict &req, TAPIUINT32 nReque
 pybind11::tuple TdApi::qryHisOrder(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIHisOrderQryReq myreq = TapAPIHisOrderQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
 	getString(req, "BeginDate", myreq.BeginDate);
@@ -3230,7 +3230,7 @@ pybind11::tuple TdApi::qryHisOrder(string UserNo, const dict &req, TAPIUINT32 nR
 pybind11::tuple TdApi::qryHisOrderProcess(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIHisOrderProcessQryReq myreq = TapAPIHisOrderProcessQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "Date", myreq.Date);
 	getString(req, "OrderNo", myreq.OrderNo);
 	int i = this->api->QryHisOrderProcess((char*)UserNo.c_str(), nRequestID, &myreq);
@@ -3242,7 +3242,7 @@ pybind11::tuple TdApi::qryHisOrderProcess(string UserNo, const dict &req, TAPIUI
 pybind11::tuple TdApi::qryHisFill(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIHisFillQryReq myreq = TapAPIHisFillQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
 	getString(req, "BeginDate", myreq.BeginDate);
@@ -3257,7 +3257,7 @@ pybind11::tuple TdApi::qryHisFill(string UserNo, const dict &req, TAPIUINT32 nRe
 pybind11::tuple TdApi::qryHisPosition(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIHisPositionQryReq myreq = TapAPIHisPositionQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "Date", myreq.Date);
 	getChar(req, "SettleFlag", &myreq.SettleFlag);
@@ -3270,7 +3270,7 @@ pybind11::tuple TdApi::qryHisPosition(string UserNo, const dict &req, TAPIUINT32
 pybind11::tuple TdApi::qryHisDelivery(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIHisDeliveryQryReq myreq = TapAPIHisDeliveryQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	getString(req, "AccountAttributeNo", myreq.AccountAttributeNo);
 	getString(req, "BeginDate", myreq.BeginDate);
@@ -3285,7 +3285,7 @@ pybind11::tuple TdApi::qryHisDelivery(string UserNo, const dict &req, TAPIUINT32
 pybind11::tuple TdApi::qryManageInfoForEStar(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIManageInfoQryReq myreq = TapAPIManageInfoQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "BeginDate", myreq.BeginDate);
 	getString(req, "EndDate", myreq.EndDate);
 	int i = this->api->QryManageInfoForEStar((char*)UserNo.c_str(), nRequestID, &myreq);
@@ -3297,7 +3297,7 @@ pybind11::tuple TdApi::qryManageInfoForEStar(string UserNo, const dict &req, TAP
 pybind11::tuple TdApi::qrySystemParameter(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPISystemParameterQryReq myreq = TapAPISystemParameterQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	int i = this->api->QrySystemParameter((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
@@ -3307,7 +3307,7 @@ pybind11::tuple TdApi::qrySystemParameter(string UserNo, const dict &req, TAPIUI
 pybind11::tuple TdApi::qryTradeCenterFrontAddress(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPITradeCenterFrontAddressQryReq myreq = TapAPITradeCenterFrontAddressQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "FrontAddress", myreq.FrontAddress);
 	getString(req, "FrontPort", myreq.FrontPort);
 	getChar(req, "TradeCenter", &myreq.TradeCenter);
@@ -3321,7 +3321,7 @@ pybind11::tuple TdApi::qryTradeCenterFrontAddress(string UserNo, const dict &req
 pybind11::tuple TdApi::qryTradeMessage(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPITradeMessageQryReq myreq = TapAPITradeMessageQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getUnsignedInt(req, "SerialID", &myreq.SerialID);
 	getChar(req, "TradeMsgQryType", &myreq.TradeMsgQryType);
 	getString(req, "AccountNo", myreq.AccountNo);
@@ -3336,7 +3336,7 @@ pybind11::tuple TdApi::qryTradeMessage(string UserNo, const dict &req, TAPIUINT3
 pybind11::tuple TdApi::qryAccountStorage(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIAccountStorageQryReq myreq = TapAPIAccountStorageQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "AccountNo", myreq.AccountNo);
 	int i = this->api->QryAccountStorage((char*)UserNo.c_str(), nRequestID, &myreq);
 
@@ -3347,7 +3347,7 @@ pybind11::tuple TdApi::qryAccountStorage(string UserNo, const dict &req, TAPIUIN
 pybind11::tuple TdApi::qrySpotLock(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPISpotLockQryReq myreq = TapAPISpotLockQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "StreamAccountNo", myreq.StreamAccountNo);
 	getString(req, "AccountNo", myreq.AccountNo);
 	int i = this->api->QrySpotLock((char*)UserNo.c_str(), nRequestID, &myreq);
@@ -3359,7 +3359,7 @@ pybind11::tuple TdApi::qrySpotLock(string UserNo, const dict &req, TAPIUINT32 nR
 pybind11::tuple TdApi::qryTrustDevice(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPITrustDeviceQryReq myreq = TapAPITrustDeviceQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	int i = this->api->QryTrustDevice((char*)UserNo.c_str(), nRequestID, &myreq);
 
 	pybind11::tuple result = pybind11::make_tuple(i, UserNo, nRequestID);
@@ -3369,7 +3369,7 @@ pybind11::tuple TdApi::qryTrustDevice(string UserNo, const dict &req, TAPIUINT32
 pybind11::tuple TdApi::qryManagerConfigFile(string UserNo, const dict &req, TAPIUINT32 nRequestID)
 { 
 	TapAPIManagerConfigFileQryReq myreq = TapAPIManagerConfigFileQryReq();
-
+	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "FileName", myreq.FileName);
 	getString(req, "FileDirectory", myreq.FileDirectory);
 	int i = this->api->QryManagerConfigFile((char*)UserNo.c_str(), nRequestID, &myreq);
