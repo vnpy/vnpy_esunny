@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Tuple
-from copy import copy
 import pytz
 
 from vnpy.event import EventEngine
@@ -83,11 +82,11 @@ OFFSET_ES2VT: Dict[str, Offset] = {
 
 # 交易所映射
 EXCHANGE_ES2VT: Dict[str, Exchange] = {
-    "INE": Exchange.INE,
+    "CFFEX": Exchange.CFFEX,
     "ZCE": Exchange.CZCE,
     "DCE": Exchange.DCE,
     "SHFE": Exchange.SHFE,
-    "CFFEX": Exchange.CFFEX,
+    "INE": Exchange.INE,
     "SGE": Exchange.SGE
 }
 EXCHANGE_VT2ES: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_ES2VT.items()}
@@ -168,8 +167,6 @@ class EsunnyGateway(BaseGateway):
         self.md_api: "QuoteApi" = QuoteApi(self)
         self.td_api: "EsTradeApi" = EsTradeApi(self)
 
-        self.orders: Dict[str, OrderData] = {}
-
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
         quote_username: str = setting["行情账号"]
@@ -219,15 +216,6 @@ class EsunnyGateway(BaseGateway):
     def query_position(self) -> None:
         """查询持仓"""
         pass
-
-    def on_order(self, order: OrderData) -> None:
-        """推送委托数据"""
-        self.orders[order.orderid] = order  # 先做一次缓存
-        super().on_order(order)
-
-    def get_order(self, orderid: str) -> OrderData:
-        """查询委托数据"""
-        return self.orders.get(orderid, None)
 
     def close(self) -> None:
         """关闭接口"""
@@ -319,8 +307,7 @@ class QuoteApi(MdApi):
 
         if last == "Y":
             self.gateway.write_log("查询交易品种信息成功")
-            req: dict = {}
-            self.qryContract(req)
+            self.qryContract({})
 
     def onRspQryContract(
         self,
@@ -334,6 +321,7 @@ class QuoteApi(MdApi):
             self.gateway.write_log("查询交易合约信息失败")
             return
 
+        # 检查是否支持该合约
         exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], None)
         key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
         commodity_info: CommodityInfo = commodity_infos.get(key, None)
@@ -341,9 +329,10 @@ class QuoteApi(MdApi):
         if not data or not exchange or not commodity_info:
             return
 
+        # 只处理期货和现货
         if data["CommodityType"] == "F" or data["CommodityType"] == "P":
             symbol: str = data["CommodityNo"] + data["ContractNo1"]
-            product: Product = PRODUCT_TYPE_ES2VT.get(data["CommodityType"], None)
+            product: Product = PRODUCT_TYPE_ES2VT[data["CommodityType"]]
 
             contract = ContractData(
                 symbol=symbol,
@@ -586,10 +575,11 @@ class EsTradeApi(TdApi):
         if data["ErrorCode"] != 0:
             self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
 
-        # 委托状态过滤
+        # 过滤委托的临时状态推送
         if data["OrderState"] in {"7", "8"}:
             return
 
+        # 绑定本地和系统委托号映射
         self.local_sys_map[data["RefString"]] = data["OrderNo"]
         self.sys_local_map[data["OrderNo"]] = data["RefString"]
 
@@ -750,7 +740,7 @@ class EsTradeApi(TdApi):
             order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
 
         self.insertOrder(self.userno, order_req, self.reqid)
-        
+
         order: OrderData = req.create_order_data(orderid, self.gateway_name)
         self.gateway.on_order(order)
 
