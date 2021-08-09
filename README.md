@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src ="https://img.shields.io/badge/version-6.5.1.3-blueviolet.svg"/>
+    <img src ="https://img.shields.io/badge/version-1.0.2.2.0-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows|linux-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.7-blue.svg" />
     <img src ="https://img.shields.io/github/license/vnpy/vnpy.svg?color=orange"/>
@@ -13,7 +13,7 @@
 
 ## 说明
 
-基于启明星/北斗星兼容交易API的1.0.2.2接口封装开发，支持启明星、北斗星后台系统，适用于内盘和香港、新加坡以及其他境外交易所交易。
+基于易盛的启明星/北斗星兼容交易API的1.0.2.2接口封装开发，支持启明星、北斗星后台系统，适用于内盘和香港、新加坡以及其他境外交易所交易。
 
 ## 安装
 
