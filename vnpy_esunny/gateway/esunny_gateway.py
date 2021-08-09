@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -508,8 +509,7 @@ class EsTradeApi(TdApi):
 
         self.sys_local_map: Dict[str, str] = {}
         self.local_sys_map: Dict[str, str] = {}
-        self.positions: Dict[Tuple, Dict[str, Dict]] = {}
-        self.cost: Dict[Tuple, float] = {}
+        self.position_details: Dict[Tuple, Dict[str, Dict]] = defaultdict(dict)
 
     def onConnect(self, userno: str) -> None:
         """服务器连接成功回报"""
@@ -533,73 +533,6 @@ class EsTradeApi(TdApi):
 
     def onRtnFund(self, userno: str, data: dict) -> None:
         """账户资金推送"""
-        self.update_account(data)
-
-    def onRtnPosition(self, userno: str, data: dict) -> None:
-        """持仓更新推送"""
-        if not data:
-            return
-
-        if data["ExchangeNo"] == "SGE":
-            symbol = data["CommodityNo"]
-        else:
-            symbol = data["CommodityNo"] + data["ContractNo"]
-
-        position: PositionData = PositionData(
-            symbol=symbol,
-            exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
-            direction=DIRECTION_ES2VT[data["MatchSide"]],
-            gateway_name=self.gateway_name
-        )
-
-        key: tuple = (symbol, data["MatchSide"])
-        self.cost[key] = 0
-
-        position_data: Dict = self.positions.get(key, None)
-        if not position_data:
-            position_data = {}
-        position_data[data["PositionNo"]] = data
-        self.positions[key] = position_data
-        for key in position_data:
-            pos_data = position_data[key]
-            position.volume += pos_data["PositionQty"]
-            if pos_data["IsHistory"] == "Y":
-                position.yd_volume += pos_data["PositionQty"]
-
-            self.cost[key] += pos_data["PositionPrice"] * pos_data["PositionQty"] * pos_data["ContractSize"]
-            position.price = self.cost[key] / (position.volume * pos_data["ContractSize"])
-
-        self.gateway.on_position(position)
-
-    def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
-        """委托更新推送"""
-        if not data:
-            return
-
-        if data["ErrorCode"] != 0:
-            self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
-            if not data["RefString"]:
-                return
-
-            order: OrderData = self.gateway.get_order(data["RefString"])
-            if not order:
-                self.update_order(data)
-            else:
-                order.status = Status.REJECTED
-                self.gateway.on_order(copy(order))
-
-        else:
-            self.update_order(data)
-
-    def onRtnFill(self, userno: str, data: dict) -> None:
-        """成交数据推送"""
-        if not data:
-            return
-
-        self.update_trade(data)
-
-    def update_account(self, data: dict) -> None:
-        """账户资金信息类型转换"""
         self.account_no = data["AccountNo"]
 
         account: AccountData = AccountData(
@@ -610,8 +543,50 @@ class EsTradeApi(TdApi):
         )
         self.gateway.on_account(account)
 
-    def update_order(self, data: dict) -> None:
-        """委托信息类型转换"""
+    def onRtnPosition(self, userno: str, data: dict) -> None:
+        """持仓更新推送"""
+        # 生成合约代码
+        if data["ExchangeNo"] == "SGE":
+            symbol = data["CommodityNo"]
+        else:
+            symbol = data["CommodityNo"] + data["ContractNo"]
+
+        # 缓存持仓明细
+        key: tuple = (symbol, data["MatchSide"])
+        details: dict = self.position_details[key]
+        details[data["PositionNo"]] = data
+
+        # 汇总持仓明细
+        position: PositionData = PositionData(
+            symbol=symbol,
+            exchange=EXCHANGE_ES2VT[data["ExchangeNo"]],
+            direction=DIRECTION_ES2VT[data["MatchSide"]],
+            gateway_name=self.gateway_name
+        )
+        cost: float = 0
+
+        for d in details.values():
+            # 汇总持仓量
+            position.volume += d["PositionQty"]
+
+            # 汇总昨仓量
+            if d["IsHistory"] == "Y":
+                position.yd_volume += d["PositionQty"]
+
+            # 累加成本
+            cost += d["PositionPrice"] * d["PositionQty"]
+
+        # 计算均价
+        if position.volume:
+            position.price = cost / position.volume
+
+        self.gateway.on_position(position)
+
+    def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
+        """委托更新推送"""
+        if data["ErrorCode"] != 0:
+            self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
+
         # 委托状态过滤
         if data["OrderState"] in {"7", "8"}:
             return
@@ -644,8 +619,8 @@ class EsTradeApi(TdApi):
             req: CancelRequest = self.cancel_reqs.pop(data["RefString"])
             self.cancel_order(req)
 
-    def update_trade(self, data: dict) -> None:
-        """成交信息类型转换"""
+    def onRtnFill(self, userno: str, data: dict) -> None:
+        """成交数据推送"""
         orderid: str = self.sys_local_map[data["OrderNo"]]
 
         if data["ExchangeNo"] == "SGE":
