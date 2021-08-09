@@ -505,7 +505,6 @@ class EsTradeApi(TdApi):
         self.reqid: int = 0
 
         self.account_no: str = ""
-        self.cancel_reqs: Dict[str, CancelRequest] = {}
 
         self.sys_local_map: Dict[str, str] = {}
         self.local_sys_map: Dict[str, str] = {}
@@ -614,10 +613,6 @@ class EsTradeApi(TdApi):
             gateway_name=self.gateway_name
         )
         self.gateway.on_order(order)
-
-        if data["RefString"] in self.cancel_reqs:
-            req: CancelRequest = self.cancel_reqs.pop(data["RefString"])
-            self.cancel_order(req)
 
     def onRtnFill(self, userno: str, data: dict) -> None:
         """成交数据推送"""
@@ -761,12 +756,10 @@ class EsTradeApi(TdApi):
         """委托撤单"""
         order_no: str = self.local_sys_map.get(req.orderid, "")
         if not order_no:
-            self.cancel_reqs[req.orderid] = req
+            self.gateway.write_log(f"撤单失败，找不到{req.orderid}对应的系统委托号")
             return
 
-        cancel_req: dict = {
-            "OrderNo": order_no
-        }
+        cancel_req: dict = {"OrderNo": order_no}
 
         self.reqid += 1
         self.cancelOrder(self.userno, cancel_req, self.reqid)
