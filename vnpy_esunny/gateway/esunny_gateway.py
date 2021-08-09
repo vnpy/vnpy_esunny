@@ -98,11 +98,6 @@ PRODUCT_TYPE_ES2VT: Dict[str, Product] = {
 }
 PRODUCT_TYPE_VT2ES: Dict[Product, str] = {v: k for k, v in PRODUCT_TYPE_ES2VT.items()}
 
-# 报错信息映射
-ERROR_VT2ES: Dict[str, int] = {
-    "TAPIERROR_SUCCEED": 0
-}
-
 # 行情接口日志级别映射
 MDLOGLEVEL_VT2ES: Dict[str, str] = {
     "APILOGLEVEL_NONE": "N",
@@ -125,16 +120,6 @@ FLAG_VT2ES: Dict[str, str] = {
     "TAPI_CALLPUT_FLAG_CALL": "C",
     "TAPI_CALLPUT_FLAG_PUT": "P",
     "TAPI_CALLPUT_FLAG_NONE": "N"
-}
-
-# 后台系统类型映射
-SYSTEM_VT2ES: Dict[str, int] = {
-    "TAPI_SYSTEM_TYPE_ESUNNY": 1
-}
-
-# 登录类型映射
-LOGINTYPE_VT2ES: Dict[str, int] = {
-    "TAPI_LOGINTYPE_NORMAL": 1
 }
 
 # 投机保值类型映射
@@ -263,7 +248,7 @@ class QuoteApi(MdApi):
 
     def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"行情服务器登录失败：{error}")
         else:
             self.connect_status = True
@@ -286,7 +271,7 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """订阅行情回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"订阅行情失败：{error}")
         else:
             self.update_tick(data)
@@ -303,7 +288,7 @@ class QuoteApi(MdApi):
         data: dict,
     ) -> None:
         """交易品种查询回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log("查询交易品种信息失败")
             return
 
@@ -344,7 +329,7 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """交易合约查询回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log("查询交易合约信息失败")
             return
 
@@ -533,7 +518,7 @@ class EsTradeApi(TdApi):
 
     def onRspLogin(self, userno: str, error: int, data: dict) -> None:
         """用户登录请求回报"""
-        if error != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if error != 0:
             self.gateway.write_log(f"交易服务器登录失败，错误码：{error}")
         else:
             self.gateway.write_log("交易服务器登录成功")
@@ -591,7 +576,7 @@ class EsTradeApi(TdApi):
         if not data:
             return
 
-        if data["ErrorCode"] != ERROR_VT2ES["TAPIERROR_SUCCEED"]:
+        if data["ErrorCode"] != 0:
             self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
             if not data["RefString"]:
                 return
@@ -709,11 +694,11 @@ class EsTradeApi(TdApi):
 
         # 设置用户信息
         user_data: dict = {
-            "SystemType": SYSTEM_VT2ES["TAPI_SYSTEM_TYPE_ESUNNY"],
+            "SystemType": 1,            # 易盛内盘
             "UserNo": self.userno,
             "LoginIP": host,
             "LoginPort": port,
-            "LoginType": LOGINTYPE_VT2ES["TAPI_LOGINTYPE_NORMAL"]
+            "LoginType": 1              # 普通登录
         }
         self.setUserInfo(user_data)
 
