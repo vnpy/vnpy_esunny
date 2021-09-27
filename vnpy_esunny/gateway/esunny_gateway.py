@@ -330,7 +330,7 @@ class QuoteApi(MdApi):
             return
 
         # 只处理期货和现货
-        if data["CommodityType"] == "F" or data["CommodityType"] == "P":
+        if data["CommodityType"] in PRODUCT_TYPE_ES2VT:
             symbol: str = data["CommodityNo"] + data["ContractNo1"]
             product: Product = PRODUCT_TYPE_ES2VT[data["CommodityType"]]
 
