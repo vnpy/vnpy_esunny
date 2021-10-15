@@ -87,7 +87,16 @@ EXCHANGE_ES2VT: Dict[str, Exchange] = {
     "DCE": Exchange.DCE,
     "SHFE": Exchange.SHFE,
     "INE": Exchange.INE,
-    "SGE": Exchange.SGE
+    "SGE": Exchange.SGE,
+    "CBOT": Exchange.CBOT,
+    "CME": Exchange.CME,
+    "COMEX": Exchange.COMEX,
+    "EUREX": Exchange.EUREX,
+    "HKEX": Exchange.HKFE,
+    "KRX": Exchange.KRX,
+    "LME": Exchange.LME,
+    "NYMEX": Exchange.NYMEX,
+    "SGX": Exchange.SGX
 }
 EXCHANGE_VT2ES: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_ES2VT.items()}
 
@@ -155,7 +164,8 @@ class EsunnyGateway(BaseGateway):
         "交易服务器": "",
         "交易端口": 0,
         "交易产品名称": "",
-        "交易授权编码": ""
+        "交易授权编码": "",
+        "交易系统":["内盘","外盘"]
     }
 
     exchanges = list(EXCHANGE_VT2ES.keys())
@@ -180,6 +190,10 @@ class EsunnyGateway(BaseGateway):
         trade_port: int = setting["交易端口"]
         trade_appid: str = setting["交易产品名称"]
         trade_authcode: str = setting["交易授权编码"]
+        if setting["交易系统"] == "内盘":
+            systype = 1
+        else:
+            systype = 2
 
         self.md_api.connect(
             quote_username,
@@ -194,7 +208,8 @@ class EsunnyGateway(BaseGateway):
             trade_host,
             trade_port,
             trade_appid,
-            trade_authcode
+            trade_authcode,
+            systype
         )
 
     def subscribe(self, req: SubscribeRequest) -> None:
@@ -633,7 +648,8 @@ class EsTradeApi(TdApi):
         host: str,
         port: int,
         appid: str,
-        auth_code: str
+        auth_code: str,
+        systype: int
     ) -> None:
         """连接交易接口"""
         # 禁止重复发起连接，会导致异常崩溃
@@ -654,7 +670,7 @@ class EsTradeApi(TdApi):
 
         # 设置用户信息
         user_data: dict = {
-            "SystemType": 1,            # 易盛内盘
+            "SystemType": systype,             
             "UserNo": self.userno,
             "LoginIP": host,
             "LoginPort": port,
