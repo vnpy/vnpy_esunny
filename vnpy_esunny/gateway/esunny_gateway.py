@@ -329,8 +329,8 @@ class QuoteApi(MdApi):
         if not data or not exchange or not commodity_info:
             return
 
-        # 只处理期货合约信息
-        if data["CommodityType"] == "F":
+        # 只处理期货合约信息    
+        if data["CommodityType"] in PRODUCT_TYPE_ES2VT:
             symbol: str = data["CommodityNo"] + data["ContractNo1"]
             product: Product = PRODUCT_TYPE_ES2VT[data["CommodityType"]]
 
