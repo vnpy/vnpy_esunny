@@ -2,7 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Any, List
 import pytz
 
 from vnpy.event import EventEngine
@@ -153,7 +153,7 @@ class EsunnyGateway(BaseGateway):
     vn.py用于对接易盛柜台的交易接口。
     """
 
-    default_setting = {
+    default_setting: Dict[str, Any] = {
         "行情账号": "",
         "行情密码": "",
         "行情服务器": "",
@@ -168,7 +168,7 @@ class EsunnyGateway(BaseGateway):
         "交易系统":["内盘","外盘"]
     }
 
-    exchanges = list(EXCHANGE_VT2ES.keys())
+    exchanges: List[str] = list(EXCHANGE_VT2ES.keys())
 
     def __init__(self, event_engine: EventEngine, gateway_name: str = "ESUNNY") -> None:
         """构造函数"""
