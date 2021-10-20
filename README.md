@@ -61,3 +61,6 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+## 连接
+
+连接前请先复制vnpy_esunny.vnpy_esunny.api文件夹下的ITapTdAPI.dll、ITapSETdAPI.dll和TapTdAPI.dll，放置在VN Trader运行目录（.vntrader同级文件夹）下。
