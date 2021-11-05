@@ -439,13 +439,13 @@ class QuoteApi(MdApi):
 
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
-        self.setTapQuoteAPIDataPath(str(path))
+        self.setTapQuoteAPIDataPath(str(path).encode("GBK"))
         self.setTapQuoteAPILogLevel(MDLOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
 
         # 创建API
         req: dict = {
             "AuthCode": auth_code,
-            "KeyOperationLogPath": str(path)
+            "KeyOperationLogPath": str(path).encode("GBK")
         }
         self.createTapQuoteAPI(req, 0)
 
@@ -587,6 +587,11 @@ class EsTradeApi(TdApi):
 
     def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
         """委托更新推送"""
+        type = ORDERTYPE_ES2VT.get(data["OrderType"], None)
+        if not type:
+            self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
+            return
+
         if data["ErrorCode"] != 0:
             self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
 
@@ -607,7 +612,7 @@ class EsTradeApi(TdApi):
             symbol=symbol,
             exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
             orderid=data["RefString"],
-            type=ORDERTYPE_ES2VT.get(data["OrderType"], data["OrderType"]),
+            type=type,
             direction=DIRECTION_ES2VT[data["OrderSide"]],
             offset=OFFSET_ES2VT.get(data["PositionEffect"], Offset.NONE),
             price=data["OrderPrice"],
@@ -665,7 +670,7 @@ class EsTradeApi(TdApi):
 
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
-        self.setEsTradeAPIDataPath(str(path))
+        self.setEsTradeAPIDataPath(str(path).encode("GBK"))
         self.setEsTradeAPILogLevel(TDLOGLEVEL_VT2ES["APILOGLEVEL_ERROR"])
 
         # 设置用户信息
