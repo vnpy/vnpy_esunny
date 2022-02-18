@@ -153,6 +153,8 @@ class EsunnyGateway(BaseGateway):
     vn.py用于对接易盛柜台的交易接口。
     """
 
+    default_name: str = "ESUNNY"
+
     default_setting: Dict[str, Any] = {
         "行情账号": "",
         "行情密码": "",
@@ -170,7 +172,7 @@ class EsunnyGateway(BaseGateway):
 
     exchanges: List[str] = list(EXCHANGE_VT2ES.keys())
 
-    def __init__(self, event_engine: EventEngine, gateway_name: str = "ESUNNY") -> None:
+    def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
