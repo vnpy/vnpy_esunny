@@ -21,7 +21,7 @@ def get_ext_modules() -> list:
         runtime_library_dirs = ["$ORIGIN"]
         td_libraries = ["EsTdAPI", "TapTdAPI", "ITapSETdAPI", "ITapTdAPI", "TapDataCollectAPI"]
     else:
-        extra_compile_flags = ["-O2"]
+        extra_compile_flags = ["-O2", "-MT"]
         extra_link_args = []
         runtime_library_dirs = []
         td_libraries = ["EsTdAPI", "TapDataCollectAPI"]
