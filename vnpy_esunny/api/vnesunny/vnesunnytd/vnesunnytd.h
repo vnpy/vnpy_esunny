@@ -1,4 +1,4 @@
-//ç³»ç»Ÿ
+//ÏµÍ³
 #ifdef WIN32
 #include "stdafx.h"
 #endif
@@ -12,7 +12,7 @@
 using namespace pybind11;
 using namespace EsTradeAPI;
 
-//å¸¸é‡
+//³£Á¿
 #define ONCONNECT 0
 #define ONRSPLOGIN 1
 #define ONRTNCONTACTINFO 2
@@ -72,17 +72,17 @@ using namespace EsTradeAPI;
 
 
 ///-------------------------------------------------------------------------------------
-///C++ SPIçš„å›è°ƒå‡½æ•°æ–¹æ³•å®ç°
+///C++ SPIµÄ»Øµ÷º¯Êı·½·¨ÊµÏÖ
 ///-------------------------------------------------------------------------------------
 
-//APIçš„ç»§æ‰¿å®ç°
+//APIµÄ¼Ì³ĞÊµÏÖ
 class TdApi : public IEsTradeAPINotify
 {
 private:
-	IEsTradeAPI* api;            //API????
-    thread task_thread;                    //????????????python???????????
-    TaskQueue task_queue;                //???????
-    bool active = false;                //??????
+	IEsTradeAPI* api;            //API¶ÔÏó
+    thread task_thread;                    //¹¤×÷Ïß³ÌÖ¸Õë£¨ÏòpythonÖĞÍÆËÍÊı¾İ£©
+    TaskQueue task_queue;                //ÈÎÎñ¶ÓÁĞ
+    bool active = false;               //¹¤×÷×´Ì¬
 
 public:
     TdApi()
@@ -98,619 +98,619 @@ public:
     };
 
     //-------------------------------------------------------------------------------------
-    //APIå›è°ƒå‡½æ•°
+    //API»Øµ÷º¯Êı
     //-------------------------------------------------------------------------------------
 
 	virtual void ES_CDECL OnConnect(const TAPISTR_20 UserNo);
 	/**
-	* @brief	ç³»ç»Ÿç™»å½•è¿‡ç¨‹å›è°ƒ
-	* @details	æ­¤å‡½æ•°ä¸ºStartUser()ç™»å½•å‡½æ•°çš„å›è°ƒï¼Œè°ƒç”¨StartUser()æˆåŠŸåå»ºç«‹äº†è¿æ¥ï¼Œç„¶åAPIå°†å‘æœåŠ¡å™¨å‘é€ç™»å½•è®¤è¯ä¿¡æ¯ï¼Œç™»å½•æœŸé—´çš„æ•°æ®å‘é€æƒ…å†µå’Œç™»å½•çš„å›é¦ˆä¿¡æ¯ä¼ é€’åˆ°æ­¤å›è°ƒå‡½æ•°ä¸­ã€‚
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nErrorCode è¿”å›é”™è¯¯ç ,0è¡¨ç¤ºæˆåŠŸ
-	* @param[in] pLoginRspInfo ç™»é™†åº”ç­”ä¿¡æ¯ï¼Œå¦‚æœnErrorCode!=0ï¼Œåˆ™loginRspInfo=NULLã€‚
-	* @attention	è¯¥å›è°ƒè¿”å›æˆåŠŸï¼Œè¯´æ˜ç”¨æˆ·ç™»å½•æˆåŠŸã€‚ä½†æ˜¯ä¸ä»£è¡¨å½“å‰ç™»å½•ç”¨æˆ·å‡†å¤‡å®Œæ¯•ã€‚
+	* @brief	ÏµÍ³µÇÂ¼¹ı³Ì»Øµ÷
+	* @details	´Ëº¯ÊıÎªStartUser()µÇÂ¼º¯ÊıµÄ»Øµ÷£¬µ÷ÓÃStartUser()³É¹¦ºó½¨Á¢ÁËÁ¬½Ó£¬È»ºóAPI½«Ïò·şÎñÆ÷·¢ËÍµÇÂ¼ÈÏÖ¤ĞÅÏ¢£¬µÇÂ¼ÆÚ¼äµÄÊı¾İ·¢ËÍÇé¿öºÍµÇÂ¼µÄ»ØÀ¡ĞÅÏ¢´«µİµ½´Ë»Øµ÷º¯ÊıÖĞ¡£
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nErrorCode ·µ»Ø´íÎóÂë,0±íÊ¾³É¹¦
+	* @param[in] pLoginRspInfo µÇÂ½Ó¦´ğĞÅÏ¢£¬Èç¹ûnErrorCode!=0£¬ÔòloginRspInfo=NULL¡£
+	* @attention	¸Ã»Øµ÷·µ»Ø³É¹¦£¬ËµÃ÷ÓÃ»§µÇÂ¼³É¹¦¡£µ«ÊÇ²»´ú±íµ±Ç°µÇÂ¼ÓÃ»§×¼±¸Íê±Ï¡£
     * 
 	* @ingroup G_T_Login
 	*/
 	virtual void ES_CDECL OnRspLogin(const TAPISTR_20 UserNo, TAPIINT32 nErrorCode, const TapAPITradeLoginRspInfo *pLoginRspInfo);
 	/**
-	* @brief	äºŒæ¬¡è®¤è¯è”ç³»æ–¹å¼é€šçŸ¥ã€‚(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @details	ç™»å½•å®Œæˆåï¼Œå¦‚æœéœ€è¦äºŒæ¬¡è®¤è¯ï¼Œä¼šæ”¶åˆ°è”ç³»æ–¹å¼çš„é€šçŸ¥ï¼Œå¯ä»¥é€‰æ‹©é€šçŸ¥æ¶ˆæ¯çš„ä¸€ä¸ªè”ç³»æ–¹å¼ï¼ˆé‚®ç®±æˆ–è€…ç”µè¯ï¼‰,è¯·æ±‚å‘é€äºŒæ¬¡è®¤è¯æˆæƒç ã€‚
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nErrorCode è¿”å›é”™è¯¯ç ,0è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast æ ‡è¯†æ˜¯å¦æ˜¯æœ€åä¸€æ¡è”ç³»ä¿¡æ¯
-	* @param[in] pInfo è®¤è¯æ–¹å¼ä¿¡æ¯ï¼Œå¦‚æœerrorCode!=0ï¼Œåˆ™ContactInfoä¸ºç©ºã€‚
-	* @attention	è¯¥å›è°ƒè¿”å›æˆåŠŸï¼Œè¯´æ˜éœ€è¦äºŒæ¬¡è®¤è¯ï¼Œå¹¶ä¸”éœ€è¦é€‰æ‹©ä¸€ä¸ªè”ç³»æ–¹å¼ç„¶åè°ƒç”¨RequestVertificateCode()è®¾ç½®ç»“æŸéªŒè¯ä¿¡æ¯çš„æ–¹å¼å’Œè´¦å·ã€‚
+	* @brief	¶ş´ÎÈÏÖ¤ÁªÏµ·½Ê½Í¨Öª¡£(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @details	µÇÂ¼Íê³Éºó£¬Èç¹ûĞèÒª¶ş´ÎÈÏÖ¤£¬»áÊÕµ½ÁªÏµ·½Ê½µÄÍ¨Öª£¬¿ÉÒÔÑ¡ÔñÍ¨ÖªÏûÏ¢µÄÒ»¸öÁªÏµ·½Ê½£¨ÓÊÏä»òÕßµç»°£©,ÇëÇó·¢ËÍ¶ş´ÎÈÏÖ¤ÊÚÈ¨Âë¡£
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nErrorCode ·µ»Ø´íÎóÂë,0±íÊ¾³É¹¦
+	* @param[in] isLast ±êÊ¶ÊÇ·ñÊÇ×îºóÒ»ÌõÁªÏµĞÅÏ¢
+	* @param[in] pInfo ÈÏÖ¤·½Ê½ĞÅÏ¢£¬Èç¹ûerrorCode!=0£¬ÔòContactInfoÎª¿Õ¡£
+	* @attention	¸Ã»Øµ÷·µ»Ø³É¹¦£¬ËµÃ÷ĞèÒª¶ş´ÎÈÏÖ¤£¬²¢ÇÒĞèÒªÑ¡ÔñÒ»¸öÁªÏµ·½Ê½È»ºóµ÷ÓÃRequestVertificateCode()ÉèÖÃ½áÊøÑéÖ¤ĞÅÏ¢µÄ·½Ê½ºÍÕËºÅ¡£
 	*
     * @ingroup G_T_Login
 	*/
 	virtual void ES_CDECL OnRtnContactInfo(const TAPISTR_20 UserNo, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPISecondInfo* pInfo);
 	/**
-	* @brief	è¯·æ±‚å‘é€äºŒæ¬¡è®¤è¯ç åº”ç­”ã€‚(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @details	è¯·æ±‚è·å–äºŒæ¬¡è®¤è¯æˆæƒç ï¼Œåå°å‘é€é‚®ä»¶æˆ–è€…çŸ­ä¿¡ï¼Œå¹¶ç»™å‡ºåº”ç­”ï¼ŒåŒ…å«å‘é€åºå·ä»¥åŠè®¤è¯ç æœ‰æ•ˆæœŸ
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nSessionID è¯·æ±‚äºŒæ¬¡è®¤è¯ç ä¼šè¯ID
-	* @param[in] nErrorCode å¦‚æœæ²¡æœ‰ç»‘å®šè”ç³»ï¼Œè¿”å›é”™è¯¯.
-	* @param[in] isLast æ ‡è¯†æ˜¯å¦æ˜¯æœ€åä¸€æ¡è”ç³»ä¿¡æ¯
-	* @param[in] pInfo äºŒæ¬¡è®¤è¯ç æœ‰æ•ˆæœŸï¼Œä»¥åˆ†é’Ÿè¿”å›ï¼Œåœ¨äºŒæ¬¡è®¤è¯æœ‰æ•ˆæœŸå†…ï¼Œå¯ä»¥é‡å¤è®¾ç½®äºŒæ¬¡è®¤è¯ç ï¼Œä½†æ˜¯ä¸èƒ½å†é‡æ–°ç”³è¯·äºŒæ¬¡è®¤è¯ç ã€‚
-	* @attention è¯¥å›è°ƒè¿”å›æˆåŠŸï¼Œç„¶åè°ƒç”¨SetVertificateCode()ã€‚
+	* @brief	ÇëÇó·¢ËÍ¶ş´ÎÈÏÖ¤ÂëÓ¦´ğ¡£(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @details	ÇëÇó»ñÈ¡¶ş´ÎÈÏÖ¤ÊÚÈ¨Âë£¬ºóÌ¨·¢ËÍÓÊ¼ş»òÕß¶ÌĞÅ£¬²¢¸ø³öÓ¦´ğ£¬°üº¬·¢ËÍĞòºÅÒÔ¼°ÈÏÖ¤ÂëÓĞĞ§ÆÚ
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nSessionID ÇëÇó¶ş´ÎÈÏÖ¤Âë»á»°ID
+	* @param[in] nErrorCode Èç¹ûÃ»ÓĞ°ó¶¨ÁªÏµ£¬·µ»Ø´íÎó.
+	* @param[in] isLast ±êÊ¶ÊÇ·ñÊÇ×îºóÒ»ÌõÁªÏµĞÅÏ¢
+	* @param[in] pInfo ¶ş´ÎÈÏÖ¤ÂëÓĞĞ§ÆÚ£¬ÒÔ·ÖÖÓ·µ»Ø£¬ÔÚ¶ş´ÎÈÏÖ¤ÓĞĞ§ÆÚÄÚ£¬¿ÉÒÔÖØ¸´ÉèÖÃ¶ş´ÎÈÏÖ¤Âë£¬µ«ÊÇ²»ÄÜÔÙÖØĞÂÉêÇë¶ş´ÎÈÏÖ¤Âë¡£
+	* @attention ¸Ã»Øµ÷·µ»Ø³É¹¦£¬È»ºóµ÷ÓÃSetVertificateCode()¡£
     * 
 	* @ingroup G_T_Login
 	*/
 	virtual void ES_CDECL OnRspRequestVertificateCode(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIVertificateCode *pInfo);
 	/**
-     * @brief	éªŒè¯ä¿¡æ¯åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	 * @details	 é‡ç½®å¯†ç æ—¶ï¼Œé¦–å…ˆè¦é€šè¿‡èº«ä»½éªŒè¯ï¼ŒéªŒè¯é€šè¿‡æ‰å¯ä»¥å‘é€éªŒè¯ç è¯·æ±‚ï¼ŒéªŒè¯å¤±è´¥å¯ä»¥é‡æ–°å‘èµ·éªŒè¯è¯·æ±‚
-     * @param UserNo ç™»å½•ç”¨æˆ·UserNo
-     * @param nSessionID éªŒè¯ä¿¡æ¯ä¼šè¯ID
-     * @param nErrorCode é”™è¯¯ç ,0è¡¨ç¤ºæˆåŠŸ
-     * @param isLast æ ‡è¯†æ˜¯å¦æ˜¯æœ€åä¸€æ¡ä¿¡æ¯
-     * @param pInfo éªŒè¯ä¿¡æ¯åº”ç­”
-     * @attention è¯¥å›è°ƒè¿”å›æˆåŠŸï¼Œç„¶åè°ƒç”¨RequestVertificateCode()ã€‚
+     * @brief	ÑéÖ¤ĞÅÏ¢Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	 * @details	 ÖØÖÃÃÜÂëÊ±£¬Ê×ÏÈÒªÍ¨¹ıÉí·İÑéÖ¤£¬ÑéÖ¤Í¨¹ı²Å¿ÉÒÔ·¢ËÍÑéÖ¤ÂëÇëÇó£¬ÑéÖ¤Ê§°Ü¿ÉÒÔÖØĞÂ·¢ÆğÑéÖ¤ÇëÇó
+     * @param UserNo µÇÂ¼ÓÃ»§UserNo
+     * @param nSessionID ÑéÖ¤ĞÅÏ¢»á»°ID
+     * @param nErrorCode ´íÎóÂë,0±íÊ¾³É¹¦
+     * @param isLast ±êÊ¶ÊÇ·ñÊÇ×îºóÒ»ÌõĞÅÏ¢
+     * @param pInfo ÑéÖ¤ĞÅÏ¢Ó¦´ğ
+     * @attention ¸Ã»Øµ÷·µ»Ø³É¹¦£¬È»ºóµ÷ÓÃRequestVertificateCode()¡£
      * 
 	 * @ingroup G_T_Login
      */
     virtual void ES_CDECL OnRspRequestVerifyIdentity(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIVerifyIdentity* pInfo);
     /**
-     * @brief	éªŒè¯ç è®¾ç½®åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-     * @param UserNo ç™»å½•ç”¨æˆ·UserNo
-     * @param nSessionID è®¾ç½®éªŒè¯ç ä¼šè¯ID
-     * @param nErrorCode é”™è¯¯ç ,0è¡¨ç¤ºæˆåŠŸ
-     * @param isLast æ ‡è¯†æ˜¯å¦æ˜¯æœ€åä¸€æ¡ä¿¡æ¯
-     * @param pInfo è®¤è¯ç ä¿¡æ¯
+     * @brief	ÑéÖ¤ÂëÉèÖÃÓ¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+     * @param UserNo µÇÂ¼ÓÃ»§UserNo
+     * @param nSessionID ÉèÖÃÑéÖ¤Âë»á»°ID
+     * @param nErrorCode ´íÎóÂë,0±íÊ¾³É¹¦
+     * @param isLast ±êÊ¶ÊÇ·ñÊÇ×îºóÒ»ÌõĞÅÏ¢
+     * @param pInfo ÈÏÖ¤ÂëĞÅÏ¢
      * 
 	 * @ingroup G_T_Login
      */
     virtual void ES_CDECL OnRspSetVertificateCode(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPISecondCertificationRsp *pInfo);
     /**
-	* @brief é‡è¦é”™è¯¯ä¿¡æ¯æç¤º
-	* @details å½“APIå†…éƒ¨å‡ºç°ä¸¥é‡é”™è¯¯æ—¶æç¤ºç”¨æˆ·é”™è¯¯ä¿¡æ¯
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] ErrorMsg é”™è¯¯æç¤ºä¿¡æ¯
-	* @attention è¯¥å‡½æ•°å›è°ƒï¼Œåˆ™è¯´æ˜APIè¿è¡Œæ—¶å­˜åœ¨ä¸¥é‡é”™è¯¯
+	* @brief ÖØÒª´íÎóĞÅÏ¢ÌáÊ¾
+	* @details µ±APIÄÚ²¿³öÏÖÑÏÖØ´íÎóÊ±ÌáÊ¾ÓÃ»§´íÎóĞÅÏ¢
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] ErrorMsg ´íÎóÌáÊ¾ĞÅÏ¢
+	* @attention ¸Ãº¯Êı»Øµ÷£¬ÔòËµÃ÷APIÔËĞĞÊ±´æÔÚÑÏÖØ´íÎó
     * 
 	* @ingroup G_T_TradeSystem
 	*/
 	virtual void ES_CDECL OnRtnErrorMsg(const TAPISTR_20 UserNo, const TAPISTR_500 ErrorMsg);
 	/**
-	* @brief	é€šçŸ¥ç”¨æˆ·APIå‡†å¤‡å°±ç»ª
-	* @details	åªæœ‰ç”¨æˆ·å›è°ƒæ”¶åˆ°æ­¤å°±ç»ªé€šçŸ¥æ—¶æ‰èƒ½è¿›è¡Œå¯¹åº”ç™»å½•ç”¨æˆ·åç»­çš„å„ç§æ“ä½œã€‚æ­¤å›è°ƒå‡½æ•°æ˜¯æŸä¸ªç™»å½•ç”¨æˆ·èƒ½å¦æ­£å¸¸å·¥ä½œçš„æ ‡å¿—ã€‚
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @attention å°±ç»ªåæ‰å¯ä»¥è¿›è¡Œåç»­æ“ä½œ
+	* @brief	Í¨ÖªÓÃ»§API×¼±¸¾ÍĞ÷
+	* @details	Ö»ÓĞÓÃ»§»Øµ÷ÊÕµ½´Ë¾ÍĞ÷Í¨ÖªÊ±²ÅÄÜ½øĞĞ¶ÔÓ¦µÇÂ¼ÓÃ»§ºóĞøµÄ¸÷ÖÖ²Ù×÷¡£´Ë»Øµ÷º¯ÊıÊÇÄ³¸öµÇÂ¼ÓÃ»§ÄÜ·ñÕı³£¹¤×÷µÄ±êÖ¾¡£
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @attention ¾ÍĞ÷ºó²Å¿ÉÒÔ½øĞĞºóĞø²Ù×÷
     * 
 	* @ingroup G_T_Login
 	*/
 	virtual void ES_CDECL OnAPIReady(const TAPISTR_20 UserNo);
 	/**
-	* @brief APIå’ŒæœåŠ¡å¤±å»è¿æ¥çš„å›è°ƒ
-	* @details åœ¨APIä½¿ç”¨è¿‡ç¨‹ä¸­ä¸»åŠ¨æˆ–è€…è¢«åŠ¨ä¸æœåŠ¡å™¨æœåŠ¡å¤±å»è¿æ¥åéƒ½ä¼šè§¦å‘æ­¤å›è°ƒé€šçŸ¥ç”¨æˆ·ä¸æœåŠ¡å™¨çš„è¿æ¥å·²ç»æ–­å¼€ã€‚
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nReasonCode æ–­å¼€åŸå› ä»£ç 
+	* @brief APIºÍ·şÎñÊ§È¥Á¬½ÓµÄ»Øµ÷
+	* @details ÔÚAPIÊ¹ÓÃ¹ı³ÌÖĞÖ÷¶¯»òÕß±»¶¯Óë·şÎñÆ÷·şÎñÊ§È¥Á¬½Óºó¶¼»á´¥·¢´Ë»Øµ÷Í¨ÖªÓÃ»§Óë·şÎñÆ÷µÄÁ¬½ÓÒÑ¾­¶Ï¿ª¡£
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nReasonCode ¶Ï¿ªÔ­Òò´úÂë
     * 
 	* @ingroup G_T_Disconnect
 	*/
 	virtual void ES_CDECL OnDisconnect(const TAPISTR_20 UserNo, TAPIINT32 nReasonCode);
 	/**
-	* @brief é€šçŸ¥ç”¨æˆ·æäº¤ç”¨æˆ·ç™»å½•ä¿¡æ¯ç»“æœ(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nSessionID æäº¤ç”¨æˆ·ç™»å½•ä¿¡æ¯çš„è¯·æ±‚ID,å’ŒSubmitUserLoginInfoè¿”å›çš„è¯·æ±‚IDå¯¹åº”
-	* @param[in] pRspInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief Í¨ÖªÓÃ»§Ìá½»ÓÃ»§µÇÂ¼ĞÅÏ¢½á¹û(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nSessionID Ìá½»ÓÃ»§µÇÂ¼ĞÅÏ¢µÄÇëÇóID,ºÍSubmitUserLoginInfo·µ»ØµÄÇëÇóID¶ÔÓ¦
+	* @param[in] pRspInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
     * 
 	* @ingroup G_T_UserInfo
 	*/
 	virtual void ES_CDECL OnRspSubmitUserLoginInfo(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, const TapAPISubmitUserLoginInfoRsp *pRspInfo);
 	/**
-	* @brief ç”¨æˆ·å¯†ç ä¿®æ”¹åº”ç­”
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nSessionID ä¿®æ”¹å¯†ç çš„è¯·æ±‚ID,å’ŒChangePasswordçš„è¯·æ±‚IDå¯¹åº”
-	* @param[in] nErrorCode è¿”å›é”™è¯¯ç ï¼Œ0è¡¨ç¤ºæˆåŠŸ
+	* @brief ÓÃ»§ÃÜÂëĞŞ¸ÄÓ¦´ğ
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nSessionID ĞŞ¸ÄÃÜÂëµÄÇëÇóID,ºÍChangePasswordµÄÇëÇóID¶ÔÓ¦
+	* @param[in] nErrorCode ·µ»Ø´íÎóÂë£¬0±íÊ¾³É¹¦
     * 
 	* @ingroup G_T_UserInfo
 	*/
 	virtual void ES_CDECL OnRspChangePassword(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, TAPIINT32 nErrorCode, const TapAPIChangePasswordRsp* pInfo);
 	/**
-	* @brief è®¾ç½®ç”¨æˆ·é¢„ç•™ä¿¡æ¯åé¦ˆ
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nSessionID è®¾ç½®ç”¨æˆ·é¢„ç•™ä¿¡æ¯çš„è¯·æ±‚ID
-	* @param[in] nErrorCode è¿”å›é”™è¯¯ç ï¼Œ0è¡¨ç¤ºæˆåŠŸ
-	* @param[in] info æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤infoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
-	* @note è¯¥æ¥å£æš‚æœªå®ç°
+	* @brief ÉèÖÃÓÃ»§Ô¤ÁôĞÅÏ¢·´À¡
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nSessionID ÉèÖÃÓÃ»§Ô¤ÁôĞÅÏ¢µÄÇëÇóID
+	* @param[in] nErrorCode ·µ»Ø´íÎóÂë£¬0±íÊ¾³É¹¦
+	* @param[in] info Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıinfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
+	* @note ¸Ã½Ó¿ÚÔİÎ´ÊµÏÖ
     * 
 	* @ingroup G_T_UserInfo
 	*/
 	virtual void ES_CDECL OnRspSetReservedInfo(const TAPISTR_20 UserNo, TAPIUINT32 nSessionID, TAPIINT32 nErrorCode, const TAPISTR_50 info);
 	/**
-	* @brief	è¿”å›æ–°å¢åˆçº¦ä¿¡æ¯(å¯æ˜æ˜Ÿã€åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @details	å‘ç”¨æˆ·æ¨é€æ–°çš„åˆçº¦ã€‚ä¸»è¦ç”¨æ¥å¤„ç†åœ¨äº¤æ˜“æ—¶é—´æ®µä¸­æœåŠ¡å™¨æ·»åŠ äº†æ–°åˆçº¦æ—¶ï¼Œå‘ç”¨æˆ·å‘é€è¿™ä¸ªåˆçº¦çš„ä¿¡æ¯ã€‚
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief	·µ»ØĞÂÔöºÏÔ¼ĞÅÏ¢(ÆôÃ÷ĞÇ¡¢±±¶·ĞÇ×¨ÓÃ)
+	* @details	ÏòÓÃ»§ÍÆËÍĞÂµÄºÏÔ¼¡£Ö÷ÒªÓÃÀ´´¦ÀíÔÚ½»Ò×Ê±¼ä¶ÎÖĞ·şÎñÆ÷Ìí¼ÓÁËĞÂºÏÔ¼Ê±£¬ÏòÓÃ»§·¢ËÍÕâ¸öºÏÔ¼µÄĞÅÏ¢¡£
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	* 
 	* @ingroup G_T_Contract
 	*/
 	virtual void ES_CDECL OnRtnContract(const TAPISTR_20 UserNo, const TapAPITradeContractInfo *pRtnInfo);
 	/**
-	* @brief ç”¨æˆ·èµ„é‡‘å˜åŒ–é€šçŸ¥
-	* @details ç”¨æˆ·çš„å§”æ‰˜æˆäº¤åä¼šå¼•èµ·èµ„é‡‘æ•°æ®çš„å˜åŒ–ï¼Œå› æ­¤éœ€è¦å‘ç”¨æˆ·å®æ—¶åé¦ˆã€‚
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÓÃ»§×Ê½ğ±ä»¯Í¨Öª
+	* @details ÓÃ»§µÄÎ¯ÍĞ³É½»ºó»áÒıÆğ×Ê½ğÊı¾İµÄ±ä»¯£¬Òò´ËĞèÒªÏòÓÃ»§ÊµÊ±·´À¡¡£
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_FundInfo
 	*/
 	virtual void ES_CDECL OnRtnFund(const TAPISTR_20 UserNo, const TapAPIFundData *pRtnInfo);
 	/**
-	* @brief è¿”å›æ–°å§”æ‰˜ã€‚æ–°ä¸‹çš„æˆ–è€…å…¶ä»–åœ°æ–¹ä¸‹çš„æ¨é€è¿‡æ¥çš„
-	* @details æœåŠ¡å™¨æ¥æ”¶åˆ°å®¢æˆ·ä¸‹çš„å§”æ‰˜å†…å®¹åå°±ä¼šè§¦å‘å§”æ‰˜å¤„ç†é€»è¾‘ï¼ŒåŒæ—¶å‘ç”¨æˆ·å›é¦ˆä¸€ä¸ªå§”æ‰˜åº”ç­”è¯´æ˜æœåŠ¡å™¨æ­£ç¡®å¤„ç†äº†ç”¨æˆ·çš„è¯·æ±‚ï¼Œè¿”å›çš„ä¿¡æ¯ä¸­åŒ…å«äº†å…¨éƒ¨çš„å§”æ‰˜ä¿¡æ¯ï¼Œ
-	*			åŒæ—¶æœ‰ä¸€ä¸ªç”¨æ¥æ ‡ç¤ºæ­¤å§”æ‰˜çš„å§”æ‰˜å·ã€‚å¦‚æœæ˜¯æœ¬åœ°å‘å‡ºå»çš„å§”æ‰˜ï¼Œå§”æ‰˜åº”ç­”ä¸­ä¼šè¿”å›è¯·æ±‚ID
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ·µ»ØĞÂÎ¯ÍĞ¡£ĞÂÏÂµÄ»òÕßÆäËûµØ·½ÏÂµÄÍÆËÍ¹ıÀ´µÄ
+	* @details ·şÎñÆ÷½ÓÊÕµ½¿Í»§ÏÂµÄÎ¯ÍĞÄÚÈİºó¾Í»á´¥·¢Î¯ÍĞ´¦ÀíÂß¼­£¬Í¬Ê±ÏòÓÃ»§»ØÀ¡Ò»¸öÎ¯ÍĞÓ¦´ğËµÃ÷·şÎñÆ÷ÕıÈ·´¦ÀíÁËÓÃ»§µÄÇëÇó£¬·µ»ØµÄĞÅÏ¢ÖĞ°üº¬ÁËÈ«²¿µÄÎ¯ÍĞĞÅÏ¢£¬
+	*			Í¬Ê±ÓĞÒ»¸öÓÃÀ´±êÊ¾´ËÎ¯ÍĞµÄÎ¯ÍĞºÅ¡£Èç¹ûÊÇ±¾µØ·¢³öÈ¥µÄÎ¯ÍĞ£¬Î¯ÍĞÓ¦´ğÖĞ»á·µ»ØÇëÇóID
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnOrder(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, const TapAPIOrderInfo *pRtnInfo);
 	/**
-    * @brief	è®¢å•æ“ä½œåº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-    * @details	ä¸‹å•ã€æ’¤å•ã€æ”¹å•åº”ç­”ã€‚ä¸‹å•éƒ½ä¼šæœ‰æ¬¡åº”ç­”å›è°ƒï¼Œå¦‚æœä¸‹å•è¯·æ±‚ç»“æ„ä¸­æ²¡æœ‰å¡«å†™åˆçº¦æˆ–è€…èµ„é‡‘è´¦å·ï¼Œåˆ™ä»…è¿”å›é”™è¯¯å·.
-    *     æ’¤å•ã€æ”¹å•é”™è¯¯æœ‰åº”ç­”å’ŒOnRtnOrderï¼ŒæˆåŠŸä»…è¿”å›OnRtnOrderå›è°ƒã€‚
-    * @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-    * @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-    * @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-    * @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRtnInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief	¶©µ¥²Ù×÷Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+    * @details	ÏÂµ¥¡¢³·µ¥¡¢¸Äµ¥Ó¦´ğ¡£ÏÂµ¥¶¼»áÓĞ´ÎÓ¦´ğ»Øµ÷£¬Èç¹ûÏÂµ¥ÇëÇó½á¹¹ÖĞÃ»ÓĞÌîĞ´ºÏÔ¼»òÕß×Ê½ğÕËºÅ£¬Ôò½ö·µ»Ø´íÎóºÅ.
+    *     ³·µ¥¡¢¸Äµ¥´íÎóÓĞÓ¦´ğºÍOnRtnOrder£¬³É¹¦½ö·µ»ØOnRtnOrder»Øµ÷¡£
+    * @param[in] nRequestID ÇëÇóµÄ»á»°ID
+    * @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+    * @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+    * @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRtnInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
     *
     * @ingroup G_T_TradeActions
     */
     virtual void ES_CDECL OnRspOrderAction(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, const TapAPIOrderActionRsp *pRtnInfo);
     /**
-	* @brief è¿”å›æŸ¥è¯¢çš„å§”æ‰˜å˜åŒ–æµç¨‹ä¿¡æ¯
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pRspInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ·µ»Ø²éÑ¯µÄÎ¯ÍĞ±ä»¯Á÷³ÌĞÅÏ¢
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast ±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pRspInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeInfo
 	*/
 	virtual void ES_CDECL OnRspQryOrderProcess(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIOrderInfo *pRspInfo);
 	/**
-	* @brief æ¨é€æ¥çš„æˆäº¤ä¿¡æ¯
-	* @details ç”¨æˆ·çš„å§”æ‰˜æˆäº¤åå°†å‘ç”¨æˆ·æ¨é€æˆäº¤ä¿¡æ¯
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÍÆËÍÀ´µÄ³É½»ĞÅÏ¢
+	* @details ÓÃ»§µÄÎ¯ÍĞ³É½»ºó½«ÏòÓÃ»§ÍÆËÍ³É½»ĞÅÏ¢
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnFill(const TAPISTR_20 UserNo, const TapAPIFillInfo *pRtnInfo);
 	/**
-	* @brief æŒä»“å˜åŒ–æ¨é€é€šçŸ¥
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ³Ö²Ö±ä»¯ÍÆËÍÍ¨Öª
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnPosition(const TAPISTR_20 UserNo, const TapAPIPositionInfo *pRtnInfo);
 	/**
-	* @brief å¹³ä»“æ•°æ®å˜åŒ–æ¨é€(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief Æ½²ÖÊı¾İ±ä»¯ÍÆËÍ(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnClose(const TAPISTR_20 UserNo, const TapAPICloseInfo *pRtnInfo);
 	/**
-	* @brief æŒä»“ç›ˆäºé€šçŸ¥(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @note å¦‚æœä¸å…³æ³¨æ­¤é¡¹å†…å®¹ï¼Œå¯ä»¥è®¾å®šLoginæ—¶çš„NoticeIgnoreFlagä»¥å±è”½ã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ³Ö²ÖÓ¯¿÷Í¨Öª(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @note Èç¹û²»¹Ø×¢´ËÏîÄÚÈİ£¬¿ÉÒÔÉè¶¨LoginÊ±µÄNoticeIgnoreFlagÒÔÆÁ±Î¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnPositionProfit(const TAPISTR_20 UserNo, const TapAPIPositionProfitNotice *pRtnInfo);
 	/**
-	* @brief æ·±åº¦è¡Œæƒ…æŸ¥è¯¢åº”ç­”(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pRspInfo æŒ‡å‘è¿”å›çš„æ·±åº¦è¡Œæƒ…ä¿¡æ¯ç»“æ„ä½“ã€‚å½“nErrorCodeä¸ä¸º0æ—¶ï¼ŒpRspInfoä¸ºç©ºã€‚
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief Éî¶ÈĞĞÇé²éÑ¯Ó¦´ğ(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast ±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pRspInfo Ö¸Ïò·µ»ØµÄÉî¶ÈĞĞÇéĞÅÏ¢½á¹¹Ìå¡£µ±nErrorCode²»Îª0Ê±£¬pRspInfoÎª¿Õ¡£
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_DeepQuote
 	*/
 	virtual void ES_CDECL OnRspQryDeepQuote(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIDeepQuoteQryRsp *pRspInfo);
 	/**
-	* @brief äº¤æ˜“æ‰€æ—¶é—´çŠ¶æ€ä¿¡æ¯é€šçŸ¥(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[out] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ½»Ò×ËùÊ±¼ä×´Ì¬ĞÅÏ¢Í¨Öª(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[out] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeSystem
 	*/
 	virtual void ES_CDECL OnRtnExchangeStateInfo(const TAPISTR_20 UserNo, const TapAPIExchangeStateInfoNotice *pRtnInfo);
 	/**
-	* @brief è¯¢ä»·é€šçŸ¥(å¯æ˜æ˜Ÿã€åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief Ñ¯¼ÛÍ¨Öª(ÆôÃ÷ĞÇ¡¢±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
 	*/
 	virtual void ES_CDECL OnRtnReqQuoteNotice(const TAPISTR_20 UserNo, const TapAPIReqQuoteNotice *pRtnInfo);
 	/**
-	* @brief å®¢æˆ·æœ€ç»ˆè´¹ç‡åº”ç­”(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @details ä¿è¯é‡‘æ¯”ä¾‹è®¡ç®—æ–¹å¼ï¼šæ‰‹æ•°*æ¯æ‰‹ä¹˜æ•°*è®¡ç®—å‚æ•°*ä»·æ ¼
-	*          ä¿è¯é‡‘å®šé¢è®¡ç®—æ–¹å¼ï¼šæ‰‹æ•°*è®¡ç®—å‚æ•°
-	*          æ‰‹ç»­è´¹ç»å¯¹æ–¹å¼è®¡ç®—æ–¹å¼ï¼šæ‰‹æ•°*æŒ‰æ‰‹æ•°è®¡ç®—å‚æ•°+æ‰‹æ•°*æ¯æ‰‹ä¹˜æ•°*ä»·æ ¼*æŒ‰é‡‘é¢è®¡ç®—å‚æ•°
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pRspInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ¿Í»§×îÖÕ·ÑÂÊÓ¦´ğ(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @details ±£Ö¤½ğ±ÈÀı¼ÆËã·½Ê½£ºÊÖÊı*Ã¿ÊÖ³ËÊı*¼ÆËã²ÎÊı*¼Û¸ñ
+	*          ±£Ö¤½ğ¶¨¶î¼ÆËã·½Ê½£ºÊÖÊı*¼ÆËã²ÎÊı
+	*          ÊÖĞø·Ñ¾ø¶Ô·½Ê½¼ÆËã·½Ê½£ºÊÖÊı*°´ÊÖÊı¼ÆËã²ÎÊı+ÊÖÊı*Ã¿ÊÖ³ËÊı*¼Û¸ñ*°´½ğ¶î¼ÆËã²ÎÊı
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pRspInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_AccountRentInfo
 	*/
 	virtual void ES_CDECL OnRspAccountRentInfo(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIAccountRentInfo *pRspInfo);
 	/**
-	* @brief	äº¤æ˜“æ¶ˆæ¯æŸ¥è¯¢åº”ç­”
-	* @details	ç”¨æˆ·å¯ä»¥æŸ¥è¯¢ç›¸å…³çš„äº¤æ˜“æ¶ˆæ¯
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pRspInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief	½»Ò×ÏûÏ¢²éÑ¯Ó¦´ğ
+	* @details	ÓÃ»§¿ÉÒÔ²éÑ¯Ïà¹ØµÄ½»Ò×ÏûÏ¢
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pRspInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeSystem
 	*/
 	virtual void ES_CDECL OnRspTradeMessage(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPITradeMessage *pRspInfo);
     /**
-	* @brief	äº¤æ˜“æ¶ˆæ¯é€šçŸ¥
-	* @details	ç”¨æˆ·åœ¨äº¤æ˜“è¿‡ç¨‹ä¸­å¯èƒ½å› ä¸ºèµ„é‡‘ã€æŒä»“ã€å¹³ä»“çš„çŠ¶æ€å˜åŠ¨ä½¿è´¦æˆ·å¤„äºæŸäº›å±é™©çŠ¶æ€ï¼Œæˆ–è€…æŸäº›é‡è¦çš„ä¿¡æ¯éœ€è¦å‘ç”¨æˆ·é€šçŸ¥ã€‚
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pRtnInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRtnInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief	½»Ò×ÏûÏ¢Í¨Öª
+	* @details	ÓÃ»§ÔÚ½»Ò×¹ı³ÌÖĞ¿ÉÄÜÒòÎª×Ê½ğ¡¢³Ö²Ö¡¢Æ½²ÖµÄ×´Ì¬±ä¶¯Ê¹ÕË»§´¦ÓÚÄ³Ğ©Î£ÏÕ×´Ì¬£¬»òÕßÄ³Ğ©ÖØÒªµÄĞÅÏ¢ĞèÒªÏòÓÃ»§Í¨Öª¡£
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pRtnInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRtnInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeSystem
 	*/
 	virtual void ES_CDECL OnRtnTradeMessage(const TAPISTR_20 UserNo, const TapAPITradeMessage *pRtnInfo);
 	/**
-	* @brief å†å²å§”æ‰˜æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÀúÊ·Î¯ÍĞ²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_HisInfo
 	*/
 	virtual void ES_CDECL OnRspQryHisOrder(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIHisOrderQryRsp *pInfo);
 	/**
-	* @brief å†å²å§”æ‰˜æµç¨‹æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÀúÊ·Î¯ÍĞÁ÷³Ì²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_HisInfo
 	*/
 	virtual void ES_CDECL OnRspQryHisOrderProcess(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIHisOrderProcessQryRsp *pInfo);
 	/**
-	* @brief å†å²æˆäº¤æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÀúÊ·³É½»²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_HisInfo
 	*/
 	virtual void ES_CDECL OnRspQryHisFill(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIHisFillQryRsp *pInfo);
 	/**
-	* @brief å†å²æŒä»“æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÀúÊ·³Ö²Ö²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_HisInfo
 	*/
 	virtual void ES_CDECL OnRspQryHisPosition(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIHisPositionQryRsp *pInfo);
 	/**
-	* @brief å†å²äº¤å‰²æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ÀúÊ·½»¸î²éÑ¯Ó¦´ğ(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_HisInfo
 	*/
 	virtual void ES_CDECL OnRspQryHisDelivery(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIHisDeliveryQryRsp *pInfo);
 	/**
-	* @brief èµ„é‡‘è°ƒæ•´æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ×Ê½ğµ÷Õû²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_FundInfo
 	*/
 	virtual void ES_CDECL OnRspQryAccountCashAdjust(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIAccountCashAdjustQryRsp *pInfo);
 	/**
-	* @brief æŸ¥è¯¢ç”¨æˆ·è´¦å•åº”ç­”
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ²éÑ¯ÓÃ»§ÕËµ¥Ó¦´ğ
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_Bill
 	*/
 	virtual void ES_CDECL OnRspQryBill(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIBillQryRsp *pInfo);
 	/**
-	* @brief æŸ¥è¯¢ç”¨æˆ·æ‰‹ç»­è´¹å‚æ•°(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ²éÑ¯ÓÃ»§ÊÖĞø·Ñ²ÎÊı(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_AccountRentInfo
 	*/
 	virtual void ES_CDECL OnRspAccountFeeRent(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIAccountFeeRentQryRsp *pInfo);
 	/**
-	* @brief æŸ¥è¯¢ç”¨æˆ·ä¿è¯é‡‘å‚æ•°(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚çš„ä¼šè¯ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ²éÑ¯ÓÃ»§±£Ö¤½ğ²ÎÊı(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóµÄ»á»°ID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_AccountRentInfo
 	*/
 	virtual void ES_CDECL OnRspAccountMarginRent(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIAccountMarginRentQryRsp *pInfo);
 	/**
-	* @brief ç™»å½•ç”¨æˆ·æ‰‹æœºè®¾å¤‡å¢åŠ åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
-	* @operationtype å¼‚æ­¥æ“ä½œ
+	* @brief µÇÂ¼ÓÃ»§ÊÖ»úÉè±¸Ôö¼ÓÓ¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
+	* @operationtype Òì²½²Ù×÷
 	*
 	* @ingroup G_T_Cellphone
 	*/
 	virtual void ES_CDECL OnRspAddMobileDevice(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIMobileDeviceAddRsp *pInfo);
 	/**
-	* @brief ç®¡ç†æ—¥å¿—æŸ¥è¯¢(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
-	* @operationtype å¼‚æ­¥æ“ä½œ
+	* @brief ¹ÜÀíÈÕÖ¾²éÑ¯(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
+	* @operationtype Òì²½²Ù×÷
 	*
 	* @ingroup G_T_Cellphone
 	*/
 	virtual void ES_CDECL OnRspQryManageInfoForEStar(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIManageInfo *pInfo);
 	/**
-	* @brief ç³»ç»Ÿå‚æ•°æŸ¥è¯¢(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
-	* @operationtype å¼‚æ­¥æ“ä½œ
+	* @brief ÏµÍ³²ÎÊı²éÑ¯(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
+	* @operationtype Òì²½²Ù×÷
 	*
 	* @ingroup G_T_Cellphone
 	*/
 	virtual void ES_CDECL OnRspQrySystemParameter(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPISystemParameterInfo *pInfo);
 	/**
-	* @brief äº¤æ˜“ä¸­å¿ƒå‰ç½®åœ°å€ä¿¡æ¯æŸ¥è¯¢(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo ç™»å½•ç”¨æˆ·UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo		æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
-	* @operationtype å¼‚æ­¥æ“ä½œ
+	* @brief ½»Ò×ÖĞĞÄÇ°ÖÃµØÖ·ĞÅÏ¢²éÑ¯(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo µÇÂ¼ÓÃ»§UserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo		Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
+	* @operationtype Òì²½²Ù×÷
 	*
 	* @ingroup G_T_Cellphone
 	*/
 	virtual void ES_CDECL OnRspQryTradeCenterFrontAddress(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPITradeCenterFrontAddressInfo *pInfo);
 	/**
-	* @brief å“ç§ä¿¡æ¯é€šçŸ¥(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief Æ·ÖÖĞÅÏ¢Í¨Öª(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_Commodity
 	*/
 	virtual void ES_CDECL OnRtnCommodityInfo(const TAPISTR_20 UserNo, const TapAPICommodityInfo *pInfo);
 	/**
-	* @brief å¸ç§ä¿¡æ¯é€šçŸ¥(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+	* @brief ±ÒÖÖĞÅÏ¢Í¨Öª(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeSystem
 	*/
 	virtual void ES_CDECL OnRtnCurrencyInfo(const TAPISTR_20 UserNo, const TapAPICurrencyInfo *pInfo);
     /**
-    * @brief å®¢æˆ·ç°è´§åº“å­˜æŸ¥è¯¢åº”ç­”(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§ÏÖ»õ¿â´æ²éÑ¯Ó¦´ğ(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
     */
     virtual void ES_CDECL OnRspQryAccountStorage(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPIAccountStorageInfo* pInfo);
     /**
-    * @brief å®¢æˆ·ç°è´§åº“å­˜é€šçŸ¥(å¯æ˜æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§ÏÖ»õ¿â´æÍ¨Öª(ÆôÃ÷ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
     */
     virtual void ES_CDECL OnRtnAccountStorage(const TAPISTR_20 UserNo, const TapAPIAccountStorageInfo* pInfo);
     /**
-    * @brief å®¢æˆ·ç°è´§é”å®šé‡æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§ÏÖ»õËø¶¨Á¿²éÑ¯Ó¦´ğ(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
     */
     virtual void ES_CDECL OnRspQrySpotLock(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPISpotLockInfo* pInfo);
     /**
-    * @brief å®¢æˆ·ç°è´§é”å®šé‡é€šçŸ¥(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§ÏÖ»õËø¶¨Á¿Í¨Öª(±±¶·ĞÇ×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions
     */
     virtual void ES_CDECL OnRtnSpotLock(const TAPISTR_20 UserNo, const TapAPISpotLockInfo* pInfo);
     /**
-    * @brief	ç‰¹æ®Šä¸šåŠ¡å§”æ‰˜æ“ä½œåº”ç­”(ETFä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-    * @details	ç‰¹æ®Šä¸šåŠ¡æ“ä½œéƒ½ä¼šæœ‰æ¬¡åº”ç­”å›è°ƒï¼ŒsessionIDæ ‡è¯†è¯·æ±‚å¯¹åº”çš„sessionIDï¼Œä»¥ä¾¿ç¡®å®šè¯¥ç¬”åº”ç­”å¯¹åº”çš„è¯·æ±‚ã€‚
-    * @param[in] sessionID è¯·æ±‚çš„ä¼šè¯ID
-    * @param[in] errorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-    * @param[in] pRtnInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-    * @attention ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRtnInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief	ÌØÊâÒµÎñÎ¯ÍĞ²Ù×÷Ó¦´ğ(ETF×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+    * @details	ÌØÊâÒµÎñ²Ù×÷¶¼»áÓĞ´ÎÓ¦´ğ»Øµ÷£¬sessionID±êÊ¶ÇëÇó¶ÔÓ¦µÄsessionID£¬ÒÔ±ãÈ·¶¨¸Ã±ÊÓ¦´ğ¶ÔÓ¦µÄÇëÇó¡£
+    * @param[in] sessionID ÇëÇóµÄ»á»°ID
+    * @param[in] errorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+    * @param[in] pRtnInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+    * @attention ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRtnInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
     * @ingroup G_T_ETF
     */
     virtual void ES_CDECL OnRspSpecialOrderAction(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, const TapAPISpecialOrderInfo *pRtnInfo);
     /**
-    * @brief å®¢æˆ·ç‰¹æ®Šä¸šåŠ¡å§”æ‰˜é€šçŸ¥(ETFä¸“ç”¨)
- 	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-    * @param[in] nRequestID è¯·æ±‚ID
-    * @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-    * @param[out] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-    * @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§ÌØÊâÒµÎñÎ¯ÍĞÍ¨Öª(ETF×¨ÓÃ)
+ 	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+    * @param[in] nRequestID ÇëÇóID
+    * @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+    * @param[out] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+    * @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
     * @ingroup G_T_ETF
     */
     virtual void ES_CDECL OnRtnSpecialOrder(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, const TapAPISpecialOrderInfo* pInfo);
     /**
-    * @brief å®¢æˆ·ç»„åˆæŒä»“é€šçŸ¥(ETFä¸“ç”¨)
-	* @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[out] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¿Í»§×éºÏ³Ö²ÖÍ¨Öª(ETF×¨ÓÃ)
+	* @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[out] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_ETF
     */
     virtual void ES_CDECL OnRtnCombinePosition(const TAPISTR_20 UserNo, const TapAPICombinePositionInfo* pInfo);
     /**
-    * @brief äº¤æ˜“åˆçº¦è¡Œæƒ…ä¿¡æ¯é€šçŸ¥(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[out] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ½»Ò×ºÏÔ¼ĞĞÇéĞÅÏ¢Í¨Öª(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[out] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_TradeActions 
     */
     virtual void ES_CDECL OnRtnContractQuote(const TAPISTR_20 UserNo, const TapAPIContractQuoteInfo* pInfo);
     /**
-    * @brief ç”¨æˆ·ä¿¡ä»»è®¾å¤‡æŸ¥è¯¢åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ÓÃ»§ĞÅÈÎÉè±¸²éÑ¯Ó¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_UserInfo
     */
     virtual void ES_CDECL OnRspQryTrustDevice(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPITrustDeviceInfo* pInfo);
     /**
-    * @brief ç”¨æˆ·ä¿¡ä»»è®¾å¤‡å¢åŠ åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ÓÃ»§ĞÅÈÎÉè±¸Ôö¼ÓÓ¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_UserInfo
     */
     virtual void ES_CDECL OnRspAddTrustDevice(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPITrustDeviceAddRsp* pInfo);
     /**
-    * @brief ç”¨æˆ·ä¿¡ä»»è®¾å¤‡åˆ é™¤åº”ç­”(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-	* @param[in] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[in] nRequestID è¯·æ±‚ID
-	* @param[in] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-	* @param[in] isLast 	æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-	* @param[in] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ÓÃ»§ĞÅÈÎÉè±¸É¾³ıÓ¦´ğ(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+	* @param[in] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[in] nRequestID ÇëÇóID
+	* @param[in] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+	* @param[in] isLast 	±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+	* @param[in] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_UserInfo
     */
     virtual void ES_CDECL OnRspDelTrustDevice(const TAPISTR_20 UserNo, TAPIUINT32 nRequestID, TAPIINT32 nErrorCode, TAPIYNFLAG isLast, const TapAPITrustDeviceDelRsp* pInfo);
     /**
-    * @brief ç”¨æˆ·æƒé™å¢åŠ é€šçŸ¥(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[out] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ÓÃ»§È¨ÏŞÔö¼ÓÍ¨Öª(±±¶·ĞÇ×¨ÓÃ)
+	* @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[out] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_UserInfo 
     */
     virtual void ES_CDECL OnRtnAddUserRight(const TAPISTR_20 UserNo, const TapAPIUserRightInfo* pInfo);
     /**
-    * @brief ç”¨æˆ·æƒé™åˆ é™¤é€šçŸ¥(åŒ—æ–—æ˜Ÿä¸“ç”¨)
-	* @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-	* @param[out] pInfo	æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ÓÃ»§È¨ÏŞÉ¾³ıÍ¨Öª(±±¶·ĞÇ×¨ÓÃ)
+	* @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+	* @param[out] pInfo	Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
 	*
 	* @ingroup G_T_UserInfo 
     */
     virtual void ES_CDECL OnRtnDelUserRight(const TAPISTR_20 UserNo, const TapAPIUserRightInfo* pInfo);
     /**
-    * @brief æŸœå°é…ç½®æ–‡ä»¶æŸ¥è¯¢åº”ç­”ç»“æ„(åŒ—æ–—æ˜Ÿã€è‚¡ç¥¨ä¸“ç”¨)
-    * @param[out] UserNo æŒ‡å‘è¯¥ä¿¡æ¯å¯¹åº”çš„UserNo
-    * @param[out] nRequestID è¯·æ±‚ID
-    * @param[out] nErrorCode é”™è¯¯ç ã€‚0 è¡¨ç¤ºæˆåŠŸ
-    * @param[out] isLast æ ‡ç¤ºæ˜¯å¦æ˜¯æœ€åä¸€æ‰¹æ•°æ®
-    * @param[out] pInfo æŒ‡å‘è¿”å›çš„ä¿¡æ¯ç»“æ„ä½“
-	* @attention  ä¸è¦ä¿®æ”¹å’Œåˆ é™¤pRspInfoæ‰€æŒ‡ç¤ºçš„æ•°æ®ï¼›å‡½æ•°è°ƒç”¨ç»“æŸï¼Œå‚æ•°ä¸å†æœ‰æ•ˆã€‚
+    * @brief ¹ñÌ¨ÅäÖÃÎÄ¼ş²éÑ¯Ó¦´ğ½á¹¹(±±¶·ĞÇ¡¢¹ÉÆ±×¨ÓÃ)
+    * @param[out] UserNo Ö¸Ïò¸ÃĞÅÏ¢¶ÔÓ¦µÄUserNo
+    * @param[out] nRequestID ÇëÇóID
+    * @param[out] nErrorCode ´íÎóÂë¡£0 ±íÊ¾³É¹¦
+    * @param[out] isLast ±êÊ¾ÊÇ·ñÊÇ×îºóÒ»ÅúÊı¾İ
+    * @param[out] pInfo Ö¸Ïò·µ»ØµÄĞÅÏ¢½á¹¹Ìå
+	* @attention  ²»ÒªĞŞ¸ÄºÍÉ¾³ıpRspInfoËùÖ¸Ê¾µÄÊı¾İ£»º¯Êıµ÷ÓÃ½áÊø£¬²ÎÊı²»ÔÙÓĞĞ§¡£
     * 
 	* @ingroup G_T_TradeSystem
     */
@@ -719,7 +719,7 @@ public:
 
 
     //-------------------------------------------------------------------------------------
-    //taskï¼šä»»åŠ¡
+    //task£ºÈÎÎñ
     //-------------------------------------------------------------------------------------
 
 	void processTask();
@@ -839,11 +839,11 @@ public:
 
 
     //-------------------------------------------------------------------------------------
-    //dataï¼šå›è°ƒå‡½æ•°çš„æ•°æ®å­—å…¸
-    //errorï¼šå›è°ƒå‡½æ•°çš„é”™è¯¯å­—å…¸
-    //idï¼šè¯·æ±‚id
-    //lastï¼šæ˜¯å¦ä¸ºæœ€åè¿”å›
-    //iï¼šæ•´æ•°
+    //data£º»Øµ÷º¯ÊıµÄÊı¾İ×Öµä
+    //error£º»Øµ÷º¯ÊıµÄ´íÎó×Öµä
+    //id£ºÇëÇóid
+    //last£ºÊÇ·ñÎª×îºó·µ»Ø
+    //i£ºÕûÊı
     //-------------------------------------------------------------------------------------
     
     virtual void onConnect(string UserNo) {};
@@ -961,7 +961,7 @@ public:
 
 
     //-------------------------------------------------------------------------------------
-    //req:ä¸»åŠ¨å‡½æ•°çš„è¯·æ±‚å­—å…¸
+    //req:Ö÷¶¯º¯ÊıµÄÇëÇó×Öµä
     //-------------------------------------------------------------------------------------
 	void createEsTradeAPI(int nResult);
 
