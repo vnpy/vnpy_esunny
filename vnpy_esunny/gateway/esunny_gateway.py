@@ -150,7 +150,7 @@ contract_infos: Dict[Tuple[str, "Exchange"], "ContractInfo"] = {}
 
 class EsunnyGateway(BaseGateway):
     """
-    vn.py用于对接易盛柜台的交易接口。
+    VeighNa用于对接易盛柜台的交易接口。
     """
 
     default_name: str = "ESUNNY"
@@ -671,8 +671,6 @@ class EsTradeApi(TdApi):
 
         self.userno = username
 
-        self.init()
-
         # 创建API
         self.createEsTradeAPI(0)
 
@@ -680,6 +678,8 @@ class EsTradeApi(TdApi):
         path: Path = get_folder_path(self.gateway_name.lower())
         self.setEsTradeAPIDataPath(str(path).encode("GBK"))
         self.setEsTradeAPILogLevel(TDLOGLEVEL_VT2ES["APILOGLEVEL_ERROR"])
+
+        self.init()
 
         # 设置用户信息
         user_data: dict = {
