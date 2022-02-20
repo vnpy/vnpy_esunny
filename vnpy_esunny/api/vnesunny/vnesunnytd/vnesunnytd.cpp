@@ -1,11 +1,11 @@
 
-// vnesunnytd.cpp : ¶¨Òå DLL Ó¦ÓÃ³ÌÐòµÄµ¼³öº¯Êý¡£
+// vnesunnytd.cpp : ï¿½ï¿½ï¿½ï¿½ DLL Ó¦ï¿½Ã³ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //
 
 #include "vnesunnytd.h"
 
 ///-------------------------------------------------------------------------------------
-///C++µÄ»Øµ÷º¯Êý½«Êý¾Ý±£´æµ½¶ÓÁÐÖÐ
+///C++ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½æµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ///-------------------------------------------------------------------------------------
 
 void TdApi::OnConnect(const TAPISTR_20 UserNo)
@@ -861,7 +861,7 @@ void TdApi::OnRtnCurrencyInfo(const TAPISTR_20 UserNo, const TapAPICurrencyInfo 
 
 
 ///-------------------------------------------------------------------------------------
-///¹¤×÷Ïß³Ì´Ó¶ÓÁÐÖÐÈ¡³öÊý¾Ý£¬×ª»¯Îªpython¶ÔÏóºó£¬½øÐÐÍÆËÍ
+///ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì´Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½×ªï¿½ï¿½Îªpythonï¿½ï¿½ï¿½ï¿½ó£¬½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ///-------------------------------------------------------------------------------------
 
 void TdApi::processTask()
@@ -2882,13 +2882,13 @@ void TdApi::processRspQryManagerConfigFile(Task *task)
 
 
 ///-------------------------------------------------------------------------------------
-///Ö÷¶¯º¯Êý
+///ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ///-------------------------------------------------------------------------------------
 
 void TdApi::createEsTradeAPI(int nResult)
 {
-	this->api = (IEsTradeAPI*)CreateEsTradeAPI(nResult); // ´´½¨API½Ó¿Ú¶ÔÏó
-	this->api->SetAPINotify(this);  //×¢²á»Øµ÷º¯Êý¶ÔÏó
+	this->api = (IEsTradeAPI*)CreateEsTradeAPI(nResult); // ï¿½ï¿½ï¿½ï¿½APIï¿½Ó¿Ú¶ï¿½ï¿½ï¿½
+	this->api->SetAPINotify(this);  //×¢ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 };
 
 void TdApi::release()
@@ -2968,6 +2968,7 @@ int TdApi::setBackUpAddress(string UserNo, const dict &req)
 	getString(req, "LoginIP", myreq.LoginIP);
 	getUnsignedInt(req, "LoginPort", &myreq.LoginPort);
 	int i = this->api->SetBackUpAddress((char*)UserNo.c_str(), &myreq);
+	return i;
 }
 
 pybind11::tuple TdApi::requestVerifyIdentity(string UserNo, const dict &req, TAPIUINT32 nRequestID)
@@ -3379,7 +3380,7 @@ pybind11::tuple TdApi::qryManagerConfigFile(string UserNo, const dict &req, TAPI
 };
 
 ///-------------------------------------------------------------------------------------
-///Boost.Python·â×°
+///Boost.Pythonï¿½ï¿½×°
 ///-------------------------------------------------------------------------------------
 
 class PyTdApi : public TdApi
