@@ -14,17 +14,17 @@ using namespace std;
 using namespace pybind11;
 
 
-//ÈÎÎñ½á¹¹Ìå
+//ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
 struct Task
 {
-    int task_name;		//»Øµ÷º¯ÊýÃû³Æ¶ÔÓ¦µÄ³£Á¿
-    void *task_data;	//Êý¾ÝÖ¸Õë
-    int task_error;	//´íÎóÖ¸Õë
-	unsigned int task_id;		//ÇëÇóid
-    char task_last;		//ÊÇ·ñÎª×îºó·µ»Ø
+    int task_name;		//ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ó¦ï¿½Ä³ï¿½ï¿½ï¿½
+    void *task_data;	//ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+    int task_error;	//ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+	unsigned int task_id;		//ï¿½ï¿½ï¿½ï¿½id
+    char task_last;		//ï¿½Ç·ï¿½Îªï¿½ï¿½ó·µ»ï¿½
 
-	int task_int; // ÆäËûint ÇëÇó
-	string task_string; // ÆäËû stringÇëÇó
+	int task_int; // ï¿½ï¿½ï¿½ï¿½int ï¿½ï¿½ï¿½ï¿½
+	string task_string; // ï¿½ï¿½ï¿½ï¿½ stringï¿½ï¿½ï¿½ï¿½
 	void *task_extra;
 };
 
@@ -34,75 +34,76 @@ class TerminatedError : std::exception
 class TaskQueue
 {
 private:
-    queue<Task> queue_;						//±ê×¼¿â¶ÓÁÐ
-    mutex mutex_;							//»¥³âËø
-    condition_variable cond_;				//Ìõ¼þ±äÁ¿
+    queue<Task> queue_;						//ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    mutex mutex_;							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    condition_variable cond_;				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     bool _terminate = false;
 
 public:
 
-    //´æÈëÐÂµÄÈÎÎñ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½
     void push(const Task &task)
     {
         unique_lock<mutex > mlock(mutex_);
-        queue_.push(task);					//Ïò¶ÓÁÐÖÐ´æÈëÊý¾Ý
-        mlock.unlock();						//ÊÍ·ÅËø
-        cond_.notify_one();					//Í¨ÖªÕýÔÚ×èÈûµÈ´ýµÄÏß³Ì
+        queue_.push(task);					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        mlock.unlock();						//ï¿½Í·ï¿½ï¿½ï¿½
+        cond_.notify_one();					//Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½ß³ï¿½
     }
 
-    //È¡³öÀÏµÄÈÎÎñ
+    //È¡ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½
     Task pop()
     {
         unique_lock<mutex> mlock(mutex_);
         cond_.wait(mlock, [&]() {
             return !queue_.empty() || _terminate;
-        });				//µÈ´ýÌõ¼þ±äÁ¿Í¨Öª
+        });				//ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
         if (_terminate)
             throw TerminatedError();
-        Task task = queue_.front();			//»ñÈ¡¶ÓÁÐÖÐµÄ×îºóÒ»¸öÈÎÎñ
-        queue_.pop();						//É¾³ý¸ÃÈÎÎñ
-        return task;						//·µ»Ø¸ÃÈÎÎñ
+        Task task = queue_.front();			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        queue_.pop();						//É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        return task;						//ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
     void terminate()
     {
         _terminate = true;
-        cond_.notify_all();					//Í¨ÖªÕýÔÚ×èÈûµÈ´ýµÄÏß³Ì
+        cond_.notify_all();					//Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½ß³ï¿½
     }
 };
 
 
-//´Ó×ÖµäÖÐ»ñÈ¡Ä³¸ö½¨Öµ¶ÔÓ¦µÄÕûÊý£¬²¢¸³Öµµ½ÇëÇó½á¹¹Ìå¶ÔÏóµÄÖµÉÏ
+//ï¿½ï¿½ï¿½Öµï¿½ï¿½Ð»ï¿½È¡Ä³ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
 void getInt(const dict &d, const char *key, int *value)
 {
-    if (d.contains(key))		//¼ì²é×ÖµäÖÐÊÇ·ñ´æÔÚ¸Ã¼üÖµ
+    if (d.contains(key))		//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ú¸Ã¼ï¿½Öµ
     {
-        object o = d[key];		//»ñÈ¡¸Ã¼üÖµ
+        object o = d[key];		//ï¿½ï¿½È¡ï¿½Ã¼ï¿½Öµ
         *value = o.cast<int>();
     }
 };
 
 void getUnsignedInt(const dict &d, const char *key, unsigned int *value)
 {
-	if (d.contains(key))		//¼ì²é×ÖµäÖÐÊÇ·ñ´æÔÚ¸Ã¼üÖµ
+	if (d.contains(key))		//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ú¸Ã¼ï¿½Öµ
 	{
-		object o = d[key];		//»ñÈ¡¸Ã¼üÖµ
+		object o = d[key];		//ï¿½ï¿½È¡ï¿½Ã¼ï¿½Öµ
 		*value = o.cast<unsigned int>();
 	}
 };
 
 void getUnsignedChar(const dict &d, const char *key, unsigned char *value)
 {
-	if (d.contains(key))		//¼ì²é×ÖµäÖÐÊÇ·ñ´æÔÚ¸Ã¼üÖµ
+	if (d.contains(key))		//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ú¸Ã¼ï¿½Öµ
 	{
-		object o = d[key];		//»ñÈ¡¸Ã¼üÖµ
-		*value = o.cast<unsigned char>();
+		object o = d[key];		//ï¿½ï¿½È¡ï¿½Ã¼ï¿½Öµ
+        char c = o.cast<char>();
+		*value = (unsigned char)c;
 	}
 };
 
 
-//´Ó×ÖµäÖÐ»ñÈ¡Ä³¸ö½¨Öµ¶ÔÓ¦µÄ¸¡µãÊý£¬²¢¸³Öµµ½ÇëÇó½á¹¹Ìå¶ÔÏóµÄÖµÉÏ
+//ï¿½ï¿½ï¿½Öµï¿½ï¿½Ð»ï¿½È¡Ä³ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
 void getDouble(const dict &d, const char *key, double *value)
 {
     if (d.contains(key))
@@ -113,7 +114,7 @@ void getDouble(const dict &d, const char *key, double *value)
 };
 
 
-//´Ó×ÖµäÖÐ»ñÈ¡Ä³¸ö½¨Öµ¶ÔÓ¦µÄ×Ö·û£¬²¢¸³Öµµ½ÇëÇó½á¹¹Ìå¶ÔÏóµÄÖµÉÏ
+//ï¿½ï¿½ï¿½Öµï¿½ï¿½Ð»ï¿½È¡Ä³ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
 void getChar(const dict &d, const char *key, char *value)
 {
     if (d.contains(key))
@@ -127,7 +128,7 @@ void getChar(const dict &d, const char *key, char *value)
 template <size_t size>
 using string_literal = char[size];
 
-//´Ó×ÖµäÖÐ»ñÈ¡Ä³¸ö½¨Öµ¶ÔÓ¦µÄ×Ö·û´®£¬²¢¸³Öµµ½ÇëÇó½á¹¹Ìå¶ÔÏóµÄÖµÉÏ
+//ï¿½ï¿½ï¿½Öµï¿½ï¿½Ð»ï¿½È¡Ä³ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
 template <size_t size>
 void getString(const pybind11::dict &d, const char *key, string_literal<size> &value)
 {
@@ -140,7 +141,7 @@ void getString(const pybind11::dict &d, const char *key, string_literal<size> &v
     }
 };
 
-//½«GBK±àÂëµÄ×Ö·û´®×ª»»ÎªUTF8
+//ï¿½ï¿½GBKï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½ÎªUTF8
 inline string toUtf(const string &gb2312)
 {
 #ifdef _MSC_VER

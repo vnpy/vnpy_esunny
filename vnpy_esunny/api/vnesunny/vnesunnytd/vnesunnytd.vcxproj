@@ -83,8 +83,8 @@
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <OutDir>$(SolutionDir)..\</OutDir>
-    <LibraryPath>C:\vnstudio\libs;$(SolutionDir)..\libs;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir);C:\vnstudio\include;$(SolutionDir)..\include\esunny;$(SolutionDir)..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\veighna_studio\libs;$(SolutionDir)..\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);C:\veighna_studio\include;$(SolutionDir)..\include\esunny;$(SolutionDir)..\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -157,7 +157,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\libs;C:\vnstudio\libs;$(SolutionDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs;C:\veighna_studio\libs;$(SolutionDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>TapDataCollectAPI.lib;EsTdAPI.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
