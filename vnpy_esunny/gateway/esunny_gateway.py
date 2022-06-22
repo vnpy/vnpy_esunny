@@ -501,6 +501,7 @@ class QuoteApi(MdApi):
         """关闭连接"""
         if self.connect_status:
             self.disconnect()
+            self.exit()
 
 
 class EsTradeApi(TdApi):
@@ -791,6 +792,7 @@ class EsTradeApi(TdApi):
         """关闭连接"""
         if self.connect_status:
             self.stopUser(self.userno)
+            self.exit()
 
 
 def generate_datetime(timestamp: str) -> datetime:
