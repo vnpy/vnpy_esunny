@@ -167,7 +167,7 @@ class EsunnyGateway(BaseGateway):
         "交易端口": 0,
         "交易产品名称": "",
         "交易授权编码": "",
-        "交易系统":["内盘","外盘"]
+        "交易系统": ["内盘", "外盘"]
     }
 
     exchanges: List[str] = list(EXCHANGE_VT2ES.keys())
@@ -193,9 +193,9 @@ class EsunnyGateway(BaseGateway):
         trade_appid: str = setting["交易产品名称"]
         trade_authcode: str = setting["交易授权编码"]
         if setting["交易系统"] == "内盘":
-            systype = 1
+            systype: int = 1
         else:
-            systype = 2
+            systype: int = 2
 
         self.md_api.connect(
             quote_username,
@@ -319,7 +319,7 @@ class QuoteApi(MdApi):
             commodity_no=data["CommodityNo"],
             exchange_no=data["ExchangeNo"]
         )
-        
+
         if commodity_info.commodity_no == "AU(T+D)":
             commodity_info.size = 1000
         elif commodity_info.commodity_no == "AG(T+D)":
@@ -357,7 +357,7 @@ class QuoteApi(MdApi):
             symbol: str = data["CommodityNo"] + data["ContractNo1"]
             product: Product = PRODUCT_TYPE_ES2VT[data["CommodityType"]]
 
-            contract = ContractData(
+            contract: ContractData = ContractData(
                 symbol=symbol,
                 exchange=exchange,
                 name=symbol,
@@ -559,9 +559,9 @@ class EsTradeApi(TdApi):
         """持仓更新推送"""
         # 生成合约代码
         if data["ExchangeNo"] == "SGE":
-            symbol = data["CommodityNo"]
+            symbol: str = data["CommodityNo"]
         else:
-            symbol = data["CommodityNo"] + data["ContractNo"]
+            symbol: str = data["CommodityNo"] + data["ContractNo"]
 
         # 缓存持仓明细
         key: tuple = (symbol, data["MatchSide"])
@@ -596,7 +596,7 @@ class EsTradeApi(TdApi):
 
     def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
         """委托更新推送"""
-        type = ORDERTYPE_ES2VT.get(data["OrderType"], None)
+        type: OrderType = ORDERTYPE_ES2VT.get(data["OrderType"], None)
         if not type:
             self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
             return
@@ -613,9 +613,9 @@ class EsTradeApi(TdApi):
         self.sys_local_map[data["OrderNo"]] = data["RefString"]
 
         if data["ExchangeNo"] == "SGE":
-            symbol = data["CommodityNo"]
+            symbol: str = data["CommodityNo"]
         else:
-            symbol = data["CommodityNo"] + data["ContractNo"]
+            symbol: str = data["CommodityNo"] + data["ContractNo"]
 
         order: OrderData = OrderData(
             symbol=symbol,
@@ -638,9 +638,9 @@ class EsTradeApi(TdApi):
         orderid: str = self.sys_local_map[data["OrderNo"]]
 
         if data["ExchangeNo"] == "SGE":
-            symbol = data["CommodityNo"]
+            symbol: str = data["CommodityNo"]
         else:
-            symbol = data["CommodityNo"] + data["ContractNo"]
+            symbol: str = data["CommodityNo"] + data["ContractNo"]
 
         trade: TradeData = TradeData(
             symbol=symbol,
@@ -684,7 +684,7 @@ class EsTradeApi(TdApi):
 
         # 设置用户信息
         user_data: dict = {
-            "SystemType": systype,             
+            "SystemType": systype,
             "UserNo": self.userno,
             "LoginIP": host,
             "LoginPort": port,
@@ -708,7 +708,7 @@ class EsTradeApi(TdApi):
     def send_order(self, req: OrderRequest) -> str:
         """委托下单"""
         # 验证是否能找到匹配的合约
-        valid = True
+        valid: bool = True
 
         if req.exchange == Exchange.SGE:
             key: tuple = ("SGE", req.symbol, "Y")
@@ -799,13 +799,13 @@ def generate_datetime(timestamp: str) -> datetime:
     """生成时间戳"""
     if "-" in timestamp:
         if "." in timestamp:
-            dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+            dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
         else:
-            dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+            dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     else:
-        dt = datetime.strptime(timestamp, "%y%m%d%H%M%S.%f")
+        dt: datetime = datetime.strptime(timestamp, "%y%m%d%H%M%S.%f")
 
-    dt = CHINA_TZ.localize(dt)
+    dt: datetime = CHINA_TZ.localize(dt)
     return dt
 
 
