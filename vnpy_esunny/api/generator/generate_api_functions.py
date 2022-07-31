@@ -93,7 +93,7 @@ class ApiGenerator:
             elif "virtual TAPIINT32 TAP_CDECL Qry" in line:
                 self.process_function(line)
         elif self.name == "td":
-            if "virtual void ES_CDECL On" in line: 
+            if "virtual void ES_CDECL On" in line:
                 self.process_callback(line)
             elif "virtual TAPIINT32 ES_CDECL Qry" in line:
                 self.process_function(line)
@@ -277,10 +277,10 @@ class ApiGenerator:
                         f.write("\t{\n")
                         f.write(f"\t\t{type_} *task_data = new {type_}();\n")
                         f.write(f"\t\t*task_data = *{field};\n")
-                        f.write(f"\t\ttask.task_data = task_data;\n")
+                        f.write("\t\ttask.task_data = task_data;\n")
                         f.write("\t}\n")
 
-                f.write(f"\tthis->task_queue.push(task);\n")
+                f.write("\tthis->task_queue.push(task);\n")
                 f.write("};\n\n")
 
     def generate_source_switch(self):
@@ -292,7 +292,7 @@ class ApiGenerator:
                 f.write(f"case {name.upper()}:\n")
                 f.write("{\n")
                 f.write(f"\tthis->{process_name}(&task);\n")
-                f.write(f"\tbreak;\n")
+                f.write("\tbreak;\n")
                 f.write("}\n\n")
 
     def generate_source_process(self):
@@ -420,7 +420,7 @@ class ApiGenerator:
                 f.write("\t}\n")
                 f.write("\tcatch (const error_already_set &e)\n")
                 f.write("\t{\n")
-                f.write(f"\t\tcout << e.what() << endl;\n")
+                f.write("\t\tcout << e.what() << endl;\n")
                 f.write("\t}\n")
                 f.write("};\n\n")
 

@@ -1278,6 +1278,3 @@ TapAPIManagerConfigFileQryRsp = {
     "ManagerConfigFileLen": "int",
     "ManagerConfigFileText": "char",
 }
-
-#} 删除1282行
-
