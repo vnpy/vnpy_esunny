@@ -1,7 +1,7 @@
 import platform
 
 from setuptools import Extension, setup
-
+import pybind11
 
 def get_ext_modules() -> list:
     """
@@ -35,7 +35,8 @@ def get_ext_modules() -> list:
             "vnpy_esunny/api/vnesunny/vnesunnymd/vnesunnymd.cpp",
         ],
         include_dirs=["vnpy_esunny/api/include",
-                      "vnpy_esunny/api/vnesunny"],
+                      "vnpy_esunny/api/vnesunny",
+                      pybind11.get_include()],
         define_macros=[],
         undef_macros=[],
         library_dirs=["vnpy_esunny/api/libs", "vnpy_esunny/api"],
@@ -53,7 +54,8 @@ def get_ext_modules() -> list:
             "vnpy_esunny/api/vnesunny/vnesunnytd/vnesunnytd.cpp",
         ],
         include_dirs=["vnpy_esunny/api/include",
-                      "vnpy_esunny/api/vnesunny"],
+                      "vnpy_esunny/api/vnesunny",
+                      pybind11.get_include()],
         define_macros=[],
         undef_macros=[],
         library_dirs=["vnpy_esunny/api/libs", "vnpy_esunny/api"],
