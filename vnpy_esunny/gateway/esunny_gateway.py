@@ -143,8 +143,8 @@ HEDGETYPE_VT2ES: dict[str, str] = {
 CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
 
 # 合约数据全局缓存字典
-commodity_infos: dict[str, "CommodityInfo"] = {}
-contract_infos: dict[tuple[str, "Exchange"], "ContractInfo"] = {}
+commodity_infos: dict[tuple[str, str, str], "CommodityInfo"] = {}
+contract_infos: dict[tuple[str, Exchange], "ContractInfo"] = {}
 
 
 class EsunnyGateway(BaseGateway):
@@ -169,7 +169,7 @@ class EsunnyGateway(BaseGateway):
         "交易系统": ["内盘", "外盘"]
     }
 
-    exchanges: list[str] = list(EXCHANGE_VT2ES.keys())
+    exchanges: list[Exchange] = list(EXCHANGE_VT2ES.keys())
 
     def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
@@ -194,7 +194,7 @@ class EsunnyGateway(BaseGateway):
         if setting["交易系统"] == "内盘":
             systype: int = 1
         else:
-            systype: int = 2
+            systype = 2
 
         self.md_api.connect(
             quote_username,
@@ -344,9 +344,9 @@ class QuoteApi(MdApi):
             return
 
         # 检查是否支持该合约
-        exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], None)
+        exchange: Exchange | None = EXCHANGE_ES2VT.get(data["ExchangeNo"], None)
         key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
-        commodity_info: CommodityInfo = commodity_infos.get(key, None)
+        commodity_info: CommodityInfo | None = commodity_infos.get(key, None)
 
         if not data or not exchange or not commodity_info:
             return
@@ -386,9 +386,9 @@ class QuoteApi(MdApi):
             return
 
         if data["ContractNo1"]:
-            symbol: str = data["CommodityNo"] + data["ContractNo1"]
+            symbol = data["CommodityNo"] + data["ContractNo1"]
         else:
-            symbol: str = data["CommodityNo"]
+            symbol = data["CommodityNo"]
         exchange: Exchange = EXCHANGE_ES2VT[data["ExchangeNo"]]
 
         tick: TickData = TickData(
@@ -560,7 +560,7 @@ class EsTradeApi(TdApi):
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
         else:
-            symbol: str = data["CommodityNo"] + data["ContractNo"]
+            symbol = data["CommodityNo"] + data["ContractNo"]
 
         # 缓存持仓明细
         key: tuple = (symbol, data["MatchSide"])
@@ -595,8 +595,8 @@ class EsTradeApi(TdApi):
 
     def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
         """委托更新推送"""
-        type: OrderType = ORDERTYPE_ES2VT.get(data["OrderType"], None)
-        if not type:
+        order_type: OrderType | None = ORDERTYPE_ES2VT.get(data["OrderType"], None)
+        if not order_type:
             self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
             return
 
@@ -614,13 +614,15 @@ class EsTradeApi(TdApi):
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
         else:
-            symbol: str = data["CommodityNo"] + data["ContractNo"]
+            symbol = data["CommodityNo"] + data["ContractNo"]
+
+        order_exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], Exchange.LOCAL)
 
         order: OrderData = OrderData(
             symbol=symbol,
-            exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
+            exchange=order_exchange,
             orderid=data["RefString"],
-            type=type,
+            type=order_type,
             direction=DIRECTION_ES2VT[data["OrderSide"]],
             offset=OFFSET_ES2VT.get(data["PositionEffect"], Offset.NONE),
             price=data["OrderPrice"],
@@ -639,11 +641,13 @@ class EsTradeApi(TdApi):
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
         else:
-            symbol: str = data["CommodityNo"] + data["ContractNo"]
+            symbol = data["CommodityNo"] + data["ContractNo"]
+
+        trade_exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], Exchange.LOCAL)
 
         trade: TradeData = TradeData(
             symbol=symbol,
-            exchange=EXCHANGE_ES2VT.get(data["ExchangeNo"], None),
+            exchange=trade_exchange,
             orderid=orderid,
             tradeid=data["MatchNo"],
             direction=DIRECTION_ES2VT[data["MatchSide"]],
@@ -710,19 +714,19 @@ class EsTradeApi(TdApi):
         valid: bool = True
 
         if req.exchange == Exchange.SGE:
-            key: tuple = ("SGE", req.symbol, "Y")
-            commodity_info: CommodityInfo = commodity_infos.get(key, None)
+            sge_key: tuple = ("SGE", req.symbol, "Y")
+            commodity_info: CommodityInfo | None = commodity_infos.get(sge_key, None)
             if not commodity_info:
                 valid = False
         else:
-            key: tuple = (req.symbol, req.exchange)
-            contract_info: ContractInfo = contract_infos.get(key, None)
+            contract_key: tuple = (req.symbol, req.exchange)
+            contract_info: ContractInfo | None = contract_infos.get(contract_key, None)
             if not contract_info:
                 valid = False
 
         if not valid:
             self.gateway.write_log(f"找不到匹配的合约：{req.symbol}和{req.exchange.value}")
-            return
+            return ""
 
         # 检查委托类型是否支持
         if req.type not in ORDERTYPE_VT2ES:
@@ -754,6 +758,7 @@ class EsTradeApi(TdApi):
         }
 
         if req.exchange == Exchange.SGE:
+            assert commodity_info is not None
             order_req["ExchangeNo"] = commodity_info.exchange_no
             order_req["ContractNo"] = commodity_info.commodity_no
             order_req["CommodityType"] = commodity_info.commodity_type
@@ -761,6 +766,7 @@ class EsTradeApi(TdApi):
             order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
             order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
         else:
+            assert contract_info is not None
             order_req["ExchangeNo"] = contract_info.exchange_no
             order_req["ContractNo"] = contract_info.contract_no
             order_req["CommodityType"] = contract_info.commodity_type
@@ -800,11 +806,11 @@ def generate_datetime(timestamp: str) -> datetime:
         if "." in timestamp:
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
         else:
-            dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+            dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     else:
-        dt: datetime = datetime.strptime(timestamp, "%y%m%d%H%M%S.%f")
+        dt = datetime.strptime(timestamp, "%y%m%d%H%M%S.%f")
 
-    dt: datetime = dt.replace(tzinfo=CHINA_TZ)
+    dt = dt.replace(tzinfo=CHINA_TZ)
     return dt
 
 
