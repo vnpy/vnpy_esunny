@@ -10,9 +10,9 @@ class CommenTypeGenerator:
         self.filename: str = filename
         self.prefix: str = prefix
         self.name: str = name
-        self.typedefs = {}
+        self.typedefs: dict[str, str] = {}
 
-    def load_constant(self):
+    def load_constant(self) -> None:
         """"""
         module_name = f"{self.prefix}_{self.name}_commen_typedef"
         module = importlib.import_module(module_name)
@@ -64,7 +64,7 @@ class CommenTypeGenerator:
 
         f_cpp_struct.close()
 
-    def process_declare(self, line: str):
+    def process_declare(self, line: str) -> None:
         """处理声明"""
         words = line.split(" ")
         name = words[-1]
@@ -73,11 +73,11 @@ class CommenTypeGenerator:
         new_line = f"{name} = {end}\n"
         self.f_struct.write(new_line)
 
-    def process_start(self, line: str):
+    def process_start(self, line: str) -> None:
         """处理开始"""
         pass
 
-    def process_end(self, line: str):
+    def process_end(self, line: str) -> None:
         """处理结束"""
         new_line = "}\n\n"
         self.f_struct.write(new_line)
@@ -154,7 +154,7 @@ class CommenTypeGenerator:
         new_line = f"{name} = {value}\n"
         self.f_define.write(new_line)
 
-    def process_const_td(self, line: str):
+    def process_const_td(self, line: str) -> None:
         sectors = line.split("=")
         value = sectors[1].replace("\'", "\"").strip()
 
@@ -166,7 +166,7 @@ class CommenTypeGenerator:
         new_line = f"{name} = {value}\n"
         self.f_define.write(new_line)
 
-    def add_supplement(self):
+    def add_supplement(self) -> None:
         self.f_typedef.write("TAPIINT32 = \"int\"\n")
         self.f_typedef.write("TAPIUINT32 = \"unsigned int\"\n")
         self.f_typedef.write("TAPIINT64 = \"long long\"\n")

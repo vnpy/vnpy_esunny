@@ -10,7 +10,7 @@ class DataTypeGenerator:
         self.filename: str = filename
         self.prefix: str = prefix
         self.name: str = name
-        self.typedefs = {}
+        self.typedefs: dict[str, str] = {}
 
     def load_constant(self) -> None:
         """"""
@@ -106,7 +106,7 @@ class DataTypeGenerator:
         new_line = f"{name} = {end}\n"
         self.f_struct.write(new_line)
 
-    def process_start(self, line: str):
+    def process_start(self, line: str) -> None:
         """处理开始"""
         pass
 

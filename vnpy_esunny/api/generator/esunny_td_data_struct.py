@@ -603,7 +603,7 @@ TapAPIDeepQuoteQryRsp = {
     "DeepQuote": "dict",
 }
 
-TapAPIExchangeStateInfoQryReq = {
+TapAPIExchangeStateInfoQryReq: dict[str, str] = {
 }
 
 TapAPIExchangeStateInfo = {
@@ -620,7 +620,7 @@ TapAPIExchangeStateInfoNotice = {
     "ExchangeStateInfo": "dict",
 }
 
-TapAPIUpperChannelQryReq = {
+TapAPIUpperChannelQryReq: dict[str, str] = {
 }
 
 TapAPIUpperChannelInfo = {
@@ -1058,7 +1058,7 @@ TapAPIManageInfo = {
     "OperateTime": "string",
 }
 
-TapAPISystemParameterQryReq = {
+TapAPISystemParameterQryReq: dict[str, str] = {
 }
 
 TapAPISystemParameterInfo = {
@@ -1242,7 +1242,7 @@ TapAPIVerifyIdentity = {
     "PhoneNo": "string",
 }
 
-TapAPITrustDeviceQryReq = {
+TapAPITrustDeviceQryReq: dict[str, str] = {
 }
 
 TapAPITrustDeviceInfo = {
