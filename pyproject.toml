@@ -3,7 +3,7 @@ name = "vnpy_esunny"
 version = "1.0.2.2.6"
 description = "Esunny gateway for VeighNa quant trading framework."
 readme = "README.md"
-license-files = ["LICENSE"]
+license = {text = "MIT"}
 authors = [{name = "Xiaoyou Chen", email = "xiaoyou.chen@mail.vnpy.com"}]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Office/Business :: Financial :: Investment",
     "Programming Language :: Python :: Implementation :: CPython",
-    # "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: MIT License",
     "Natural Language :: Chinese (Simplified)",
 ]
 requires-python = ">=3.10"
@@ -29,19 +29,41 @@ keywords = ["quant", "quantitative", "investment", "trading", "algotrading", "es
 "Forum" = "https://www.vnpy.com/forum"
 
 [build-system]
-requires = ["pybind11", "setuptools"]
-build-backend = "setuptools.build_meta"
+requires = [
+    "meson-python>=0.17.1",
+    "meson>=1.7.0",
+    "pybind11>=2.13.6",
+]
+build-backend = "mesonpy"
 
-[tool.setuptools.packages.find]
-include = ["vnpy_esunny*"]
-exclude = ["script*"]
+[tool.mesonpy]
+args = ['--vsenv']
+
+[tool.mesonpy.distribution]
+include = [
+    "**/*.dll",
+    "**/*.so",
+    "**/*.pyd",
+    "**/*.h",
+    "**/*.cpp",
+    "**/*.lib",
+    "**/*.a",
+]
+
+preserve-path = true
 
 [tool.ruff]
 target-version = "py310"
 output-format = "full"
 
 [tool.ruff.lint]
-select = ["B", "E", "F", "UP", "W"]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warning
+]
 ignore = ["E501"]
 
 [tool.mypy]
