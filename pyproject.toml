@@ -1,6 +1,6 @@
 [project]
 name = "vnpy_esunny"
-version = "1.0.2.2.6"
+version = "1.0.2.2.7"
 description = "Esunny gateway for VeighNa quant trading framework."
 readme = "README.md"
 license = {text = "MIT"}

@@ -1,7 +1,7 @@
 project(
   'vnpy_esunny',
   'cpp',
-  version: '1.0.2.2.6',
+  version: '1.0.2.2.7',
   license: 'MIT',
   meson_version: '>=1.7.0',
   default_options: [
