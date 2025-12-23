@@ -2,7 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Tuple, Any, List
+from typing import Any
 
 from vnpy.event import EventEngine
 from vnpy.trader.utility import get_folder_path, ZoneInfo
@@ -31,7 +31,7 @@ from ..api import MdApi, TdApi
 
 
 # 委托状态映射
-STATUS_ES2VT: Dict[str, Status] = {
+STATUS_ES2VT: dict[str, Status] = {
     "0": Status.SUBMITTING,
     "1": Status.SUBMITTING,
     "4": Status.NOTTRADED,
@@ -43,36 +43,36 @@ STATUS_ES2VT: Dict[str, Status] = {
 }
 
 # 多空方向映射
-DIRECTION_ES2VT: Dict[str, Direction] = {
+DIRECTION_ES2VT: dict[str, Direction] = {
     "N": Direction.NET,
     "B": Direction.LONG,
     "S": Direction.SHORT,
 }
-DIRECTION_VT2ES: Dict[Direction, str] = {v: k for k, v in DIRECTION_ES2VT.items()}
+DIRECTION_VT2ES: dict[Direction, str] = {v: k for k, v in DIRECTION_ES2VT.items()}
 
 # 委托类型映射
-ORDERTYPE_ES2VT: Dict[str, OrderType] = {
+ORDERTYPE_ES2VT: dict[str, OrderType] = {
     "1": OrderType.MARKET,
     "2": OrderType.LIMIT
 }
 ORDERTYPE_VT2ES = {v: k for k, v in ORDERTYPE_ES2VT.items()}
 
 # 委托有效类型映射
-ORDERTIF_VT2ES: Dict[str, str] = {
+ORDERTIF_VT2ES: dict[str, str] = {
     "TAPI_ORDER_TIMEINFORCE_GTC": "1",
     "TAPI_ORDER_TIMEINFORCE_FAK": "3",
     "TAPI_ORDER_TIMEINFORCE_FOK": "4"
 }
 
 # 开平方向映射
-OFFSET_VT2ES: Dict[Offset, str] = {
+OFFSET_VT2ES: dict[Offset, str] = {
     Offset.OPEN: "O",
     Offset.CLOSE: "C",
     Offset.CLOSEYESTERDAY: "C",
     Offset.CLOSETODAY: "T",
     Offset.NONE: "N"
 }
-OFFSET_ES2VT: Dict[str, Offset] = {
+OFFSET_ES2VT: dict[str, Offset] = {
     "O": Offset.OPEN,
     "C": Offset.CLOSE,
     "T": Offset.CLOSETODAY,
@@ -80,7 +80,7 @@ OFFSET_ES2VT: Dict[str, Offset] = {
 }
 
 # 交易所映射
-EXCHANGE_ES2VT: Dict[str, Exchange] = {
+EXCHANGE_ES2VT: dict[str, Exchange] = {
     "CFFEX": Exchange.CFFEX,
     "ZCE": Exchange.CZCE,
     "DCE": Exchange.DCE,
@@ -97,17 +97,17 @@ EXCHANGE_ES2VT: Dict[str, Exchange] = {
     "NYMEX": Exchange.NYMEX,
     "SGX": Exchange.SGX
 }
-EXCHANGE_VT2ES: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_ES2VT.items()}
+EXCHANGE_VT2ES: dict[Exchange, str] = {v: k for k, v in EXCHANGE_ES2VT.items()}
 
 # 产品类型映射
-PRODUCT_TYPE_ES2VT: Dict[str, Product] = {
+PRODUCT_TYPE_ES2VT: dict[str, Product] = {
     "F": Product.FUTURES,
     "Y": Product.SPOT
 }
-PRODUCT_TYPE_VT2ES: Dict[Product, str] = {v: k for k, v in PRODUCT_TYPE_ES2VT.items()}
+PRODUCT_TYPE_VT2ES: dict[Product, str] = {v: k for k, v in PRODUCT_TYPE_ES2VT.items()}
 
 # 行情接口日志级别映射
-MDLOGLEVEL_VT2ES: Dict[str, str] = {
+MDLOGLEVEL_VT2ES: dict[str, str] = {
     "APILOGLEVEL_NONE": "N",
     "APILOGLEVEL_ERROR": "E",
     "APILOGLEVEL_WARNING": "W",
@@ -115,14 +115,14 @@ MDLOGLEVEL_VT2ES: Dict[str, str] = {
 }
 
 # 交易接口日志级别映射
-TDLOGLEVEL_VT2ES: Dict[str, str] = {
+TDLOGLEVEL_VT2ES: dict[str, str] = {
     "APILOGLEVEL_ERROR": "1",
     "APILOGLEVEL_NORMAL": "2",
     "APILOGLEVEL_DEBUG": "3"
 }
 
 # 标示类型映射
-FLAG_VT2ES: Dict[str, str] = {
+FLAG_VT2ES: dict[str, str] = {
     "APIYNFLAG_YES": "Y",
     "APIYNFLAG_NO": "N",
     "TAPI_CALLPUT_FLAG_CALL": "C",
@@ -131,7 +131,7 @@ FLAG_VT2ES: Dict[str, str] = {
 }
 
 # 投机保值类型映射
-HEDGETYPE_VT2ES: Dict[str, str] = {
+HEDGETYPE_VT2ES: dict[str, str] = {
     "TAPI_HEDGEFLAG_NONE": "N",
     "TAPI_HEDGEFLAG_T": "T",
     "TAPI_HEDGEFLAG_B": "B",
@@ -143,8 +143,8 @@ HEDGETYPE_VT2ES: Dict[str, str] = {
 CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
 
 # 合约数据全局缓存字典
-commodity_infos: Dict[str, "CommodityInfo"] = {}
-contract_infos: Dict[Tuple[str, "Exchange"], "ContractInfo"] = {}
+commodity_infos: dict[str, "CommodityInfo"] = {}
+contract_infos: dict[tuple[str, "Exchange"], "ContractInfo"] = {}
 
 
 class EsunnyGateway(BaseGateway):
@@ -154,7 +154,7 @@ class EsunnyGateway(BaseGateway):
 
     default_name: str = "ESUNNY"
 
-    default_setting: Dict[str, Any] = {
+    default_setting: dict[str, Any] = {
         "行情账号": "",
         "行情密码": "",
         "行情服务器": "",
@@ -169,14 +169,14 @@ class EsunnyGateway(BaseGateway):
         "交易系统": ["内盘", "外盘"]
     }
 
-    exchanges: List[str] = list(EXCHANGE_VT2ES.keys())
+    exchanges: list[str] = list(EXCHANGE_VT2ES.keys())
 
     def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
-        self.md_api: "QuoteApi" = QuoteApi(self)
-        self.td_api: "EsTradeApi" = EsTradeApi(self)
+        self.md_api: QuoteApi = QuoteApi(self)
+        self.td_api: EsTradeApi = EsTradeApi(self)
 
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
@@ -518,9 +518,9 @@ class EsTradeApi(TdApi):
 
         self.account_no: str = ""
 
-        self.sys_local_map: Dict[str, str] = {}
-        self.local_sys_map: Dict[str, str] = {}
-        self.position_details: Dict[Tuple, Dict[str, Dict]] = defaultdict(dict)
+        self.sys_local_map: dict[str, str] = {}
+        self.local_sys_map: dict[str, str] = {}
+        self.position_details: dict[tuple, dict[str, dict]] = defaultdict(dict)
 
     def onConnect(self, userno: str) -> None:
         """服务器连接成功回报"""

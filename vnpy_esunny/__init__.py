@@ -20,16 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
+from importlib import metadata
+
+from .gateway import EsunnyGateway
+
+
+__all__ = ["EsunnyGateway"]
+
+
 try:
-    from .gateway import EsunnyGateway
-except ImportError:
-    pass
-
-
-import importlib_metadata
-
-
-try:
-    __version__ = importlib_metadata.version("vnpy_esunny")
-except importlib_metadata.PackageNotFoundError:
+    __version__ = metadata.version("vnpy_esunny")
+except metadata.PackageNotFoundError:
     __version__ = "dev"

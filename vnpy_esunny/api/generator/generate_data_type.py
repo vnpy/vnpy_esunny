@@ -25,7 +25,7 @@ class DataTypeGenerator:
 
     def run(self) -> None:
         """主函数"""
-        self.f_cpp = open(self.filename, "r")
+        self.f_cpp = open(self.filename)
         if self.name == "td":
             self.f_define = open(f"{self.prefix}_{self.name}_data_constant.py", "w")
         self.f_typedef = open(f"{self.prefix}_{self.name}_data_typedef.py", "w")

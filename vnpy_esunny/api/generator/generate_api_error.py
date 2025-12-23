@@ -12,7 +12,7 @@ class ErrorTypeGenerator:
 
     def run(self) -> None:
         """主函数"""
-        self.f_cpp = open(self.filename, "r")
+        self.f_cpp = open(self.filename)
         self.f_define = open(f"{self.prefix}_{self.name}_error_constant.py", "w")
 
         for line in self.f_cpp:

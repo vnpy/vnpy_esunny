@@ -23,7 +23,7 @@ class CommenTypeGenerator:
 
     def run(self) -> None:
         """主函数"""
-        self.f_cpp = open(self.filename, "r")
+        self.f_cpp = open(self.filename)
         self.f_define = open(f"{self.prefix}_{self.name}_commen_constant.py", "w")
         self.f_typedef = open(f"{self.prefix}_{self.name}_commen_typedef.py", "w")
         self.f_struct = open(f"{self.prefix}_{self.name}_commen_struct.py", "w")
@@ -46,7 +46,7 @@ class CommenTypeGenerator:
         print(f"{self.name}_CommenType生成完毕")
 
     def process_struct(self) -> None:
-        f_cpp_struct = open(self.filename, "r")
+        f_cpp_struct = open(self.filename)
         for line in f_cpp_struct:
             line = line.replace(";", "")
             line = line.replace("\n", "")
