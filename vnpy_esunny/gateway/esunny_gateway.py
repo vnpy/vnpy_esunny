@@ -86,16 +86,7 @@ EXCHANGE_ES2VT: dict[str, Exchange] = {
     "DCE": Exchange.DCE,
     "SHFE": Exchange.SHFE,
     "INE": Exchange.INE,
-    "SGE": Exchange.SGE,
-    "CBOT": Exchange.CBOT,
-    "CME": Exchange.CME,
-    "COMEX": Exchange.COMEX,
-    "EUREX": Exchange.EUREX,
-    "HKEX": Exchange.HKFE,
-    "KRX": Exchange.KRX,
-    "LME": Exchange.LME,
-    "NYMEX": Exchange.NYMEX,
-    "SGX": Exchange.SGX
+    "SGE": Exchange.SGE
 }
 EXCHANGE_VT2ES: dict[Exchange, str] = {v: k for k, v in EXCHANGE_ES2VT.items()}
 
@@ -106,19 +97,12 @@ PRODUCT_TYPE_ES2VT: dict[str, Product] = {
 }
 PRODUCT_TYPE_VT2ES: dict[Product, str] = {v: k for k, v in PRODUCT_TYPE_ES2VT.items()}
 
-# 行情接口日志级别映射
-MDLOGLEVEL_VT2ES: dict[str, str] = {
+# 接口日志级别映射
+LOGLEVEL_VT2ES: dict[str, str] = {
     "APILOGLEVEL_NONE": "N",
     "APILOGLEVEL_ERROR": "E",
     "APILOGLEVEL_WARNING": "W",
     "APILOGLEVEL_DEBUG": "D"
-}
-
-# 交易接口日志级别映射
-TDLOGLEVEL_VT2ES: dict[str, str] = {
-    "APILOGLEVEL_ERROR": "1",
-    "APILOGLEVEL_NORMAL": "2",
-    "APILOGLEVEL_DEBUG": "3"
 }
 
 # 标示类型映射
@@ -165,8 +149,7 @@ class EsunnyGateway(BaseGateway):
         "交易服务器": "",
         "交易端口": 0,
         "交易产品名称": "",
-        "交易授权编码": "",
-        "交易系统": ["内盘", "外盘"]
+        "交易授权编码": ""
     }
 
     exchanges: list[Exchange] = list(EXCHANGE_VT2ES.keys())
@@ -176,7 +159,7 @@ class EsunnyGateway(BaseGateway):
         super().__init__(event_engine, gateway_name)
 
         self.md_api: QuoteApi = QuoteApi(self)
-        self.td_api: EsTradeApi = EsTradeApi(self)
+        self.td_api: TradeApi = TradeApi(self)
 
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
@@ -191,10 +174,6 @@ class EsunnyGateway(BaseGateway):
         trade_port: int = setting["交易端口"]
         trade_appid: str = setting["交易产品名称"]
         trade_authcode: str = setting["交易授权编码"]
-        if setting["交易系统"] == "内盘":
-            systype: int = 1
-        else:
-            systype = 2
 
         self.md_api.connect(
             quote_username,
@@ -209,8 +188,7 @@ class EsunnyGateway(BaseGateway):
             trade_host,
             trade_port,
             trade_appid,
-            trade_authcode,
-            systype
+            trade_authcode
         )
 
     def subscribe(self, req: SubscribeRequest) -> None:
@@ -249,6 +227,7 @@ class QuoteApi(MdApi):
         self.gateway: EsunnyGateway = gateway
         self.gateway_name: str = gateway.gateway_name
 
+        self.reqid: int = 0
         self.connect_status: bool = False
 
     def onRspLogin(self, error: int, data: dict) -> None:
@@ -261,7 +240,8 @@ class QuoteApi(MdApi):
 
     def onAPIReady(self) -> None:
         """API状态通知回报"""
-        self.qryCommodity()
+        self.reqid += 1
+        self.qryCommodity(self.reqid)
 
     def onDisconnect(self, reason: int) -> None:
         """服务器连接断开回报"""
@@ -329,7 +309,8 @@ class QuoteApi(MdApi):
 
         if last == "Y":
             self.gateway.write_log("查询交易品种信息成功")
-            self.qryContract({})
+            self.reqid += 1
+            self.qryContract(self.reqid, {})
 
     def onRspQryContract(
         self,
@@ -447,7 +428,7 @@ class QuoteApi(MdApi):
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
         self.setTapQuoteAPIDataPath(str(path).encode("GBK"))
-        self.setTapQuoteAPILogLevel(MDLOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
+        self.setTapQuoteAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
 
         # 创建API
         req: dict = {
@@ -494,7 +475,8 @@ class QuoteApi(MdApi):
             tap_contract["CommodityType"] = commodity_info.commodity_type
             tap_contract["CommodityNo"] = commodity_info.commodity_no
 
-        self.subscribeQuote(tap_contract)
+        self.reqid += 1
+        self.subscribeQuote(self.reqid, tap_contract)
 
     def close(self) -> None:
         """关闭连接"""
@@ -503,7 +485,7 @@ class QuoteApi(MdApi):
             self.exit()
 
 
-class EsTradeApi(TdApi):
+class TradeApi(TdApi):
     """交易API"""
 
     def __init__(self, gateway: EsunnyGateway) -> None:
@@ -522,27 +504,27 @@ class EsTradeApi(TdApi):
         self.local_sys_map: dict[str, str] = {}
         self.position_details: dict[tuple, dict[str, dict]] = defaultdict(dict)
 
-    def onConnect(self, userno: str) -> None:
+    def onConnect(self) -> None:
         """服务器连接成功回报"""
         self.connect_status = True
         self.gateway.write_log("交易服务器连接成功")
 
-    def onRspLogin(self, userno: str, error: int, data: dict) -> None:
+    def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
         if error != 0:
             self.gateway.write_log(f"交易服务器登录失败，错误码：{error}")
         else:
             self.gateway.write_log("交易服务器登录成功")
 
-    def onAPIReady(self, userno: str) -> None:
+    def onAPIReady(self) -> None:
         """API状态通知回报"""
         self.gateway.write_log("交易服务器API准备就绪")
 
-    def onDisconnect(self, userno: str, reason: int) -> None:
+    def onDisconnect(self, reason: int) -> None:
         """服务器连接断开回报"""
         self.gateway.write_log(f"交易服务器连接断开，原因：{reason}")
 
-    def onRtnFund(self, userno: str, data: dict) -> None:
+    def onRtnFund(self, data: dict) -> None:
         """账户资金推送"""
         self.account_no = data["AccountNo"]
 
@@ -554,7 +536,7 @@ class EsTradeApi(TdApi):
         )
         self.gateway.on_account(account)
 
-    def onRtnPosition(self, userno: str, data: dict) -> None:
+    def onRtnPosition(self, data: dict) -> None:
         """持仓更新推送"""
         # 生成合约代码
         if data["ExchangeNo"] == "SGE":
@@ -593,7 +575,7 @@ class EsTradeApi(TdApi):
 
         self.gateway.on_position(position)
 
-    def onRtnOrder(self, userno: str, requestid: int, data: dict) -> None:
+    def onRtnOrder(self, data: dict) -> None:
         """委托更新推送"""
         order_type: OrderType | None = ORDERTYPE_ES2VT.get(data["OrderType"], None)
         if not order_type:
@@ -634,7 +616,7 @@ class EsTradeApi(TdApi):
         )
         self.gateway.on_order(order)
 
-    def onRtnFill(self, userno: str, data: dict) -> None:
+    def onRtnFill(self, data: dict) -> None:
         """成交数据推送"""
         orderid: str = self.sys_local_map[data["OrderNo"]]
 
@@ -665,48 +647,39 @@ class EsTradeApi(TdApi):
         host: str,
         port: int,
         appid: str,
-        auth_code: str,
-        systype: int
+        auth_code: str
     ) -> None:
         """连接交易接口"""
         # 禁止重复发起连接，会导致异常崩溃
         if self.connect_status:
             return
 
-        self.userno = username
-
-        # 创建API
-        self.createEsTradeAPI(0)
+        self.init()
 
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
-        self.setEsTradeAPIDataPath(str(path).encode("GBK"))
-        self.setEsTradeAPILogLevel(TDLOGLEVEL_VT2ES["APILOGLEVEL_ERROR"])
+        self.setTapTradeAPIDataPath(str(path).encode("GBK"))
+        self.setTapTradeAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
 
-        self.init()
-
-        # 设置用户信息
-        user_data: dict = {
-            "SystemType": systype,
-            "UserNo": self.userno,
-            "LoginIP": host,
-            "LoginPort": port,
-            "LoginType": 1              # 普通登录
+        # 创建API
+        req: dict = {
+            "KeyOperationLogPath": str(path).encode("GBK")
         }
-        self.setUserInfo(user_data)
+        self.createTapTradeAPI(req, 0)
+
+        # 设置服务器地址
+        self.setHostAddress(host, port)
 
         # 登录
         data: dict = {
-            "UserNo": self.userno,
+            "UserNo": username,
             "Password": password,
             "AuthCode": auth_code,
             "AppID": appid,
-            "UserType": 10000,
             "ISModifyPassword": FLAG_VT2ES["APIYNFLAG_NO"],
-            "ISDDA": FLAG_VT2ES["APIYNFLAG_NO"],
-            "LoginIP": host
+            "ISDDA": FLAG_VT2ES["APIYNFLAG_NO"]
         }
-        self.startUser(username, data)
+        self.login(data)
 
     def send_order(self, req: OrderRequest) -> str:
         """委托下单"""
@@ -774,7 +747,7 @@ class EsTradeApi(TdApi):
             order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
             order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
 
-        self.insertOrder(self.userno, order_req, self.reqid)
+        self.insertOrder(self.reqid, order_req)
 
         order: OrderData = req.create_order_data(orderid, self.gateway_name)
         self.gateway.on_order(order)
@@ -791,14 +764,13 @@ class EsTradeApi(TdApi):
         cancel_req: dict = {"OrderNo": order_no}
 
         self.reqid += 1
-        self.cancelOrder(self.userno, cancel_req, self.reqid)
+        self.cancelOrder(self.reqid, cancel_req)
 
     def close(self) -> None:
         """关闭连接"""
         if self.connect_status:
-            self.stopUser(self.userno)
+            self.disconnect()
             self.exit()
-
 
 def generate_datetime(timestamp: str) -> datetime:
     """生成时间戳"""
