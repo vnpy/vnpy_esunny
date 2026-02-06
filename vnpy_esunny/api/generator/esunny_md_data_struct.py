@@ -25,7 +25,7 @@ TapAPIQuotLoginRspInfo = {
 }
 
 TapAPIQuoteCommodityInfo = {
-    "Commodity": "dict",
+    "Commodity": "TapAPICommodity",
     "CommodityName": "string",
     "CommodityEngName": "string",
     "ContractSize": "double",
@@ -34,12 +34,12 @@ TapAPIQuoteCommodityInfo = {
     "CmbDirect": "char",
     "CommodityContractLen": "int",
     "IsDST": "char",
-    "RelateCommodity1": "dict",
-    "RelateCommodity2": "dict",
+    "RelateCommodity1": "TapAPICommodity",
+    "RelateCommodity2": "TapAPICommodity",
 }
 
 TapAPIQuoteContractInfo = {
-    "Contract": "dict",
+    "Contract": "TapAPIContract",
     "ContractType": "char",
     "QuoteUnderlyingContract": "string",
     "ContractName": "string",
@@ -49,7 +49,7 @@ TapAPIQuoteContractInfo = {
 }
 
 TapAPIQuoteWhole = {
-    "Contract": "dict",
+    "Contract": "TapAPIContract",
     "CurrencyNo": "string",
     "TradingState": "char",
     "DateTimeStamp": "string",
@@ -95,5 +95,6 @@ TapAPIQuoteWhole = {
     "QSwing": "double",
     "QTotalBidQty": "unsigned long long",
     "QTotalAskQty": "unsigned long long",
-    "UnderlyContract": "dict",
+    "UnderlyContract": "TapAPIContract",
 }
+

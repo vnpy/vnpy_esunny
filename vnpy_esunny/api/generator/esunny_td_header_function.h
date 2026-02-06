@@ -1,40 +1,32 @@
-int qryOrderProcess(const dict &data, unsigned int session, const dict &data);
+int qryAccount(int sessionID, const dict &req);
 
-int qryDeepQuote(const dict &data, unsigned int session, const dict &data);
+int qryFund(int sessionID, const dict &req);
 
-int qryAccountRent(const dict &data, unsigned int session, const dict &data);
+int qryExchange(int sessionID);
 
-int qryAccountFeeRent(const dict &data, unsigned int session, const dict &data);
+int qryCommodity(int sessionID);
 
-int qryAccountMarginRent(const dict &data, unsigned int session, const dict &data);
+int qryContract(int sessionID, const dict &req);
 
-int qryAccountCashAdjust(const dict &data, unsigned int session, const dict &data);
+int qryOrder(int sessionID, const dict &req);
 
-int qryBill(const dict &data, unsigned int session, const dict &data);
+int qryOrderProcess(int sessionID, const dict &req);
 
-int qryHisOrder(const dict &data, unsigned int session, const dict &data);
+int qryFill(int sessionID, const dict &req);
 
-int qryHisOrderProcess(const dict &data, unsigned int session, const dict &data);
+int qryPosition(int sessionID, const dict &req);
 
-int qryHisFill(const dict &data, unsigned int session, const dict &data);
+int qryClose(int sessionID, const dict &req);
 
-int qryHisPosition(const dict &data, unsigned int session, const dict &data);
+int qryDeepQuote(int sessionID, const dict &req);
 
-int qryHisDelivery(const dict &data, unsigned int session, const dict &data);
+int qryExchangeStateInfo(int sessionID, const dict &req);
 
-int qryManageInfoForEStar(const dict &data, unsigned int session, const dict &data);
+int qryUpperChannel(int sessionID, const dict &req);
 
-int qrySystemParameter(const dict &data, unsigned int session, const dict &data);
+int qryAccountRent(int sessionID, const dict &req);
 
-int qryTradeCenterFrontAddress(const dict &data, unsigned int session, const dict &data);
+int qryBill(int sessionID, const dict &req);
 
-int qryTradeMessage(const dict &data, unsigned int session, const dict &data);
-
-int qryAccountStorage(const dict &data, unsigned int session, const dict &data);
-
-int qrySpotLock(const dict &data, unsigned int session, const dict &data);
-
-int qryTrustDevice(const dict &data, unsigned int session, const dict &data);
-
-int qryManagerConfigFile(const dict &data, unsigned int session, const dict &data);
+int qryAccountStorage(int sessionID, const dict &req);
 

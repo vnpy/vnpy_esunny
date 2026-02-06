@@ -34,11 +34,11 @@ void onDisconnect(int reasonCode) override
 	}
 };
 
-void onRspQryCommodity(unsigned int session, int error, char last, const dict &data) override
+void onRspQryCommodity(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, MdApi, onRspQryCommodity, session, error, last, data);
+		PYBIND11_OVERLOAD(void, MdApi, onRspQryCommodity, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -46,11 +46,11 @@ void onRspQryCommodity(unsigned int session, int error, char last, const dict &d
 	}
 };
 
-void onRspQryContract(unsigned int session, int error, char last, const dict &data) override
+void onRspQryContract(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, MdApi, onRspQryContract, session, error, last, data);
+		PYBIND11_OVERLOAD(void, MdApi, onRspQryContract, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -58,11 +58,11 @@ void onRspQryContract(unsigned int session, int error, char last, const dict &da
 	}
 };
 
-void onRspSubscribeQuote(unsigned int session, int error, char last, const dict &data) override
+void onRspSubscribeQuote(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, MdApi, onRspSubscribeQuote, session, error, last, data);
+		PYBIND11_OVERLOAD(void, MdApi, onRspSubscribeQuote, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -70,11 +70,11 @@ void onRspSubscribeQuote(unsigned int session, int error, char last, const dict 
 	}
 };
 
-void onRspUnSubscribeQuote(unsigned int session, int error, char last, const dict &data) override
+void onRspUnSubscribeQuote(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, MdApi, onRspUnSubscribeQuote, session, error, last, data);
+		PYBIND11_OVERLOAD(void, MdApi, onRspUnSubscribeQuote, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{

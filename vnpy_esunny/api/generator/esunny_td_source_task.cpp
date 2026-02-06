@@ -1,847 +1,470 @@
-void TdApi::OnConnect(string UserNo)
+void TdApi::OnConnect()
 {
 	Task task = Task();
 	task.task_name = ONCONNECT;
-	task.task_string = UserNo;
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspLogin(string UserNo, int nErrorCode, TapAPITradeLoginRspInfo *pLoginRspInfo)
+void TdApi::OnRspLogin(int errorCode, const TapAPITradeLoginRspInfo *loginRspInfo)
 {
 	Task task = Task();
 	task.task_name = ONRSPLOGIN;
-	task.task_string = UserNo;
-	task.task_int = nErrorCode;
-	if (pLoginRspInfo)
+	task.task_int = errorCode;
+	if (loginRspInfo)
 	{
 		TapAPITradeLoginRspInfo *task_data = new TapAPITradeLoginRspInfo();
-		*task_data = *pLoginRspInfo;
+		*task_data = *loginRspInfo;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnContactInfo(string UserNo, int nErrorCode, char isLast, TapAPISecondInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNCONTACTINFO;
-	task.task_string = UserNo;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPISecondInfo *task_data = new TapAPISecondInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspRequestVertificateCode(string UserNo, unsigned int nSessionID, int nErrorCode, char isLast, TapAPIVertificateCode *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPREQUESTVERTIFICATECODE;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIVertificateCode *task_data = new TapAPIVertificateCode();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspRequestVerifyIdentity(string UserNo, unsigned int nSessionID, int nErrorCode, char isLast, TapAPIVerifyIdentity* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPREQUESTVERIFYIDENTITY;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIVerifyIdentity *task_data = new TapAPIVerifyIdentity();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspSetVertificateCode(string UserNo, unsigned int nSessionID, int nErrorCode, char isLast, TapAPISecondCertificationRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPSETVERTIFICATECODE;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPISecondCertificationRsp *task_data = new TapAPISecondCertificationRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRtnErrorMsg(string UserNo, string ErrorMsg)
-{
-	Task task = Task();
-	task.task_name = ONRTNERRORMSG;
-	task.task_string = UserNo;
-	task.task_string = ErrorMsg;
-	this->task_queue.push(task);
-};
-
-void TdApi::OnAPIReady(string UserNo)
+void TdApi::OnAPIReady()
 {
 	Task task = Task();
 	task.task_name = ONAPIREADY;
-	task.task_string = UserNo;
 	this->task_queue.push(task);
 };
 
-void TdApi::OnDisconnect(string UserNo, int nReasonCode)
+void TdApi::OnDisconnect(int reasonCode)
 {
 	Task task = Task();
 	task.task_name = ONDISCONNECT;
-	task.task_string = UserNo;
-	task.task_int = nReasonCode;
+	task.task_int = reasonCode;
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspSubmitUserLoginInfo(string UserNo, unsigned int nSessionID, TapAPISubmitUserLoginInfoRsp *pRspInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPSUBMITUSERLOGININFO;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	if (pRspInfo)
-	{
-		TapAPISubmitUserLoginInfoRsp *task_data = new TapAPISubmitUserLoginInfoRsp();
-		*task_data = *pRspInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspChangePassword(string UserNo, unsigned int nSessionID, int nErrorCode, TapAPIChangePasswordRsp* pInfo)
+void TdApi::OnRspChangePassword(unsigned int sessionID, int errorCode)
 {
 	Task task = Task();
 	task.task_name = ONRSPCHANGEPASSWORD;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	task.task_int = nErrorCode;
-	if (pInfo)
-	{
-		TapAPIChangePasswordRsp *task_data = new TapAPIChangePasswordRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspSetReservedInfo(string UserNo, unsigned int nSessionID, int nErrorCode, string info)
+void TdApi::OnRspSetReservedInfo(unsigned int sessionID, int errorCode, const TAPISTR_50 info)
 {
 	Task task = Task();
 	task.task_name = ONRSPSETRESERVEDINFO;
-	task.task_string = UserNo;
-	task.task_id = nSessionID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_string = info;
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnContract(string UserNo, TapAPITradeContractInfo *pRtnInfo)
+void TdApi::OnRspQryAccount(unsigned int sessionID, unsigned int errorCode, char isLast, const TapAPIAccountInfo *info)
 {
 	Task task = Task();
-	task.task_name = ONRTNCONTRACT;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	task.task_name = ONRSPQRYACCOUNT;
+	task.task_id = sessionID;
+	task.task_error = errorCode;
+	task.task_last = isLast;
+	if (info)
 	{
-		TapAPITradeContractInfo *task_data = new TapAPITradeContractInfo();
-		*task_data = *pRtnInfo;
+		TapAPIAccountInfo *task_data = new TapAPIAccountInfo();
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnFund(string UserNo, TapAPIFundData *pRtnInfo)
+void TdApi::OnRspQryFund(unsigned int sessionID, int errorCode, char isLast, const TapAPIFundData *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYFUND;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIFundData *task_data = new TapAPIFundData();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnFund(const TapAPIFundData *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNFUND;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIFundData *task_data = new TapAPIFundData();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnOrder(string UserNo, unsigned int nRequestID, TapAPIOrderInfo *pRtnInfo)
+void TdApi::OnRspQryExchange(unsigned int sessionID, int errorCode, char isLast, const TapAPIExchangeInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYEXCHANGE;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIExchangeInfo *task_data = new TapAPIExchangeInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRspQryCommodity(unsigned int sessionID, int errorCode, char isLast, const TapAPICommodityInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYCOMMODITY;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPICommodityInfo *task_data = new TapAPICommodityInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRspQryContract(unsigned int sessionID, int errorCode, char isLast, const TapAPITradeContractInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYCONTRACT;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPITradeContractInfo *task_data = new TapAPITradeContractInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnContract(const TapAPITradeContractInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRTNCONTRACT;
+	if (info)
+	{
+		TapAPITradeContractInfo *task_data = new TapAPITradeContractInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnOrder(const TapAPIOrderInfoNotice *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNORDER;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	if (pRtnInfo)
+	if (info)
 	{
-		TapAPIOrderInfo *task_data = new TapAPIOrderInfo();
-		*task_data = *pRtnInfo;
+		TapAPIOrderInfoNotice *task_data = new TapAPIOrderInfoNotice();
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-    void TdApi::OnRspOrderAction(string UserNo, unsigned int nRequestID, int nErrorCode, TapAPIOrderActionRsp *pRtnInfo)
+void TdApi::OnRspOrderAction(unsigned int sessionID, unsigned int errorCode, const TapAPIOrderActionRsp *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPORDERACTION;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	if (pRtnInfo)
+	task.task_id = sessionID;
+	task.task_error = errorCode;
+	if (info)
 	{
 		TapAPIOrderActionRsp *task_data = new TapAPIOrderActionRsp();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspQryOrderProcess(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIOrderInfo *pRspInfo)
+void TdApi::OnRspQryOrder(unsigned int sessionID, int errorCode, char isLast, const TapAPIOrderInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYORDER;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIOrderInfo *task_data = new TapAPIOrderInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRspQryOrderProcess(unsigned int sessionID, int errorCode, char isLast, const TapAPIOrderInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYORDERPROCESS;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pRspInfo)
+	if (info)
 	{
 		TapAPIOrderInfo *task_data = new TapAPIOrderInfo();
-		*task_data = *pRspInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnFill(string UserNo, TapAPIFillInfo *pRtnInfo)
+void TdApi::OnRspQryFill(unsigned int sessionID, int errorCode, char isLast, const TapAPIFillInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYFILL;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIFillInfo *task_data = new TapAPIFillInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnFill(const TapAPIFillInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNFILL;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIFillInfo *task_data = new TapAPIFillInfo();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnPosition(string UserNo, TapAPIPositionInfo *pRtnInfo)
+void TdApi::OnRspQryPosition(unsigned int sessionID, int errorCode, char isLast, const TapAPIPositionInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYPOSITION;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIPositionInfo *task_data = new TapAPIPositionInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnPosition(const TapAPIPositionInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNPOSITION;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIPositionInfo *task_data = new TapAPIPositionInfo();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnClose(string UserNo, TapAPICloseInfo *pRtnInfo)
+void TdApi::OnRspQryClose(unsigned int sessionID, int errorCode, char isLast, const TapAPICloseInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYCLOSE;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPICloseInfo *task_data = new TapAPICloseInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnClose(const TapAPICloseInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNCLOSE;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPICloseInfo *task_data = new TapAPICloseInfo();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnPositionProfit(string UserNo, TapAPIPositionProfitNotice *pRtnInfo)
+void TdApi::OnRtnPositionProfit(const TapAPIPositionProfitNotice *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNPOSITIONPROFIT;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIPositionProfitNotice *task_data = new TapAPIPositionProfitNotice();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspQryDeepQuote(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIDeepQuoteQryRsp *pRspInfo)
+void TdApi::OnRspQryDeepQuote(unsigned int sessionID, int errorCode, char isLast, const TapAPIDeepQuoteQryRsp *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYDEEPQUOTE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pRspInfo)
+	if (info)
 	{
 		TapAPIDeepQuoteQryRsp *task_data = new TapAPIDeepQuoteQryRsp();
-		*task_data = *pRspInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnExchangeStateInfo(string UserNo, TapAPIExchangeStateInfoNotice *pRtnInfo)
+void TdApi::OnRspQryExchangeStateInfo(unsigned int sessionID, int errorCode, char isLast, const TapAPIExchangeStateInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPQRYEXCHANGESTATEINFO;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIExchangeStateInfo *task_data = new TapAPIExchangeStateInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRtnExchangeStateInfo(const TapAPIExchangeStateInfoNotice *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNEXCHANGESTATEINFO;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIExchangeStateInfoNotice *task_data = new TapAPIExchangeStateInfoNotice();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnReqQuoteNotice(string UserNo, TapAPIReqQuoteNotice *pRtnInfo)
+void TdApi::OnRtnReqQuoteNotice(const TapAPIReqQuoteNotice *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNREQQUOTENOTICE;
-	task.task_string = UserNo;
-	if (pRtnInfo)
+	if (info)
 	{
 		TapAPIReqQuoteNotice *task_data = new TapAPIReqQuoteNotice();
-		*task_data = *pRtnInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspAccountRentInfo(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIAccountRentInfo *pRspInfo)
+void TdApi::OnRspUpperChannelInfo(unsigned int sessionID, int errorCode, char isLast, const TapAPIUpperChannelInfo *info)
+{
+	Task task = Task();
+	task.task_name = ONRSPUPPERCHANNELINFO;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
+	task.task_last = isLast;
+	if (info)
+	{
+		TapAPIUpperChannelInfo *task_data = new TapAPIUpperChannelInfo();
+		*task_data = *info;
+		task.task_data = task_data;
+	}
+	this->task_queue.push(task);
+};
+
+void TdApi::OnRspAccountRentInfo(unsigned int sessionID, int errorCode, char isLast, const TapAPIAccountRentInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPACCOUNTRENTINFO;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pRspInfo)
+	if (info)
 	{
 		TapAPIAccountRentInfo *task_data = new TapAPIAccountRentInfo();
-		*task_data = *pRspInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspTradeMessage(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPITradeMessage *pRspInfo)
+void TdApi::OnRspSubmitUserLoginInfo(unsigned int sessionID, int errorCode, char isLast, const TapAPISubmitUserLoginRspInfo *info)
 {
 	Task task = Task();
-	task.task_name = ONRSPTRADEMESSAGE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_name = ONRSPSUBMITUSERLOGININFO;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pRspInfo)
+	if (info)
 	{
-		TapAPITradeMessage *task_data = new TapAPITradeMessage();
-		*task_data = *pRspInfo;
+		TapAPISubmitUserLoginRspInfo *task_data = new TapAPISubmitUserLoginRspInfo();
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRtnTradeMessage(string UserNo, TapAPITradeMessage *pRtnInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNTRADEMESSAGE;
-	task.task_string = UserNo;
-	if (pRtnInfo)
-	{
-		TapAPITradeMessage *task_data = new TapAPITradeMessage();
-		*task_data = *pRtnInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryHisOrder(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIHisOrderQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYHISORDER;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIHisOrderQryRsp *task_data = new TapAPIHisOrderQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryHisOrderProcess(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIHisOrderProcessQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYHISORDERPROCESS;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIHisOrderProcessQryRsp *task_data = new TapAPIHisOrderProcessQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryHisFill(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIHisFillQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYHISFILL;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIHisFillQryRsp *task_data = new TapAPIHisFillQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryHisPosition(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIHisPositionQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYHISPOSITION;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIHisPositionQryRsp *task_data = new TapAPIHisPositionQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryHisDelivery(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIHisDeliveryQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYHISDELIVERY;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIHisDeliveryQryRsp *task_data = new TapAPIHisDeliveryQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryAccountCashAdjust(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIAccountCashAdjustQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYACCOUNTCASHADJUST;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIAccountCashAdjustQryRsp *task_data = new TapAPIAccountCashAdjustQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryBill(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIBillQryRsp *pInfo)
+void TdApi::OnRspQryBill(unsigned int sessionID, int errorCode, char isLast, const TapAPIBillQryRsp *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYBILL;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pInfo)
+	if (info)
 	{
 		TapAPIBillQryRsp *task_data = new TapAPIBillQryRsp();
-		*task_data = *pInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspAccountFeeRent(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIAccountFeeRentQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPACCOUNTFEERENT;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIAccountFeeRentQryRsp *task_data = new TapAPIAccountFeeRentQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspAccountMarginRent(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIAccountMarginRentQryRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPACCOUNTMARGINRENT;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIAccountMarginRentQryRsp *task_data = new TapAPIAccountMarginRentQryRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspAddMobileDevice(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIMobileDeviceAddRsp *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPADDMOBILEDEVICE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIMobileDeviceAddRsp *task_data = new TapAPIMobileDeviceAddRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryManageInfoForEStar(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIManageInfo *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYMANAGEINFOFORESTAR;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIManageInfo *task_data = new TapAPIManageInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQrySystemParameter(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPISystemParameterInfo *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYSYSTEMPARAMETER;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPISystemParameterInfo *task_data = new TapAPISystemParameterInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRspQryTradeCenterFrontAddress(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPITradeCenterFrontAddressInfo *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYTRADECENTERFRONTADDRESS;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPITradeCenterFrontAddressInfo *task_data = new TapAPITradeCenterFrontAddressInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRtnCommodityInfo(string UserNo, TapAPICommodityInfo *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNCOMMODITYINFO;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPICommodityInfo *task_data = new TapAPICommodityInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-void TdApi::OnRtnCurrencyInfo(string UserNo, TapAPICurrencyInfo *pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNCURRENCYINFO;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPICurrencyInfo *task_data = new TapAPICurrencyInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspQryAccountStorage(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIAccountStorageInfo* pInfo)
+    void TdApi::OnRspQryAccountStorage(unsigned int sessionID, int errorCode, char isLast, const TapAPIAccountStorageInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYACCOUNTSTORAGE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
+	task.task_id = sessionID;
+	task.task_int = errorCode;
 	task.task_last = isLast;
-	if (pInfo)
+	if (info)
 	{
 		TapAPIAccountStorageInfo *task_data = new TapAPIAccountStorageInfo();
-		*task_data = *pInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
 };
 
-    void TdApi::OnRtnAccountStorage(string UserNo, TapAPIAccountStorageInfo* pInfo)
+    void TdApi::OnRtnAccountStorage(const TapAPIAccountStorageInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNACCOUNTSTORAGE;
-	task.task_string = UserNo;
-	if (pInfo)
+	if (info)
 	{
 		TapAPIAccountStorageInfo *task_data = new TapAPIAccountStorageInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspQrySpotLock(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPISpotLockInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYSPOTLOCK;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPISpotLockInfo *task_data = new TapAPISpotLockInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnSpotLock(string UserNo, TapAPISpotLockInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNSPOTLOCK;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPISpotLockInfo *task_data = new TapAPISpotLockInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspSpecialOrderAction(string UserNo, unsigned int nRequestID, int nErrorCode, TapAPISpecialOrderInfo *pRtnInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPSPECIALORDERACTION;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	if (pRtnInfo)
-	{
-		TapAPISpecialOrderInfo *task_data = new TapAPISpecialOrderInfo();
-		*task_data = *pRtnInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnSpecialOrder(string UserNo, unsigned int nRequestID, TapAPISpecialOrderInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNSPECIALORDER;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	if (pInfo)
-	{
-		TapAPISpecialOrderInfo *task_data = new TapAPISpecialOrderInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnCombinePosition(string UserNo, TapAPICombinePositionInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNCOMBINEPOSITION;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPICombinePositionInfo *task_data = new TapAPICombinePositionInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnContractQuote(string UserNo, TapAPIContractQuoteInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNCONTRACTQUOTE;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPIContractQuoteInfo *task_data = new TapAPIContractQuoteInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspQryTrustDevice(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPITrustDeviceInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYTRUSTDEVICE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPITrustDeviceInfo *task_data = new TapAPITrustDeviceInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspAddTrustDevice(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPITrustDeviceAddRsp* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPADDTRUSTDEVICE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPITrustDeviceAddRsp *task_data = new TapAPITrustDeviceAddRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspDelTrustDevice(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPITrustDeviceDelRsp* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPDELTRUSTDEVICE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPITrustDeviceDelRsp *task_data = new TapAPITrustDeviceDelRsp();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnAddUserRight(string UserNo, TapAPIUserRightInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNADDUSERRIGHT;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPIUserRightInfo *task_data = new TapAPIUserRightInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRtnDelUserRight(string UserNo, TapAPIUserRightInfo* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRTNDELUSERRIGHT;
-	task.task_string = UserNo;
-	if (pInfo)
-	{
-		TapAPIUserRightInfo *task_data = new TapAPIUserRightInfo();
-		*task_data = *pInfo;
-		task.task_data = task_data;
-	}
-	this->task_queue.push(task);
-};
-
-    void TdApi::OnRspQryManagerConfigFile(string UserNo, unsigned int nRequestID, int nErrorCode, char isLast, TapAPIManagerConfigFileQryRsp* pInfo)
-{
-	Task task = Task();
-	task.task_name = ONRSPQRYMANAGERCONFIGFILE;
-	task.task_string = UserNo;
-	task.task_id = nRequestID;
-	task.task_int = nErrorCode;
-	task.task_last = isLast;
-	if (pInfo)
-	{
-		TapAPIManagerConfigFileQryRsp *task_data = new TapAPIManagerConfigFileQryRsp();
-		*task_data = *pInfo;
+		*task_data = *info;
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);

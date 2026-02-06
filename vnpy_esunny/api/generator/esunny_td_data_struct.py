@@ -1,14 +1,5 @@
-TapAPITradeUserInfo = {
-    "SystemType": "dict",
-    "UserNo": "string",
-    "LoginIP": "string",
-    "LoginPort": "unsigned int",
-    "LoginType": "dict",
-}
-
 TapAPITradeLoginAuth = {
     "UserNo": "string",
-    "UserType": "dict",
     "AuthCode": "string",
     "AppID": "string",
     "ISModifyPassword": "char",
@@ -16,19 +7,18 @@ TapAPITradeLoginAuth = {
     "NewPassword": "string",
     "ISDDA": "char",
     "DDASerialNo": "string",
-    "NoticeIgnoreFlag": "dict",
-    "LoginIP": "string",
-    "LoginMac": "string",
+    "NoticeIgnoreFlag": "unsigned int",
 }
 
 TapAPITradeLoginRspInfo = {
     "UserNo": "string",
-    "UserType": "dict",
+    "UserType": "int",
     "UserName": "string",
     "QuoteTempPassword": "string",
     "ReservedInfo": "string",
     "LastLoginIP": "string",
     "LastLoginPort": "unsigned int",
+    "LastLoginInfo": "string",
     "LastLoginTime": "string",
     "LastLogoutTime": "string",
     "TradeDate": "string",
@@ -38,8 +28,6 @@ TapAPITradeLoginRspInfo = {
     "AuthType": "char",
     "AuthDate": "string",
     "UdpCertCode": "unsigned long long",
-    "CurrentLoginIP": "string",
-    "CurrentLoginPort": "unsigned int",
 }
 
 TapAPISubmitUserLoginInfo = {
@@ -50,98 +38,12 @@ TapAPISubmitUserLoginInfo = {
     "ClientLoginDateTime": "string",
     "ClientAppID": "string",
     "AuthKeyVersion": "unsigned int",
-    "ItemFalg": "string",
-    "GatherLibVersion": "string",
-    "IsTestKey": "char",
-    "OperatingSystmeType": "char",
 }
 
-TapAPISubmitUserLoginInfoRsp = {
+TapAPISubmitUserLoginRspInfo = {
     "UserNo": "string",
     "ErrorCode": "unsigned int",
     "ErrorText": "string",
-}
-
-TapAPIExchangeInfo = {
-    "ExchangeNo": "string",
-    "ExchangeName": "string",
-}
-
-TapAPICommodity = {
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-}
-
-TapAPICommodityInfo = {
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "CommodityName": "string",
-    "CommodityEngName": "string",
-    "RelateExchangeNo": "string",
-    "RelateCommodityType": "char",
-    "RelateCommodityNo": "string",
-    "RelateExchangeNo2": "string",
-    "RelateCommodityType2": "char",
-    "RelateCommodityNo2": "string",
-    "TradeCurrency": "string",
-    "ContractSize": "double",
-    "OpenCloseMode": "char",
-    "StrikePriceTimes": "double",
-    "CommodityTickSize": "double",
-    "CommodityDenominator": "int",
-    "CmbDirect": "char",
-    "OnlyCanCloseDays": "int",
-    "DeliveryMode": "char",
-    "DeliveryDays": "int",
-    "AddOneTime": "string",
-    "CommodityTimeZone": "int",
-    "IsAddOne": "char",
-}
-
-TapAPIContract = {
-    "Commodity": "dict",
-    "ContractNo1": "string",
-    "StrikePrice1": "string",
-    "CallOrPutFlag1": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-}
-
-TapAPITradeContractInfo = {
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo1": "string",
-    "StrikePrice1": "string",
-    "CallOrPutFlag1": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-    "ContractName": "dict",
-    "ContractExpDate": "string",
-    "LastTradeDate": "string",
-    "FirstNoticeDate": "string",
-    "FutureContractNo": "dict",
-}
-
-TapAPIChangePasswordReq = {
-    "PasswordType": "char",
-    "OldPassword": "string",
-    "NewPassword": "string",
-}
-
-TapAPIChangePasswordRsp = TapAPIChangePasswordReq
-TapAPIUserRightInfo = {
-    "UserNo": "string",
-    "RightID": "dict",
-}
-
-TapAPIUserOrderFrequency = {
-    "UserNo": "string",
-    "UserOrderFrequency": "unsigned int",
 }
 
 TapAPIAccQryReq = {
@@ -153,9 +55,9 @@ TapAPIAccountInfo = {
     "AccountType": "char",
     "AccountState": "char",
     "AccountShortName": "string",
-    "AccountIsDocHolder": "dict",
+    "AccountIsDocHolder": "char",
     "IsMarketMaker": "char",
-    "AccountFamilyType": "dict",
+    "AccountFamilyType": "char",
 }
 
 TapAPINewOrder = {
@@ -179,26 +81,36 @@ TapAPINewOrder = {
     "PositionEffect2": "char",
     "InquiryNo": "string",
     "HedgeFlag": "char",
-    "HedgeFlag2": "char",
     "OrderPrice": "double",
     "OrderPrice2": "double",
+    "StopPrice": "double",
     "OrderQty": "unsigned int",
-    "OrderQty2": "unsigned int",
     "OrderMinQty": "unsigned int",
     "MinClipSize": "unsigned int",
     "MaxClipSize": "unsigned int",
     "RefInt": "int",
-    "RefDouble": "double",
     "RefString": "string",
     "TacticsType": "char",
     "TriggerCondition": "char",
     "TriggerPriceType": "char",
-    "StopPrice": "double",
     "AddOneIsValid": "char",
-    "MarketLevel": "dict",
+    "OrderQty2": "unsigned int",
+    "HedgeFlag2": "char",
+    "MarketLevel": "unsigned char",
     "FutureAutoCloseFlag": "char",
     "UpperChannelNo": "string",
-    "ClientID": "string",
+}
+
+TapAPICommodityOrderTypeQryRsp = {
+    "Commodity": "TapAPICommodity",
+    "Count": "int",
+    "OrderTypes": "TAPIOrderTypeType*",
+}
+
+TapAPICommodityOrderTimeInForceQryRsp = {
+    "Commodity": "TapAPICommodity",
+    "Count": "int",
+    "OrderTimeInForces": "TAPITimeInForceType*",
 }
 
 TapAPIOrderInfo = {
@@ -222,26 +134,17 @@ TapAPIOrderInfo = {
     "PositionEffect2": "char",
     "InquiryNo": "string",
     "HedgeFlag": "char",
-    "HedgeFlag2": "char",
     "OrderPrice": "double",
     "OrderPrice2": "double",
     "StopPrice": "double",
     "OrderQty": "unsigned int",
-    "OrderQty2": "unsigned int",
     "OrderMinQty": "unsigned int",
+    "OrderCanceledQty": "unsigned int",
     "MinClipSize": "unsigned int",
     "MaxClipSize": "unsigned int",
-    "RefInt": "int",
-    "RefDouble": "double",
-    "RefString": "string",
-    "TacticsType": "char",
-    "TriggerCondition": "char",
-    "TriggerPriceType": "char",
-    "AddOneIsValid": "char",
-    "MarketLevel": "dict",
-    "FutureAutoCloseFlag": "char",
-    "OrderCanceledQty": "unsigned int",
     "LicenseNo": "string",
+    "RefInt": "int",
+    "RefString": "string",
     "ParentAccountNo": "string",
     "ServerFlag": "char",
     "OrderNo": "string",
@@ -249,6 +152,8 @@ TapAPIOrderInfo = {
     "OrderLocalNo": "string",
     "OrderSystemNo": "string",
     "OrderExchangeSystemNo": "string",
+    "OrderParentNo": "string",
+    "OrderParentSystemNo": "string",
     "TradeNo": "string",
     "UpperNo": "string",
     "UpperChannelNo": "string",
@@ -271,19 +176,53 @@ TapAPIOrderInfo = {
     "IsAddOne": "char",
     "OrderStreamID": "unsigned int",
     "UpperStreamID": "unsigned int",
-    "ClientID": "string",
+    "ContractSize": "double",
+    "ContractSize2": "double",
+    "CommodityCurrencyGroup": "string",
+    "CommodityCurrency": "string",
+    "FeeMode": "char",
+    "FeeParam": "double",
+    "FeeCurrencyGroup": "string",
+    "FeeCurrency": "string",
+    "FeeMode2": "char",
+    "FeeParam2": "double",
+    "FeeCurrencyGroup2": "string",
+    "FeeCurrency2": "string",
+    "MarginMode": "char",
+    "MarginParam": "double",
+    "MarginMode2": "char",
+    "MarginParam2": "double",
+    "PreSettlePrice": "double",
+    "PreSettlePrice2": "double",
+    "OpenVol": "unsigned int",
+    "CoverVol": "unsigned int",
+    "OpenVol2": "unsigned int",
+    "CoverVol2": "unsigned int",
     "FeeValue": "double",
     "MarginValue": "double",
-    "OrderParentSystemNo": "string",
+    "TacticsType": "char",
+    "TriggerCondition": "char",
+    "TriggerPriceType": "char",
+    "AddOneIsValid": "char",
+    "OrderQty2": "unsigned int",
+    "HedgeFlag2": "char",
+    "MarketLevel": "unsigned char",
+    "OrderDeleteByDisConnFlag": "char",
+}
+
+TapAPIOrderInfoNotice = {
+    "SessionID": "unsigned int",
+    "ErrorCode": "unsigned int",
+    "OrderInfo": "TapAPIOrderInfo*",
 }
 
 TapAPIOrderActionRsp = {
     "ActionType": "char",
-    "OrderInfo": "dict",
+    "OrderInfo": "TapAPIOrderInfo*",
 }
 
-TapAPIOrderModifyReq = {
-    "ReqData": "dict",
+TapAPIAmendOrder = {
+    "ReqData": "TapAPINewOrder",
     "ServerFlag": "char",
     "OrderNo": "string",
 }
@@ -295,13 +234,8 @@ TapAPIOrderCancelReq = {
     "OrderNo": "string",
 }
 
-TapAPIOrderDeactivateReq = TapAPIOrderCancelReq
-TapAPIOrderActivateReq = TapAPIOrderCancelReq
-TapAPIOrderDeleteReq = TapAPIOrderCancelReq
 TapAPIOrderQryReq = {
     "OrderQryType": "char",
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
 }
 
 TapAPIOrderProcessQryReq = {
@@ -310,19 +244,27 @@ TapAPIOrderProcessQryReq = {
 }
 
 TapAPIFillQryReq = {
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
+    "StreamID": "unsigned int",
 }
 
 TapAPIFillInfo = {
     "AccountNo": "string",
-    "ParentAccountNo": "dict",
+    "ParentAccountNo": "string",
     "ExchangeNo": "string",
     "CommodityType": "char",
     "CommodityNo": "string",
     "ContractNo": "string",
     "StrikePrice": "string",
     "CallOrPutFlag": "char",
+    "ExchangeNoRef": "string",
+    "CommodityTypeRef": "char",
+    "CommodityNoRef": "string",
+    "ContractNoRef": "string",
+    "StrikePriceRef": "string",
+    "CallOrPutFlagRef": "char",
+    "OrderExchangeNo": "string",
+    "OrderCommodityType": "char",
+    "OrderCommodityNo": "string",
     "OrderType": "char",
     "MatchSource": "char",
     "TimeInForce": "char",
@@ -330,6 +272,7 @@ TapAPIFillInfo = {
     "IsRiskOrder": "char",
     "MatchSide": "char",
     "PositionEffect": "char",
+    "PositionEffectRef": "char",
     "HedgeFlag": "char",
     "ServerFlag": "char",
     "OrderNo": "string",
@@ -350,44 +293,56 @@ TapAPIFillInfo = {
     "IsAddOne": "char",
     "MatchStreamID": "unsigned int",
     "UpperStreamID": "unsigned int",
-    "OpenCloseMode": "dict",
-    "ContractSize": "dict",
-    "CommodityCurrencyGroup": "dict",
-    "CommodityCurrency": "dict",
-    "FeeMode": "dict",
-    "FeeParam": "dict",
+    "OpenCloseMode": "char",
+    "ContractSize": "double",
+    "CommodityCurrencyGroup": "string",
+    "CommodityCurrency": "string",
+    "FeeMode": "char",
+    "FeeParam": "double",
     "FeeCurrencyGroup": "string",
     "FeeCurrency": "string",
-    "PreSettlePrice": "dict",
+    "PreSettlePrice": "double",
     "FeeValue": "double",
     "IsManualFee": "char",
-    "Turnover": "dict",
+    "Turnover": "double",
     "PremiumIncome": "double",
     "PremiumPay": "double",
-    "OppoMatchNo": "dict",
+    "OppoMatchNo": "string",
     "CloseProfit": "double",
-    "UnExpProfit": "dict",
-    "UpperMatchPrice": "dict",
-    "QuotePrice": "dict",
-    "ClosePL": "dict",
-    "OrderSystemNo": "string",
-    "UpperMatchNo": "string",
-    "ClosePositionPrice": "double",
+    "UnExpProfit": "double",
+    "UpperMatchPrice": "double",
+    "QuotePrice": "double",
+    "ClosePL": "double",
+}
+
+TapAPICloseQryReq = {
 }
 
 TapAPIPositionQryReq = {
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
 }
 
 TapAPIPositionInfo = {
     "AccountNo": "string",
+    "ParentAccountNo": "string",
     "ExchangeNo": "string",
     "CommodityType": "char",
     "CommodityNo": "string",
     "ContractNo": "string",
     "StrikePrice": "string",
     "CallOrPutFlag": "char",
+    "ExchangeNoRef": "string",
+    "CommodityTypeRef": "char",
+    "CommodityNoRef": "string",
+    "ContractNoRef": "string",
+    "StrikePriceRef": "string",
+    "CallOrPutFlagRef": "char",
+    "OrderExchangeNo": "string",
+    "OrderCommodityType": "char",
+    "OrderCommodityNo": "string",
+    "OrderType": "char",
+    "MatchSource": "char",
+    "TimeInForce": "char",
+    "ExpireTime": "string",
     "MatchSide": "char",
     "HedgeFlag": "char",
     "PositionNo": "string",
@@ -395,10 +350,9 @@ TapAPIPositionInfo = {
     "OrderNo": "string",
     "MatchNo": "string",
     "ExchangeMatchNo": "string",
-    "MatchSource": "char",
     "MatchDate": "string",
     "MatchTime": "string",
-    "UpperMatchTime": "dict",
+    "UpperMatchTime": "string",
     "UpperNo": "string",
     "UpperSettleNo": "string",
     "UpperUserNo": "string",
@@ -409,17 +363,17 @@ TapAPIPositionInfo = {
     "IsAddOne": "char",
     "MatchStreamID": "unsigned int",
     "PositionStreamId": "unsigned int",
-    "OpenCloseMode": "dict",
+    "OpenCloseMode": "char",
     "ContractSize": "double",
     "CommodityCurrencyGroup": "string",
     "CommodityCurrency": "string",
     "PreSettlePrice": "double",
     "SettlePrice": "double",
     "Turnover": "double",
-    "AccountMarginMode": "dict",
-    "AccountMarginParam": "dict",
-    "UpperMarginMode": "dict",
-    "UpperMarginParam": "dict",
+    "AccountMarginMode": "char",
+    "AccountMarginParam": "double",
+    "UpperMarginMode": "char",
+    "UpperMarginParam": "double",
     "AccountInitialMargin": "double",
     "AccountMaintenanceMargin": "double",
     "UpperInitialMargin": "double",
@@ -430,22 +384,6 @@ TapAPIPositionInfo = {
     "MatchCmbNo": "string",
     "IsHistory": "char",
     "FloatingPL": "double",
-    "CalculatePrice": "double",
-}
-
-TapAPIPositionSumInfo = {
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "MatchSide": "char",
-    "HedgeFlag": "char",
-    "PositionPrice": "double",
-    "PositionQty": "unsigned int",
-    "HisPositionQty": "unsigned int",
 }
 
 TapAPIPositionProfit = {
@@ -460,29 +398,24 @@ TapAPIPositionProfit = {
 
 TapAPIPositionProfitNotice = {
     "IsLast": "char",
-    "Data": "dict",
-}
-
-TapAPICloseQryReq = {
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
+    "Data": "TapAPIPositionProfit*",
 }
 
 TapAPICloseInfo = {
     "AccountNo": "string",
-    "ParentAccountNo": "dict",
+    "ParentAccountNo": "string",
     "ExchangeNo": "string",
     "CommodityType": "char",
     "CommodityNo": "string",
     "ContractNo": "string",
     "StrikePrice": "string",
     "CallOrPutFlag": "char",
-    "OpenOrderExchangeNo": "dict",
-    "OpenOrderCommodityType": "dict",
-    "OpenOrderCommodityNo": "dict",
-    "CloseOrderExchangeNo": "dict",
-    "CloseOrderCommodityType": "dict",
-    "CloseOrderCommodityNo": "dict",
+    "OpenOrderExchangeNo": "string",
+    "OpenOrderCommodityType": "char",
+    "OpenOrderCommodityNo": "string",
+    "CloseOrderExchangeNo": "string",
+    "CloseOrderCommodityType": "char",
+    "CloseOrderCommodityNo": "string",
     "OpenMatchSource": "char",
     "CloseMatchSource": "char",
     "CloseSide": "char",
@@ -500,13 +433,13 @@ TapAPICloseInfo = {
     "CloseExchangeMatchNo": "string",
     "CloseMatchDateTime": "string",
     "CloseStreamId": "unsigned int",
-    "OpenCloseMode": "dict",
+    "OpenCloseMode": "char",
     "ContractSize": "double",
-    "CommodityCurrencyGroup": "dict",
-    "CommodityCurrency": "dict",
+    "CommodityCurrencyGroup": "string",
+    "CommodityCurrency": "string",
     "PreSettlePrice": "double",
-    "PremiumIncome": "dict",
-    "PremiumPay": "dict",
+    "PremiumIncome": "double",
+    "PremiumPay": "double",
     "CloseProfit": "double",
     "UnExpProfit": "double",
     "ClosePL": "double",
@@ -514,12 +447,11 @@ TapAPICloseInfo = {
 
 TapAPIFundReq = {
     "AccountNo": "string",
-    "DataSeqID": "unsigned int",
 }
 
 TapAPIFundData = {
     "AccountNo": "string",
-    "ParentAccountNo": "dict",
+    "ParentAccountNo": "string",
     "CurrencyGroupNo": "string",
     "CurrencyNo": "string",
     "TradeRate": "double",
@@ -549,9 +481,9 @@ TapAPIFundData = {
     "PositionProfit": "double",
     "LmePositionProfit": "double",
     "OptionMarketValue": "double",
-    "AccountInitialMargin": "double",
+    "AccountIntialMargin": "double",
     "AccountMaintenanceMargin": "double",
-    "UpperInitialMargin": "double",
+    "UpperInitalMargin": "double",
     "UpperMaintenanceMargin": "double",
     "Discount": "double",
     "Balance": "double",
@@ -559,7 +491,6 @@ TapAPIFundData = {
     "Available": "double",
     "CanDraw": "double",
     "MarketEquity": "double",
-    "AuthMoney": "double",
     "OriginalCashInOut": "double",
     "FloatingPL": "double",
     "FrozenRiskFundValue": "double",
@@ -578,18 +509,55 @@ TapAPIFundData = {
     "SpecialCloseProfit": "double",
     "SpecialFloatPL": "double",
     "SpecialClosePL": "double",
-    "RiskRate": "double",
 }
 
-TapAPIReqQuoteNotice = {
+TapAPICommodityInfo = {
     "ExchangeNo": "string",
     "CommodityType": "char",
     "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "InquiryNo": "string",
-    "UpdateTime": "string",
+    "CommodityName": "string",
+    "CommodityEngName": "string",
+    "RelateExchangeNo": "string",
+    "RelateCommodityType": "char",
+    "RelateCommodityNo": "string",
+    "RelateExchangeNo2": "string",
+    "RelateCommodityType2": "char",
+    "RelateCommodityNo2": "string",
+    "TradeCurrency": "string",
+    "SettleCurrency": "string",
+    "ContractSize": "double",
+    "MarginCalculateMode": "char",
+    "OptionMarginCalculateMode": "char",
+    "OpenCloseMode": "char",
+    "StrikePriceTimes": "double",
+    "IsOnlyQuoteCommodity": "char",
+    "CommodityTickSize": "double",
+    "CommodityDenominator": "int",
+    "CmbDirect": "char",
+    "OnlyCanCloseDays": "int",
+    "DeliveryMode": "char",
+    "DeliveryDays": "int",
+    "AddOneTime": "string",
+    "CommodityTimeZone": "int",
+}
+
+TapAPITradeContractInfo = {
+    "ExchangeNo": "string",
+    "CommodityType": "char",
+    "CommodityNo": "string",
+    "ContractNo1": "string",
+    "StrikePrice1": "string",
+    "CallOrPutFlag1": "char",
+    "ContractNo2": "string",
+    "StrikePrice2": "string",
+    "CallOrPutFlag2": "char",
+    "ContractType": "char",
+    "QuoteUnderlyingContract": "string",
+    "ContractName": "string",
+    "ContractExpDate": "string",
+    "LastTradeDate": "string",
+    "FirstNoticeDate": "string",
+    "FutureContractNo": "string",
 }
 
 TapAPIDeepQuoteInfo = {
@@ -599,11 +567,11 @@ TapAPIDeepQuoteInfo = {
 }
 
 TapAPIDeepQuoteQryRsp = {
-    "Contract": "dict",
-    "DeepQuote": "dict",
+    "Contract": "TapAPIContract",
+    "DeepQuote": "TapAPIDeepQuoteInfo",
 }
 
-TapAPIExchangeStateInfoQryReq: dict[str, str] = {
+TapAPIExchangeStateInfoQryReq = {
 }
 
 TapAPIExchangeStateInfo = {
@@ -617,10 +585,21 @@ TapAPIExchangeStateInfo = {
 
 TapAPIExchangeStateInfoNotice = {
     "IsLast": "char",
-    "ExchangeStateInfo": "dict",
+    "ExchangeStateInfo": "TapAPIExchangeStateInfo",
 }
 
-TapAPIUpperChannelQryReq: dict[str, str] = {
+TapAPIReqQuoteNotice = {
+    "ExchangeNo": "string",
+    "CommodityType": "char",
+    "CommodityNo": "string",
+    "ContractNo": "string",
+    "StrikePrice": "string",
+    "CallOrPutFlag": "char",
+    "InquiryNo": "string",
+    "UpdateTime": "string",
+}
+
+TapAPIUpperChannelQryReq = {
 }
 
 TapAPIUpperChannelInfo = {
@@ -672,63 +651,6 @@ TapAPIAccountRentInfo = {
     "SellMMaintMargin": "double",
 }
 
-TapAPICurrencyInfo = {
-    "CurrencyNo": "string",
-    "CurrencyGroupNo": "string",
-    "TradeRate": "double",
-    "TradeRate2": "double",
-    "FutureAlg": "char",
-    "OptionAlg": "char",
-}
-
-TapAPITradeMessageQryReq = {
-    "SerialID": "unsigned int",
-    "TradeMsgQryType": "char",
-    "AccountNo": "string",
-    "BeginSendDateTime": "string",
-    "EndSendDateTime": "string",
-}
-
-TapAPITradeMessage = {
-    "SerialID": "unsigned int",
-    "AccountNo": "string",
-    "TMsgValidDateTime": "string",
-    "TMsgTitle": "string",
-    "TMsgContent": "string",
-    "TMsgType": "char",
-    "TMsgLevel": "char",
-    "IsSendBySMS": "char",
-    "IsSendByEMail": "char",
-    "Sender": "string",
-    "SendDateTime": "string",
-}
-
-TapAPIAccountCashAdjustQryReq = {
-    "SerialID": "unsigned int",
-    "AccountNo": "string",
-    "AccountAttributeNo": "string",
-    "BeginDate": "string",
-    "EndDate": "string",
-}
-
-TapAPIAccountCashAdjustQryRsp = {
-    "Date": "string",
-    "AccountNo": "string",
-    "CashAdjustType": "char",
-    "CurrencyGroupNo": "string",
-    "CurrencyNo": "string",
-    "CashAdjustValue": "double",
-    "CashAdjustRemark": "string",
-    "OperateTime": "string",
-    "OperatorNo": "string",
-    "AccountBank": "string",
-    "BankAccount": "string",
-    "AccountLWFlag": "char",
-    "CompanyBank": "string",
-    "InternalBankAccount": "string",
-    "CompanyLWFlag": "char",
-}
-
 TapAPIBillQryReq = {
     "UserNo": "string",
     "BillType": "char",
@@ -740,351 +662,6 @@ TapAPIBillQryRsp = {
     "Reqdata": "dict",
     "BillLen": "int",
     "BillText": "char",
-}
-
-TapAPIHisOrderQryReq = {
-    "AccountNo": "string",
-    "AccountAttributeNo": "string",
-    "BeginDate": "string",
-    "EndDate": "string",
-}
-
-TapAPIHisOrderQryRsp = {
-    "Date": "string",
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-    "OrderType": "char",
-    "OrderSource": "char",
-    "TimeInForce": "char",
-    "ExpireTime": "string",
-    "IsRiskOrder": "char",
-    "OrderSide": "char",
-    "PositionEffect": "char",
-    "PositionEffect2": "char",
-    "InquiryNo": "string",
-    "HedgeFlag": "char",
-    "OrderPrice": "double",
-    "OrderPrice2": "double",
-    "StopPrice": "double",
-    "OrderQty": "unsigned int",
-    "OrderMinQty": "unsigned int",
-    "OrderCanceledQty": "unsigned int",
-    "RefInt": "int",
-    "RefDouble": "double",
-    "RefString": "string",
-    "ServerFlag": "char",
-    "OrderNo": "string",
-    "OrderStreamID": "unsigned int",
-    "UpperNo": "string",
-    "UpperChannelNo": "string",
-    "OrderLocalNo": "string",
-    "UpperStreamID": "unsigned int",
-    "OrderSystemNo": "string",
-    "OrderExchangeSystemNo": "string",
-    "OrderParentSystemNo": "string",
-    "OrderInsertUserNo": "string",
-    "OrderInsertTime": "string",
-    "OrderCommandUserNo": "string",
-    "OrderUpdateUserNo": "string",
-    "OrderUpdateTime": "string",
-    "OrderState": "char",
-    "OrderMatchPrice": "double",
-    "OrderMatchPrice2": "double",
-    "OrderMatchQty": "unsigned int",
-    "OrderMatchQty2": "unsigned int",
-    "ErrorCode": "unsigned int",
-    "ErrorText": "string",
-    "IsBackInput": "char",
-    "IsDeleted": "char",
-    "IsAddOne": "char",
-    "AddOneIsValid": "char",
-    "MinClipSize": "unsigned int",
-    "MaxClipSize": "unsigned int",
-    "LicenseNo": "string",
-    "TacticsType": "char",
-    "TriggerCondition": "char",
-    "TriggerPriceType": "char",
-}
-
-TapAPIHisFillQryReq = {
-    "AccountNo": "string",
-    "AccountAttributeNo": "string",
-    "BeginDate": "string",
-    "EndDate": "string",
-    "CountType": "char",
-}
-
-TapAPIHisFillQryRsp = {
-    "SettleDate": "string",
-    "TradeDate": "string",
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "MatchSource": "char",
-    "MatchSide": "char",
-    "PositionEffect": "char",
-    "HedgeFlag": "char",
-    "MatchPrice": "double",
-    "MatchQty": "unsigned int",
-    "OrderNo": "string",
-    "MatchNo": "string",
-    "MatchStreamID": "unsigned int",
-    "UpperNo": "string",
-    "MatchCmbNo": "string",
-    "ExchangeMatchNo": "string",
-    "MatchUpperStreamID": "unsigned int",
-    "CommodityCurrencyGroup": "string",
-    "CommodityCurrency": "string",
-    "Turnover": "double",
-    "PremiumIncome": "double",
-    "PremiumPay": "double",
-    "AccountFee": "double",
-    "AccountFeeCurrencyGroup": "string",
-    "AccountFeeCurrency": "string",
-    "IsManualFee": "char",
-    "AccountOtherFee": "double",
-    "UpperFee": "double",
-    "UpperFeeCurrencyGroup": "string",
-    "UpperFeeCurrency": "string",
-    "IsUpperManualFee": "char",
-    "UpperOtherFee": "double",
-    "MatchDateTime": "string",
-    "UpperMatchDateTime": "string",
-    "CloseProfit": "double",
-    "ClosePrice": "double",
-    "CloseQty": "unsigned int",
-    "SettleGroupNo": "string",
-    "OperatorNo": "string",
-    "OperateTime": "string",
-}
-
-TapAPIHisOrderProcessQryReq = {
-    "Date": "string",
-    "OrderNo": "string",
-}
-
-TapAPIHisOrderProcessQryRsp = TapAPIHisOrderQryRsp
-TapAPIHisPositionQryReq = {
-    "AccountNo": "string",
-    "Date": "string",
-    "SettleFlag": "char",
-}
-
-TapAPIHisPositionQryRsp = {
-    "SettleDate": "string",
-    "OpenDate": "string",
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "MatchSide": "char",
-    "HedgeFlag": "char",
-    "PositionPrice": "double",
-    "PositionQty": "unsigned int",
-    "OrderNo": "string",
-    "PositionNo": "string",
-    "UpperNo": "string",
-    "CurrencyGroup": "string",
-    "Currency": "string",
-    "PreSettlePrice": "double",
-    "SettlePrice": "double",
-    "PositionDProfit": "double",
-    "LMEPositionProfit": "double",
-    "OptionMarketValue": "double",
-    "AccountInitialMargin": "double",
-    "AccountMaintenanceMargin": "double",
-    "UpperInitialMargin": "double",
-    "UpperMaintenanceMargin": "double",
-    "SettleGroupNo": "string",
-}
-
-TapAPIHisDeliveryQryReq = {
-    "AccountNo": "string",
-    "AccountAttributeNo": "string",
-    "BeginDate": "string",
-    "EndDate": "string",
-    "CountType": "char",
-}
-
-TapAPIHisDeliveryQryRsp = {
-    "DeliveryDate": "string",
-    "OpenDate": "string",
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "MatchSource": "char",
-    "OpenSide": "char",
-    "OpenPrice": "double",
-    "DeliveryPrice": "double",
-    "DeliveryQty": "unsigned int",
-    "FrozenQty": "unsigned int",
-    "OpenNo": "string",
-    "UpperNo": "string",
-    "CommodityCurrencyGroupy": "string",
-    "CommodityCurrency": "string",
-    "PreSettlePrice": "double",
-    "DeliveryProfit": "double",
-    "AccountFrozenInitialMargin": "double",
-    "AccountFrozenMaintenanceMargin": "double",
-    "UpperFrozenInitialMargin": "double",
-    "UpperFrozenMaintenanceMargin": "double",
-    "AccountFeeCurrencyGroup": "string",
-    "AccountFeeCurrency": "string",
-    "AccountDeliveryFee": "double",
-    "UpperFeeCurrencyGroup": "string",
-    "UpperFeeCurrency": "string",
-    "UpperDeliveryFee": "double",
-    "DeliveryMode": "char",
-    "OperatorNo": "string",
-    "OperateTime": "string",
-    "SettleGroupNo": "string",
-}
-
-TapAPIAccountFeeRentQryReq = {
-    "AccountNo": "string",
-}
-
-TapAPIAccountFeeRentQryRsp = {
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "MatchSource": "char",
-    "CalculateMode": "char",
-    "CurrencyGroupNo": "string",
-    "CurrencyNo": "string",
-    "OpenCloseFee": "double",
-    "CloseTodayFee": "double",
-    "ContractNo": "string",
-}
-
-TapAPIAccountMarginRentQryReq = {
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "dict",
-}
-
-TapAPIAccountMarginRentQryRsp = {
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "CalculateMode": "char",
-    "CurrencyGroupNo": "string",
-    "CurrencyNo": "string",
-    "InitialMargin": "double",
-    "MaintenanceMargin": "double",
-    "SellInitialMargin": "double",
-    "SellMaintenanceMargin": "double",
-    "LockMargin": "double",
-}
-
-TapAPISecondInfo = {
-    "SendType": "char",
-    "SendAccount": "string",
-}
-
-TapAPIVertificateCode = {
-    "SecondSerialID": "string",
-    "Effective": "int",
-}
-
-TapAPISecondCertificationReq = {
-    "PasswordType": "char",
-    "VertificateCode": "string",
-    "LoginType": "char",
-}
-
-TapAPISecondCertificationRsp = {
-    "PasswordType": "char",
-    "VertificateCode": "string",
-    "SecondDate": "string",
-}
-
-TapAPIMobileDeviceAddReq = {
-    "UserNo": "string",
-    "AppKey": "string",
-    "AppID": "string",
-    "MasterSecret": "string",
-    "Cid": "string",
-    "CompanyNo": "string",
-    "CompanyAddressNo": "string",
-    "DeviceType": "char",
-}
-
-TapAPIMobileDeviceAddRsp = TapAPIMobileDeviceAddReq
-TapAPIManageInfoQryReq = {
-    "BeginDate": "string",
-    "EndDate": "string",
-}
-
-TapAPIManageInfo = {
-    "MsgID": "unsigned int",
-    "SendFrom": "string",
-    "SendManageType": "char",
-    "AccountNo": "string",
-    "SendAccount": "string",
-    "Title": "string",
-    "Content": "string",
-    "Attachment": "string",
-    "SendStatus": "char",
-    "Remark": "string",
-    "GUID": "string",
-    "OperatorNo": "string",
-    "OperateTime": "string",
-}
-
-TapAPISystemParameterQryReq: dict[str, str] = {
-}
-
-TapAPISystemParameterInfo = {
-    "ItemNo": "string",
-    "ExchangeNo": "string",
-    "CommodityNo": "string",
-    "CommodityType": "char",
-    "ItemValue": "int",
-    "ItemValueStr": "string",
-    "ItemValueDouble": "double",
-}
-
-TapAPITradeCenterFrontAddressQryReq = {
-    "FrontAddress": "string",
-    "FrontPort": "string",
-    "TradeCenter": "char",
-    "IsSSL": "char",
-}
-
-TapAPITradeCenterFrontAddressInfo = {
-    "FrontName": "string",
-    "FrontAddress": "string",
-    "FrontPort": "string",
-    "TradeCenter": "char",
-    "IsEnable": "char",
-    "IsSSL": "char",
 }
 
 TapAPIAccountStorageQryReq = {
@@ -1099,182 +676,3 @@ TapAPIAccountStorageInfo = {
     "StorageQty": "double",
 }
 
-TapAPISpotLockQryReq = {
-    "StreamAccountNo": "string",
-    "AccountNo": "string",
-}
-
-TapAPISpotLockInfo = {
-    "AccountNo": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "PositionQty": "unsigned int",
-    "LockQty": "unsigned int",
-    "CoveredQty": "unsigned int",
-    "CanCoveredQty": "unsigned int",
-}
-
-TapAPISpecialOrderInsertReq = {
-    "AccountNo": "string",
-    "SpecialOrderType": "char",
-    "OrderSource": "char",
-    "CombineNo": "string",
-    "RefString": "string",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-    "OrderQty": "unsigned int",
-    "OrderSide": "char",
-    "HedgeFlag": "char",
-}
-
-TapAPISpecialOrderInfo = {
-    "AccountNo": "string",
-    "ServerFlag": "char",
-    "OrderNo": "string",
-    "RefString": "string",
-    "SpecialOrderType": "char",
-    "OrderSource": "char",
-    "CombineStrategy": "string",
-    "CombineNo": "string",
-    "OrderQty": "unsigned int",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "OrderSide1": "char",
-    "CombineQty1": "unsigned int",
-    "HedgeFlag1": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-    "OrderSide2": "char",
-    "CombineQty2": "unsigned int",
-    "HedgeFlag2": "char",
-    "LicenseNo": "string",
-    "OrderStreamID": "unsigned int",
-    "UpperNo": "string",
-    "UpperChannelNo": "string",
-    "OrderLocalNo": "string",
-    "OrderSystemNo": "string",
-    "OrderExchangeSystemNo": "string",
-    "OrderInsertUserNo": "string",
-    "OrderInsertTime": "string",
-    "OrderState": "char",
-    "ErrorCode": "unsigned int",
-    "ErrorText": "string",
-}
-
-TapAPISpecialOrderQryReq = {
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
-}
-
-TapAPICombinePositionQryReq = {
-    "AccountNo": "string",
-    "DataSeqID": "unsigned int",
-}
-
-TapAPICombinePositionInfo = {
-    "AccountNo": "string",
-    "PositionStreamId": "unsigned int",
-    "ServerFlag": "char",
-    "UpperNo": "string",
-    "CombineStrategy": "string",
-    "CombineNo": "string",
-    "PositionQty": "unsigned int",
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "OrderSide1": "char",
-    "CombineQty1": "unsigned int",
-    "HedgeFlag1": "char",
-    "ContractNo2": "string",
-    "StrikePrice2": "string",
-    "CallOrPutFlag2": "char",
-    "OrderSide2": "char",
-    "CombineQty2": "unsigned int",
-    "HedgeFlag2": "char",
-    "CommodityCurrencyGroup": "string",
-    "CommodityCurrency": "string",
-    "AccountInitialMargin": "double",
-    "AccountMaintenanceMargin": "double",
-    "UpperInitialMargin": "double",
-    "UpperMaintenanceMargin": "double",
-}
-
-TapAPIContractQuoteInfo = {
-    "ExchangeNo": "string",
-    "CommodityType": "char",
-    "CommodityNo": "string",
-    "ContractNo": "string",
-    "StrikePrice": "string",
-    "CallOrPutFlag": "char",
-    "LastPrice": "double",
-    "PreSettlePrice": "double",
-    "PreClosingPrice": "double",
-    "LimitUpPrice": "double",
-    "LimitDownPrice": "double",
-}
-
-TapAPIBackUpAddress = {
-    "LoginIP": "string",
-    "LoginPort": "unsigned int",
-}
-
-TapAPIVerifyIdentity = {
-    "UserNo": "string",
-    "CertificateType": "char",
-    "CertificateNo": "string",
-    "EMail": "string",
-    "PhoneNo": "string",
-}
-
-TapAPITrustDeviceQryReq: dict[str, str] = {
-}
-
-TapAPITrustDeviceInfo = {
-    "UserNo": "string",
-    "LicenseNo": "string",
-    "Mac": "string",
-    "DeviceName": "string",
-}
-
-TapAPITrustDeviceAddReq = TapAPITrustDeviceInfo
-TapAPITrustDeviceAddRsp = TapAPITrustDeviceAddReq
-TapAPITrustDeviceDelReq = {
-    "UserNo": "string",
-    "LicenseNo": "string",
-    "Mac": "string",
-}
-
-TapAPITrustDeviceDelRsp = TapAPITrustDeviceDelReq
-TapAPIStepTickSize = {
-    "ExchangeNo": "string",
-    "BeginPrice": "double",
-    "EndPrice": "double",
-    "TickSize": "double",
-}
-
-TapAPIManagerConfigFileQryReq = {
-    "FileName": "string",
-    "FileDirectory": "string",
-}
-
-TapAPIManagerConfigFileQryRsp = {
-    "Reqdata": "dict",
-    "ManagerConfigFileLen": "int",
-    "ManagerConfigFileText": "char",
-}

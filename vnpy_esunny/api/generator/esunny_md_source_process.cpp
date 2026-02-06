@@ -41,7 +41,9 @@ void MdApi::processRspQryCommodity(Task *task)
 	if (task->task_data)
 	{
 		TapAPIQuoteCommodityInfo *task_data = (TapAPIQuoteCommodityInfo*)task->task_data;
-		data["Commodity"] = task_data->Commodity;
+		data["ExchangeNo"] = toUtf(task_data->Commodity.ExchangeNo);
+		data["CommodityType"] = task_data->Commodity.CommodityType;
+		data["CommodityNo"] = toUtf(task_data->Commodity.CommodityNo);
 		data["CommodityName"] = toUtf(task_data->CommodityName);
 		data["CommodityEngName"] = toUtf(task_data->CommodityEngName);
 		data["ContractSize"] = task_data->ContractSize;
@@ -50,8 +52,12 @@ void MdApi::processRspQryCommodity(Task *task)
 		data["CmbDirect"] = task_data->CmbDirect;
 		data["CommodityContractLen"] = task_data->CommodityContractLen;
 		data["IsDST"] = task_data->IsDST;
-		data["RelateCommodity1"] = task_data->RelateCommodity1;
-		data["RelateCommodity2"] = task_data->RelateCommodity2;
+		data["ExchangeNo1"] = toUtf(task_data->RelateCommodity1.ExchangeNo);
+		data["CommodityType1"] = task_data->RelateCommodity1.CommodityType;
+		data["CommodityNo1"] = toUtf(task_data->RelateCommodity1.CommodityNo);
+		data["ExchangeNo2"] = toUtf(task_data->RelateCommodity2.ExchangeNo);
+		data["CommodityType2"] = task_data->RelateCommodity2.CommodityType;
+		data["CommodityNo2"] = toUtf(task_data->RelateCommodity2.CommodityNo);
 		delete task_data;
 	}
 	this->onRspQryCommodity(task->task_id, task->task_int, task->task_last, data);
@@ -64,7 +70,15 @@ void MdApi::processRspQryContract(Task *task)
 	if (task->task_data)
 	{
 		TapAPIQuoteContractInfo *task_data = (TapAPIQuoteContractInfo*)task->task_data;
-		data["Contract"] = task_data->Contract;
+		data["ExchangeNo_Commodity"] = toUtf(task_data->Contract.Commodity.ExchangeNo);
+		data["CommodityType_Commodity"] = task_data->Contract.Commodity.CommodityType;
+		data["CommodityNo_Commodity"] = toUtf(task_data->Contract.Commodity.CommodityNo);
+		data["ContractNo1"] = toUtf(task_data->Contract.ContractNo1);
+		data["StrikePrice1"] = toUtf(task_data->Contract.StrikePrice1);
+		data["CallOrPutFlag1"] = task_data->Contract.CallOrPutFlag1;
+		data["ContractNo2"] = toUtf(task_data->Contract.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->Contract.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->Contract.CallOrPutFlag2;
 		data["ContractType"] = task_data->ContractType;
 		data["QuoteUnderlyingContract"] = toUtf(task_data->QuoteUnderlyingContract);
 		data["ContractName"] = toUtf(task_data->ContractName);
@@ -83,7 +97,15 @@ void MdApi::processRspSubscribeQuote(Task *task)
 	if (task->task_data)
 	{
 		TapAPIQuoteWhole *task_data = (TapAPIQuoteWhole*)task->task_data;
-		data["Contract"] = task_data->Contract;
+		data["ExchangeNo_Commodity"] = toUtf(task_data->Contract.Commodity.ExchangeNo);
+		data["CommodityType_Commodity"] = task_data->Contract.Commodity.CommodityType;
+		data["CommodityNo_Commodity"] = toUtf(task_data->Contract.Commodity.CommodityNo);
+		data["ContractNo1"] = toUtf(task_data->Contract.ContractNo1);
+		data["StrikePrice1"] = toUtf(task_data->Contract.StrikePrice1);
+		data["CallOrPutFlag1"] = task_data->Contract.CallOrPutFlag1;
+		data["ContractNo2"] = toUtf(task_data->Contract.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->Contract.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->Contract.CallOrPutFlag2;
 		data["CurrencyNo"] = toUtf(task_data->CurrencyNo);
 		data["TradingState"] = task_data->TradingState;
 		data["DateTimeStamp"] = toUtf(task_data->DateTimeStamp);
@@ -129,7 +151,15 @@ void MdApi::processRspSubscribeQuote(Task *task)
 		data["QSwing"] = task_data->QSwing;
 		data["QTotalBidQty"] = task_data->QTotalBidQty;
 		data["QTotalAskQty"] = task_data->QTotalAskQty;
-		data["UnderlyContract"] = task_data->UnderlyContract;
+		data["ExchangeNo_Commodity"] = toUtf(task_data->UnderlyContract.Commodity.ExchangeNo);
+		data["CommodityType_Commodity"] = task_data->UnderlyContract.Commodity.CommodityType;
+		data["CommodityNo_Commodity"] = toUtf(task_data->UnderlyContract.Commodity.CommodityNo);
+		data["ContractNo1"] = toUtf(task_data->UnderlyContract.ContractNo1);
+		data["StrikePrice1"] = toUtf(task_data->UnderlyContract.StrikePrice1);
+		data["CallOrPutFlag1"] = task_data->UnderlyContract.CallOrPutFlag1;
+		data["ContractNo2"] = toUtf(task_data->UnderlyContract.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->UnderlyContract.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->UnderlyContract.CallOrPutFlag2;
 		delete task_data;
 	}
 	this->onRspSubscribeQuote(task->task_id, task->task_int, task->task_last, data);
@@ -142,7 +172,9 @@ void MdApi::processRspUnSubscribeQuote(Task *task)
 	if (task->task_data)
 	{
 		TapAPIContract *task_data = (TapAPIContract*)task->task_data;
-		data["Commodity"] = task_data->Commodity;
+		data["ExchangeNo"] = toUtf(task_data->Commodity.ExchangeNo);
+		data["CommodityType"] = task_data->Commodity.CommodityType;
+		data["CommodityNo"] = toUtf(task_data->Commodity.CommodityNo);
 		data["ContractNo1"] = toUtf(task_data->ContractNo1);
 		data["StrikePrice1"] = toUtf(task_data->StrikePrice1);
 		data["CallOrPutFlag1"] = task_data->CallOrPutFlag1;
@@ -161,7 +193,15 @@ void MdApi::processRtnQuote(Task *task)
 	if (task->task_data)
 	{
 		TapAPIQuoteWhole *task_data = (TapAPIQuoteWhole*)task->task_data;
-		data["Contract"] = task_data->Contract;
+		data["ExchangeNo_Commodity"] = toUtf(task_data->Contract.Commodity.ExchangeNo);
+		data["CommodityType_Commodity"] = task_data->Contract.Commodity.CommodityType;
+		data["CommodityNo_Commodity"] = toUtf(task_data->Contract.Commodity.CommodityNo);
+		data["ContractNo1"] = toUtf(task_data->Contract.ContractNo1);
+		data["StrikePrice1"] = toUtf(task_data->Contract.StrikePrice1);
+		data["CallOrPutFlag1"] = task_data->Contract.CallOrPutFlag1;
+		data["ContractNo2"] = toUtf(task_data->Contract.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->Contract.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->Contract.CallOrPutFlag2;
 		data["CurrencyNo"] = toUtf(task_data->CurrencyNo);
 		data["TradingState"] = task_data->TradingState;
 		data["DateTimeStamp"] = toUtf(task_data->DateTimeStamp);
@@ -207,7 +247,15 @@ void MdApi::processRtnQuote(Task *task)
 		data["QSwing"] = task_data->QSwing;
 		data["QTotalBidQty"] = task_data->QTotalBidQty;
 		data["QTotalAskQty"] = task_data->QTotalAskQty;
-		data["UnderlyContract"] = task_data->UnderlyContract;
+		data["ExchangeNo_Commodity"] = toUtf(task_data->UnderlyContract.Commodity.ExchangeNo);
+		data["CommodityType_Commodity"] = task_data->UnderlyContract.Commodity.CommodityType;
+		data["CommodityNo_Commodity"] = toUtf(task_data->UnderlyContract.Commodity.CommodityNo);
+		data["ContractNo1"] = toUtf(task_data->UnderlyContract.ContractNo1);
+		data["StrikePrice1"] = toUtf(task_data->UnderlyContract.StrikePrice1);
+		data["CallOrPutFlag1"] = task_data->UnderlyContract.CallOrPutFlag1;
+		data["ContractNo2"] = toUtf(task_data->UnderlyContract.ContractNo2);
+		data["StrikePrice2"] = toUtf(task_data->UnderlyContract.StrikePrice2);
+		data["CallOrPutFlag2"] = task_data->UnderlyContract.CallOrPutFlag2;
 		delete task_data;
 	}
 	this->onRtnQuote(data);

@@ -1,4 +1,4 @@
-void MdApi::OnRspLogin(int errorCode, TapAPIQuotLoginRspInfo *info)
+void MdApi::OnRspLogin(int errorCode, const TapAPIQuotLoginRspInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPLOGIN;
@@ -27,7 +27,7 @@ void MdApi::OnDisconnect(int reasonCode)
 	this->task_queue.push(task);
 };
 
-void MdApi::OnRspQryCommodity(unsigned int sessionID, int errorCode, char isLast, TapAPIQuoteCommodityInfo *info)
+void MdApi::OnRspQryCommodity(unsigned int sessionID, int errorCode, char isLast, const TapAPIQuoteCommodityInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYCOMMODITY;
@@ -43,7 +43,7 @@ void MdApi::OnRspQryCommodity(unsigned int sessionID, int errorCode, char isLast
 	this->task_queue.push(task);
 };
 
-void MdApi::OnRspQryContract(unsigned int sessionID, int errorCode, char isLast, TapAPIQuoteContractInfo *info)
+void MdApi::OnRspQryContract(unsigned int sessionID, int errorCode, char isLast, const TapAPIQuoteContractInfo *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYCONTRACT;
@@ -59,7 +59,7 @@ void MdApi::OnRspQryContract(unsigned int sessionID, int errorCode, char isLast,
 	this->task_queue.push(task);
 };
 
-void MdApi::OnRspSubscribeQuote(unsigned int sessionID, int errorCode, char isLast, TapAPIQuoteWhole *info)
+void MdApi::OnRspSubscribeQuote(unsigned int sessionID, int errorCode, char isLast, const TapAPIQuoteWhole *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPSUBSCRIBEQUOTE;
@@ -75,7 +75,7 @@ void MdApi::OnRspSubscribeQuote(unsigned int sessionID, int errorCode, char isLa
 	this->task_queue.push(task);
 };
 
-void MdApi::OnRspUnSubscribeQuote(unsigned int sessionID, int errorCode, char isLast, TapAPIContract *info)
+void MdApi::OnRspUnSubscribeQuote(unsigned int sessionID, int errorCode, char isLast, const TapAPIContract *info)
 {
 	Task task = Task();
 	task.task_name = ONRSPUNSUBSCRIBEQUOTE;
@@ -91,7 +91,7 @@ void MdApi::OnRspUnSubscribeQuote(unsigned int sessionID, int errorCode, char is
 	this->task_queue.push(task);
 };
 
-void MdApi::OnRtnQuote(TapAPIQuoteWhole *info)
+void MdApi::OnRtnQuote(const TapAPIQuoteWhole *info)
 {
 	Task task = Task();
 	task.task_name = ONRTNQUOTE;

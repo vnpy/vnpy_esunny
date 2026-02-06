@@ -1,8 +1,8 @@
-void onConnect(string UserNo) override
+void onConnect() override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onConnect, UserNo);
+		PYBIND11_OVERLOAD(void, TdApi, onConnect);
 	}
 	catch (const error_already_set &e)
 	{
@@ -10,11 +10,11 @@ void onConnect(string UserNo) override
 	}
 };
 
-void onRspLogin(string UserNo, int nErrorCode, const dict &data) override
+void onRspLogin(int error, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspLogin, UserNo, nErrorCode, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspLogin, error, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -22,11 +22,11 @@ void onRspLogin(string UserNo, int nErrorCode, const dict &data) override
 	}
 };
 
-void onRtnContactInfo(string UserNo, int nErrorCode, char last, const dict &data) override
+void onAPIReady() override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnContactInfo, UserNo, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onAPIReady);
 	}
 	catch (const error_already_set &e)
 	{
@@ -34,11 +34,11 @@ void onRtnContactInfo(string UserNo, int nErrorCode, char last, const dict &data
 	}
 };
 
-void onRspRequestVertificateCode(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onDisconnect(int reasonCode) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspRequestVertificateCode, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onDisconnect, reasonCode);
 	}
 	catch (const error_already_set &e)
 	{
@@ -46,11 +46,11 @@ void onRspRequestVertificateCode(string UserNo, unsigned int session, int nError
 	}
 };
 
-void onRspRequestVerifyIdentity(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspChangePassword(unsigned int sessionID, int error) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspRequestVerifyIdentity, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspChangePassword, sessionID, error);
 	}
 	catch (const error_already_set &e)
 	{
@@ -58,11 +58,11 @@ void onRspRequestVerifyIdentity(string UserNo, unsigned int session, int nErrorC
 	}
 };
 
-void onRspSetVertificateCode(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspSetReservedInfo(unsigned int sessionID, int error, string info) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspSetVertificateCode, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspSetReservedInfo, sessionID, error, info);
 	}
 	catch (const error_already_set &e)
 	{
@@ -70,11 +70,11 @@ void onRspSetVertificateCode(string UserNo, unsigned int session, int nErrorCode
 	}
 };
 
-void onRtnErrorMsg(string UserNo, string ErrorMsg) override
+void onRspQryAccount(unsigned int sessionID, unsigned int errorCode, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnErrorMsg, UserNo, ErrorMsg);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryAccount, sessionID, errorCode, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -82,11 +82,11 @@ void onRtnErrorMsg(string UserNo, string ErrorMsg) override
 	}
 };
 
-void onAPIReady(string UserNo) override
+void onRspQryFund(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onAPIReady, UserNo);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryFund, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -94,11 +94,11 @@ void onAPIReady(string UserNo) override
 	}
 };
 
-void onDisconnect(string UserNo, int nReasonCode) override
+void onRtnFund(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onDisconnect, UserNo, nReasonCode);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnFund, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -106,11 +106,11 @@ void onDisconnect(string UserNo, int nReasonCode) override
 	}
 };
 
-void onRspSubmitUserLoginInfo(string UserNo, unsigned int session, const dict &data) override
+void onRspQryExchange(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspSubmitUserLoginInfo, UserNo, session, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryExchange, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -118,11 +118,11 @@ void onRspSubmitUserLoginInfo(string UserNo, unsigned int session, const dict &d
 	}
 };
 
-void onRspChangePassword(string UserNo, unsigned int session, int nErrorCode, const dict &data) override
+void onRspQryCommodity(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspChangePassword, UserNo, session, nErrorCode, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryCommodity, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -130,11 +130,11 @@ void onRspChangePassword(string UserNo, unsigned int session, int nErrorCode, co
 	}
 };
 
-void onRspSetReservedInfo(string UserNo, unsigned int session, int nErrorCode, string info) override
+void onRspQryContract(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspSetReservedInfo, UserNo, session, nErrorCode, info);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryContract, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -142,11 +142,11 @@ void onRspSetReservedInfo(string UserNo, unsigned int session, int nErrorCode, s
 	}
 };
 
-void onRtnContract(string UserNo, const dict &data) override
+void onRtnContract(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnContract, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnContract, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -154,11 +154,11 @@ void onRtnContract(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnFund(string UserNo, const dict &data) override
+void onRtnOrder(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnFund, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnOrder, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -166,11 +166,11 @@ void onRtnFund(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnOrder(string UserNo, unsigned int session, const dict &data) override
+void onRspOrderAction(unsigned int sessionID, unsigned int errorCode, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnOrder, UserNo, session, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspOrderAction, sessionID, errorCode, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -178,11 +178,11 @@ void onRtnOrder(string UserNo, unsigned int session, const dict &data) override
 	}
 };
 
-void onRspOrderAction(string UserNo, unsigned int session, int nErrorCode, const dict &data) override
+void onRspQryOrder(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspOrderAction, UserNo, session, nErrorCode, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryOrder, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -190,11 +190,11 @@ void onRspOrderAction(string UserNo, unsigned int session, int nErrorCode, const
 	}
 };
 
-void onRspQryOrderProcess(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryOrderProcess(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryOrderProcess, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryOrderProcess, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -202,11 +202,11 @@ void onRspQryOrderProcess(string UserNo, unsigned int session, int nErrorCode, c
 	}
 };
 
-void onRtnFill(string UserNo, const dict &data) override
+void onRspQryFill(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnFill, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryFill, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -214,11 +214,11 @@ void onRtnFill(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnPosition(string UserNo, const dict &data) override
+void onRtnFill(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnPosition, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnFill, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -226,11 +226,11 @@ void onRtnPosition(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnClose(string UserNo, const dict &data) override
+void onRspQryPosition(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnClose, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryPosition, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -238,11 +238,11 @@ void onRtnClose(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnPositionProfit(string UserNo, const dict &data) override
+void onRtnPosition(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnPositionProfit, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnPosition, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -250,11 +250,11 @@ void onRtnPositionProfit(string UserNo, const dict &data) override
 	}
 };
 
-void onRspQryDeepQuote(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryClose(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryDeepQuote, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryClose, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -262,11 +262,11 @@ void onRspQryDeepQuote(string UserNo, unsigned int session, int nErrorCode, char
 	}
 };
 
-void onRtnExchangeStateInfo(string UserNo, const dict &data) override
+void onRtnClose(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnExchangeStateInfo, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnClose, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -274,11 +274,11 @@ void onRtnExchangeStateInfo(string UserNo, const dict &data) override
 	}
 };
 
-void onRtnReqQuoteNotice(string UserNo, const dict &data) override
+void onRtnPositionProfit(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnReqQuoteNotice, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnPositionProfit, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -286,11 +286,11 @@ void onRtnReqQuoteNotice(string UserNo, const dict &data) override
 	}
 };
 
-void onRspAccountRentInfo(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryDeepQuote(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspAccountRentInfo, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryDeepQuote, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -298,11 +298,11 @@ void onRspAccountRentInfo(string UserNo, unsigned int session, int nErrorCode, c
 	}
 };
 
-void onRspTradeMessage(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryExchangeStateInfo(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspTradeMessage, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryExchangeStateInfo, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -310,11 +310,11 @@ void onRspTradeMessage(string UserNo, unsigned int session, int nErrorCode, char
 	}
 };
 
-void onRtnTradeMessage(string UserNo, const dict &data) override
+void onRtnExchangeStateInfo(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnTradeMessage, UserNo, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnExchangeStateInfo, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -322,11 +322,11 @@ void onRtnTradeMessage(string UserNo, const dict &data) override
 	}
 };
 
-void onRspQryHisOrder(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRtnReqQuoteNotice(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryHisOrder, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnReqQuoteNotice, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -334,11 +334,11 @@ void onRspQryHisOrder(string UserNo, unsigned int session, int nErrorCode, char 
 	}
 };
 
-void onRspQryHisOrderProcess(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspUpperChannelInfo(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryHisOrderProcess, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspUpperChannelInfo, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -346,11 +346,11 @@ void onRspQryHisOrderProcess(string UserNo, unsigned int session, int nErrorCode
 	}
 };
 
-void onRspQryHisFill(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspAccountRentInfo(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryHisFill, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspAccountRentInfo, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -358,11 +358,11 @@ void onRspQryHisFill(string UserNo, unsigned int session, int nErrorCode, char l
 	}
 };
 
-void onRspQryHisPosition(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspSubmitUserLoginInfo(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryHisPosition, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspSubmitUserLoginInfo, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -370,11 +370,11 @@ void onRspQryHisPosition(string UserNo, unsigned int session, int nErrorCode, ch
 	}
 };
 
-void onRspQryHisDelivery(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryBill(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryHisDelivery, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryBill, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -382,11 +382,11 @@ void onRspQryHisDelivery(string UserNo, unsigned int session, int nErrorCode, ch
 	}
 };
 
-void onRspQryAccountCashAdjust(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRspQryAccountStorage(unsigned int sessionID, int error, char last, const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryAccountCashAdjust, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRspQryAccountStorage, sessionID, error, last, data);
 	}
 	catch (const error_already_set &e)
 	{
@@ -394,275 +394,11 @@ void onRspQryAccountCashAdjust(string UserNo, unsigned int session, int nErrorCo
 	}
 };
 
-void onRspQryBill(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
+void onRtnAccountStorage(const dict &data) override
 {
 	try
 	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryBill, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspAccountFeeRent(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspAccountFeeRent, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspAccountMarginRent(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspAccountMarginRent, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspAddMobileDevice(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspAddMobileDevice, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQryManageInfoForEStar(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryManageInfoForEStar, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQrySystemParameter(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQrySystemParameter, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQryTradeCenterFrontAddress(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryTradeCenterFrontAddress, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnCommodityInfo(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnCommodityInfo, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnCurrencyInfo(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnCurrencyInfo, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQryAccountStorage(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryAccountStorage, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnAccountStorage(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnAccountStorage, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQrySpotLock(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQrySpotLock, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnSpotLock(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnSpotLock, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspSpecialOrderAction(string UserNo, unsigned int session, int nErrorCode, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspSpecialOrderAction, UserNo, session, nErrorCode, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnSpecialOrder(string UserNo, unsigned int session, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnSpecialOrder, UserNo, session, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnCombinePosition(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnCombinePosition, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnContractQuote(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnContractQuote, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQryTrustDevice(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryTrustDevice, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspAddTrustDevice(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspAddTrustDevice, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspDelTrustDevice(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspDelTrustDevice, UserNo, session, nErrorCode, last, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnAddUserRight(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnAddUserRight, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRtnDelUserRight(string UserNo, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRtnDelUserRight, UserNo, data);
-	}
-	catch (const error_already_set &e)
-	{
-		cout << e.what() << endl;
-	}
-};
-
-void onRspQryManagerConfigFile(string UserNo, unsigned int session, int nErrorCode, char last, const dict &data) override
-{
-	try
-	{
-		PYBIND11_OVERLOAD(void, TdApi, onRspQryManagerConfigFile, UserNo, session, nErrorCode, last, data);
+		PYBIND11_OVERLOAD(void, TdApi, onRtnAccountStorage, data);
 	}
 	catch (const error_already_set &e)
 	{
