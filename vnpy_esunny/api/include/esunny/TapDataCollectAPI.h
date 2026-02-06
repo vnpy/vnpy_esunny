@@ -22,35 +22,6 @@ const int TAPIERROR_SysDiskInfo                                        = -8;
 //! 获取MacOS设备序列号失败
 const int TAPIERROR_MacOsSerialID                                      = -9;
 
-#pragma pack(push, 1)
-
-//! 字符类型定义
-typedef char ESSTR;
-typedef char ESSTR_6[6];
-typedef char ESSTR_10[10];
-typedef char ESSTR_11[11];
-typedef char ESSTR_13[13];
-typedef char ESSTR_17[17];
-typedef char ESSTR_20[20];
-typedef char ESSTR_25[25];
-typedef char ESSTR_30[30];
-typedef char ESSTR_40[40];
-typedef char ESSTR_50[50];
-typedef char ESSTR_500[501];
-
-//! 采集及采集库信息
-struct LoginInfo
-{
-    ESSTR_500     GatherInfo;							///< 用户终端信息
-    int           KeyVersion;                           ///< 采集库密钥版本
-    ESSTR_50      ItemFalg;                             ///< 采集字段信息
-    ESSTR_30      GatherLibVersion;                     ///< 采集库版本号
-    ESSTR         IsTestKey;                            ///< 是否是测试密钥
-    ESSTR         OperatingSystmeType;                  ///< 终端类型
-};
-
-#pragma pack(pop)
-
 #if defined WIN32 || defined _WIN64
 #define TAP_CDECL __cdecl
 #define TAP_DLLEXPORT __declspec(dllexport)
@@ -63,7 +34,9 @@ struct LoginInfo
 extern "C" {
 #endif // __cplusplus
   
-TAP_DLLEXPORT int TAP_CDECL esunny_getLoginInfo(LoginInfo* pInfo);
+	
+TAP_DLLEXPORT int TAP_CDECL esunny_getsysteminfo(char* pSystemInfo, int* nLen, int* nVer);
+	
 
 #ifdef __cplusplus
 }
