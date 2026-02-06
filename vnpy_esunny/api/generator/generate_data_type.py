@@ -15,7 +15,7 @@ class DataTypeGenerator:
     def load_constant(self) -> None:
         """"""
         # module_names = ["tap_td_commen_typedef", "tap_md_commen_typedef"]
-        module_names = ["esunny_md_commen_typedef", "esunny_td_commen_typedef"]
+        module_names = ["esunny_commen_typedef"]
         for module_name in module_names:
             module = importlib.import_module(module_name)
 
@@ -61,45 +61,44 @@ class DataTypeGenerator:
                 self.process_end(line)
             elif "///<" in line:
                 self.process_member(line)
-        # TD
+        # TD：TapTradeAPIDataType.h 里的 typedef 在此解析，供 struct 成员查类型
         elif self.name == "td":
-            if line.startswith("typedef"):
+            if line.strip().startswith("typedef "):
                 self.process_typedef_td(line)
-#            elif line.startswith("const"):
-#                self.process_const(line)
+            elif line.strip().startswith("const"):
+                self.process_const(line)
             elif "struct" in line:
                 self.process_declare(line)
             elif line.startswith("{"):
                 self.process_start(line)
-            elif line.startswith("}"):
+            elif line.startswith("}") or line.startswith("\t}"):
                 self.process_end(line)
             elif "///<" in line:
                 self.process_member(line)
-            elif "#" not in line and "!" not in line and "=" not in line and "*" not in line and "(" not in line and "namespace" not in line and "TapTradeAPI" not in line and len(line) != 0:
+            elif not line.strip().startswith("typedef") and "#" not in line and "!" not in line and "=" not in line and "*" not in line and "(" not in line and "namespace" not in line and "TapTradeAPI" not in line and len(line) != 0:
                 self.process_special(line)
 
     def process_special(self, line: str) -> None:
-        words = line.split(" ")
-        words = [word for word in words if word != ""]
+        sector = line.split("///<")[0].split("//")[0]
+        words = sector.split()
+        if len(words) < 2:
+            return
+        type_ = words[0].strip()
+        name = words[1].strip()
+        if "[" in name:
+            name = name.split("[")[0]
+        if not name:
+            return
+        py_type = self.typedefs.get(type_, "dict")
 
-        if len(words) == 2 or len(words) == 3:
-            name = words[1]
-            if "//" in name:
-                name = name.split("//")[0]
-            if "[" in name:
-                name = name.split("[")[0]
-
-            type_ = words[0]
-            if "//" in type_:
-                type_ = type_.split("//")[1]
-            py_type = self.typedefs.get(type_, "dict")
-
-            new_line = f"    \"{name}\": \"{py_type}\",\n"
-            self.f_struct.write(new_line)
+        new_line = f"    \"{name}\": \"{py_type}\",\n"
+        self.f_struct.write(new_line)
 
     def process_declare(self, line: str) -> None:
-        """处理声明"""
-        words = line.split(" ")
+        """处理声明（struct 与名之间可能为 tab）"""
+        words = line.split()
+        if len(words) < 2:
+            return
         name = words[-1]
         end = "{"
 
@@ -116,18 +115,21 @@ class DataTypeGenerator:
         self.f_struct.write(new_line)
 
     def process_member(self, line: str) -> None:
-        sector = line.split("///<")[0]
-        words = sector.split("\t")
-        words = [word for word in words if word != ""]
-
-        if len(words) == 1:
-            words = words[0].split(" ")
-            words = [word for word in words if word != ""]
-
-        name = words[1].strip()
+        # 格式: (空白)(TYPE)(空白)(NAME);(可选 ///< 注释)。去掉注释后按空白切分，首 token=类型，末 token 去分号=成员名。
+        sector = line.split("///<")[0].strip()
+        words = sector.split()
+        if len(words) < 2:
+            return
+        type_ = words[0]
+        name = words[-1].rstrip(";")
         if "[" in name:
             name = name.split("[")[0]
-        py_type = self.typedefs.get(words[0].strip(), "dict")
+        if not name:
+            return
+        py_type = self.typedefs.get(type_, "dict")
+        # 嵌套 struct 保留类型名，供 generate_api_functions 展开为子 dict
+        if py_type == "dict":
+            py_type = type_
         new_line = f"    \"{name}\": \"{py_type}\",\n"
         self.f_struct.write(new_line)
 
@@ -148,28 +150,21 @@ class DataTypeGenerator:
             self.f_struct.write(short2full)
 
     def process_typedef_td(self, line: str) -> None:
-        """处理类型定义"""
-        words = line.split(" ")
-        words = [word for word in words if word != ""]
-
-        name = words[-1]
-        py_type = self.typedefs.get(words[1], "dict")
-        new_line = f"{name} = \"{py_type}\"\n"
-
-        self.f_typedef.write(new_line)
-        self.typedefs[name] = py_type
-
-        if py_type == "dict":
-            short2full = f"{name} = {words[-2]}\n"
-            self.f_struct.write(short2full)
+        """TD 头文件里的 typedef BaseType NewType，写入 data_typedef 并更新 typedefs"""
+        words = line.split()
+        if len(words) < 3:
+            return
+        base_type = words[1]
+        new_type = words[-1]
+        py_type = self.typedefs.get(base_type, "dict")
+        self.f_typedef.write(f"{new_type} = \"{py_type}\"\n")
+        self.typedefs[new_type] = py_type
 
     def process_const(self, line: str) -> None:
         sectors = line.split("=")
         value = sectors[1].replace("\'", "\"").strip()
 
-        words = sectors[0].split(" ")
-        words = [word for word in words if word != ""]
-
+        words = sectors[0].split()
         name = words[-1].strip()
 
         new_line = f"{name} = {value}\n"
@@ -180,5 +175,5 @@ if __name__ == "__main__":
     md_generator = DataTypeGenerator("../include/esunny/TapQuoteAPIDataType.h", "esunny", "md")
     md_generator.run()
 
-    td_generator = DataTypeGenerator("../include/esunny/EsTradeAPIStruct.h", "esunny", "td")
+    td_generator = DataTypeGenerator("../include/esunny/TapTradeAPIDataType.h", "esunny", "td")
     td_generator.run()

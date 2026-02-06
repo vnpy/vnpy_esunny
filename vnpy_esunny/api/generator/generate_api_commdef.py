@@ -14,7 +14,7 @@ class CommenTypeGenerator:
 
     def load_constant(self) -> None:
         """"""
-        module_name = f"{self.prefix}_{self.name}_commen_typedef"
+        module_name = f"{self.prefix}_commen_typedef"
         module = importlib.import_module(module_name)
 
         for name in dir(module):
@@ -24,9 +24,9 @@ class CommenTypeGenerator:
     def run(self) -> None:
         """主函数"""
         self.f_cpp = open(self.filename)
-        self.f_define = open(f"{self.prefix}_{self.name}_commen_constant.py", "w")
-        self.f_typedef = open(f"{self.prefix}_{self.name}_commen_typedef.py", "w")
-        self.f_struct = open(f"{self.prefix}_{self.name}_commen_struct.py", "w")
+        self.f_define = open(f"{self.prefix}_commen_constant.py", "w")
+        self.f_typedef = open(f"{self.prefix}_commen_typedef.py", "w")
+        self.f_struct = open(f"{self.prefix}_commen_struct.py", "w")
 
         self.add_supplement()
 
@@ -55,9 +55,7 @@ class CommenTypeGenerator:
                 self.process_declare(line)
             elif "{" in line:
                 self.process_start(line)
-            elif line.startswith("}") and self.name == "md":
-                self.process_end(line)
-            elif line.startswith("    }") and self.name == "td":
+            elif line.strip() == "}":
                 self.process_end(line)
             elif "///<" in line:
                 self.process_member(line)
@@ -66,7 +64,9 @@ class CommenTypeGenerator:
 
     def process_declare(self, line: str) -> None:
         """处理声明"""
-        words = line.split(" ")
+        words = line.split()
+        if len(words) < 2:
+            return
         name = words[-1]
         end = "{"
 
@@ -91,8 +91,18 @@ class CommenTypeGenerator:
             words = words[0].split(" ")
             words = [word for word in words if word != ""]
 
+        if len(words) < 2:
+            return
+        type_ = words[0].strip()
         name = words[1].strip()
-        py_type = self.typedefs.get(words[0].strip(), "dict")
+        if "[" in name:
+            name = name.split("[")[0]
+        if not name:
+            return
+        py_type = self.typedefs.get(type_, "dict")
+        # 嵌套 struct 保留类型名，供 generate_api_functions 按字段展开
+        if py_type == "dict":
+            py_type = type_
         new_line = f"    \"{name}\": \"{py_type}\",\n"
         self.f_struct.write(new_line)
 
@@ -100,21 +110,11 @@ class CommenTypeGenerator:
         """处理每行"""
         line = line.replace("\n", "")
         line = line.replace(";", "")
-
-        # MD
-        if self.name == "md":
-            if line.startswith("typedef char"):
-                self.process_char_md(line)
-            elif line.startswith("const"):
-                self.process_const_md(line)
-        # TD
-        elif self.name == "td":
-            if line.startswith("    typedef char"):
-                self.process_char_td(line)
-            elif line.startswith("    const"):
-                self.process_const_td(line)
-            elif line.startswith("    typedef TAPICHAR"):
-                self.process_char_td(line)
+        stripped = line.strip()
+        if stripped.startswith("typedef char") or stripped.startswith("typedef TAPICHAR"):
+            self.process_char_td(stripped)
+        elif stripped.startswith("const"):
+            self.process_const_td(line)
 
     def process_char_md(self, line: str) -> None:
         """处理类型定义"""
@@ -128,9 +128,9 @@ class CommenTypeGenerator:
         self.f_typedef.write(new_line)
 
     def process_char_td(self, line: str) -> None:
-        words = line.split(" ")
-        words = [word for word in words if word != ""]
-
+        words = line.split()
+        if len(words) < 2:
+            return
         name = words[-1]
 
         if "[" in name:
@@ -155,13 +155,17 @@ class CommenTypeGenerator:
         self.f_define.write(new_line)
 
     def process_const_td(self, line: str) -> None:
-        sectors = line.split("=")
+        sectors = line.split("=", 1)
+        if len(sectors) < 2:
+            return
         value = sectors[1].replace("\'", "\"").strip()
 
-        words = sectors[0].split(" ")
-        words = [word for word in words if word != ""]
-
+        words = sectors[0].split()
+        if not words:
+            return
         name = words[-1].strip()
+        if not name:
+            return
 
         new_line = f"{name} = {value}\n"
         self.f_define.write(new_line)
@@ -174,29 +178,13 @@ class CommenTypeGenerator:
         self.f_typedef.write("TAPIUINT16 = \"unsigned short\"\n")
         self.f_typedef.write("TAPIUINT8 = \"unsigned char\"\n")
         self.f_typedef.write("TAPIREAL64 = \"double\"\n")
-
-        if self.name == "md":
-            self.f_typedef.write("TAPIYNFLAG = \"char\"\n")
-            self.f_typedef.write("TAPILOGLEVEL = \"char\"\n")
-            self.f_typedef.write("TAPICommodityType = \"char\"\n")
-            self.f_typedef.write("TAPICallOrPutFlagType = \"char\"\n")
-            self.f_typedef.write("TAPIAuthTypeType = \"char\"\n")
-#            self.f_typedef.write("TAPIMACTYPE = \"string\"\n")
-#            self.f_typedef.write("TAPISecondSerialIDType = \"string\"\n")
-#            self.f_typedef.write("TAPIClientIDType = \"string\"\n")
-
-#        elif self.name == "td":
-#            self.f_typedef.write("TAPIYNFLAG = \"char\"\n")
-#            self.f_typedef.write("TAPIPasswordType = \"char\"\n")
-#            self.f_typedef.write("TAPILOGLEVEL = \"char\"\n")
-#            self.f_typedef.write("TAPIOptionType = \"char\"\n")
-#            self.f_typedef.write("TAPICommodityType = \"char\"\n")
-#            self.f_typedef.write("TAPICallOrPutFlagType = \"char\"\n")
+        self.f_typedef.write("TAPIYNFLAG = \"char\"\n")
+        self.f_typedef.write("TAPILOGLEVEL = \"char\"\n")
+        self.f_typedef.write("TAPICommodityType = \"char\"\n")
+        self.f_typedef.write("TAPICallOrPutFlagType = \"char\"\n")
+        self.f_typedef.write("TAPIAuthTypeType = \"char\"\n")
 
 
 if __name__ == "__main__":
-    md_generator = CommenTypeGenerator("../include/esunny/TapAPICommDef.h", "esunny", "md")
-    md_generator.run()
-
-    td_generator = CommenTypeGenerator("../include/esunny/EsTradeAPIDataType.h", "esunny", "td")
-    td_generator.run()
+    comm_generator = CommenTypeGenerator("../include/esunny/TapAPICommDef.h", "esunny", "comm")
+    comm_generator.run()

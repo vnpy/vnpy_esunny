@@ -13,7 +13,7 @@ class ErrorTypeGenerator:
     def run(self) -> None:
         """主函数"""
         self.f_cpp = open(self.filename)
-        self.f_define = open(f"{self.prefix}_{self.name}_error_constant.py", "w")
+        self.f_define = open(f"{self.prefix}_error_constant.py", "w")
 
         for line in self.f_cpp:
             self.process_line(line)
@@ -21,21 +21,14 @@ class ErrorTypeGenerator:
         self.f_cpp.close()
         self.f_define.close()
 
-        print(f"{self.name}_ErrorType生成完毕")
+        print("ErrorType生成完毕")
 
     def process_line(self, line: str) -> None:
         """处理每行"""
         line = line.replace("\n", "")
         line = line.replace(";", "")
-
-        # MD
-        if self.name == "md":
-            if line.startswith("const int"):
-                self.process_int(line)
-        # TD
-        elif self.name == "td":
-            if line.startswith("    const int"):
-                self.process_int(line)
+        if line.startswith("const int"):
+            self.process_int(line)
 
     def process_int(self, line: str) -> None:
         """处理类型定义"""
@@ -50,8 +43,5 @@ class ErrorTypeGenerator:
 
 
 if __name__ == "__main__":
-    md_generator = ErrorTypeGenerator("../include/esunny/TapAPIError.h", "esunny", "md")
-    md_generator.run()
-
-    td_generator = ErrorTypeGenerator("../include/esunny/EsTradeAPIError.h", "esunny", "td")
-    td_generator.run()
+    error_generator = ErrorTypeGenerator("../include/esunny/TapAPIError.h", "esunny", "")
+    error_generator.run()
