@@ -196,6 +196,19 @@ class ApiGenerator:
             return "task_error"
         return "task_id"
 
+    def _get_pointer_members(self, struct_type: str) -> list[tuple[str, str]]:
+        """返回需要深拷贝的指针成员列表 [(字段名, 指向类型)]，仅当指向类型在 self.structs 中时。"""
+        result: list[tuple[str, str]] = []
+        for field_name, field_type in self.structs.get(struct_type, {}).items():
+            if not field_name:
+                continue
+            if not field_type.endswith("*"):
+                continue
+            pointee_type = field_type[:-1].strip()
+            if pointee_type in self.structs:
+                result.append((field_name, pointee_type))
+        return result
+
     def generate_arg_dict(self, line: str) -> dict:
         """生成参数字典"""
         args_str = line[line.index("(") + 1:line.index(")")]
@@ -317,6 +330,12 @@ class ApiGenerator:
                         f.write("\t{\n")
                         f.write(f"\t\t{type_} *task_data = new {type_}();\n")
                         f.write(f"\t\t*task_data = *{field};\n")
+                        for ptr_field, pointee_type in self._get_pointer_members(type_):
+                            f.write(f"\t\tif ({field}->{ptr_field})\n")
+                            f.write("\t\t{\n")
+                            f.write(f"\t\t\ttask_data->{ptr_field} = new {pointee_type}();\n")
+                            f.write(f"\t\t\t*task_data->{ptr_field} = *{field}->{ptr_field};\n")
+                            f.write("\t\t}\n")
                         f.write("\t\ttask.task_data = task_data;\n")
                         f.write("\t}\n")
 
@@ -477,6 +496,10 @@ class ApiGenerator:
                                     f.write(
                                         f"\t\tdata[\"{struct_field}\"] = task_data->{struct_field};\n")
 
+                            for ptr_field, _ in self._get_pointer_members(type_):
+                                f.write(
+                                    f"\t\tif (task_data->{ptr_field}) delete task_data->{ptr_field};\n"
+                                )
                             f.write("\t\tdelete task_data;\n")
                             f.write("\t}\n")
 

@@ -177,6 +177,11 @@ void TdApi::OnRtnOrder(const TapAPIOrderInfoNotice* info)
 	{
 		TapAPIOrderInfoNotice* task_data = new TapAPIOrderInfoNotice();
 		*task_data = *info;
+		if (info->OrderInfo)
+		{
+			task_data->OrderInfo = new TapAPIOrderInfo();
+			*task_data->OrderInfo = *info->OrderInfo;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
@@ -192,6 +197,11 @@ void TdApi::OnRspOrderAction(unsigned int sessionID, unsigned int errorCode, con
 	{
 		TapAPIOrderActionRsp* task_data = new TapAPIOrderActionRsp();
 		*task_data = *info;
+		if (info->OrderInfo)
+		{
+			task_data->OrderInfo = new TapAPIOrderInfo();
+			*task_data->OrderInfo = *info->OrderInfo;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
@@ -324,6 +334,11 @@ void TdApi::OnRtnPositionProfit(const TapAPIPositionProfitNotice* info)
 	{
 		TapAPIPositionProfitNotice* task_data = new TapAPIPositionProfitNotice();
 		*task_data = *info;
+		if (info->Data)
+		{
+			task_data->Data = new TapAPIPositionProfit();
+			*task_data->Data = *info->Data;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
@@ -1088,10 +1103,12 @@ void TdApi::processRtnOrder(Task* task)
 		data["UpperUserNo"] = toUtf(task_data->OrderInfo->UpperUserNo);
 		data["OrderInsertUserNo"] = toUtf(task_data->OrderInfo->OrderInsertUserNo);
 		data["OrderInsertTime"] = toUtf(task_data->OrderInfo->OrderInsertTime);
+		cout << "OrderInsertTime " << toUtf(task_data->OrderInfo->OrderInsertTime) << endl;
 		data["OrderCommandUserNo"] = toUtf(task_data->OrderInfo->OrderCommandUserNo);
 		data["OrderUpdateUserNo"] = toUtf(task_data->OrderInfo->OrderUpdateUserNo);
 		data["OrderUpdateTime"] = toUtf(task_data->OrderInfo->OrderUpdateTime);
 		data["OrderState"] = task_data->OrderInfo->OrderState;
+		cout << "OrderState " << task_data->OrderInfo->OrderState << endl;
 		data["OrderMatchPrice"] = task_data->OrderInfo->OrderMatchPrice;
 		data["OrderMatchPrice2"] = task_data->OrderInfo->OrderMatchPrice2;
 		data["OrderMatchQty"] = task_data->OrderInfo->OrderMatchQty;
@@ -1135,6 +1152,7 @@ void TdApi::processRtnOrder(Task* task)
 		data["HedgeFlag2"] = task_data->OrderInfo->HedgeFlag2;
 		data["MarketLevel"] = task_data->OrderInfo->MarketLevel;
 		data["OrderDeleteByDisConnFlag"] = task_data->OrderInfo->OrderDeleteByDisConnFlag;
+		if (task_data->OrderInfo) delete task_data->OrderInfo;
 		delete task_data;
 	}
 	this->onRtnOrder(data);
@@ -1242,6 +1260,7 @@ void TdApi::processRspOrderAction(Task* task)
 		data["HedgeFlag2"] = task_data->OrderInfo->HedgeFlag2;
 		data["MarketLevel"] = task_data->OrderInfo->MarketLevel;
 		data["OrderDeleteByDisConnFlag"] = task_data->OrderInfo->OrderDeleteByDisConnFlag;
+		if (task_data->OrderInfo) delete task_data->OrderInfo;
 		delete task_data;
 	}
 	this->onRspOrderAction(task->task_id, task->task_error, data);
@@ -1882,6 +1901,7 @@ void TdApi::processRtnPositionProfit(Task* task)
 		data["OptionMarketValue"] = task_data->Data->OptionMarketValue;
 		data["CalculatePrice"] = task_data->Data->CalculatePrice;
 		data["FloatingPL"] = task_data->Data->FloatingPL;
+		if (task_data->Data) delete task_data->Data;
 		delete task_data;
 	}
 	this->onRtnPositionProfit(data);

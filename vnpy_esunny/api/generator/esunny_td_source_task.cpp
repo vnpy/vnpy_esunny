@@ -167,6 +167,11 @@ void TdApi::OnRtnOrder(const TapAPIOrderInfoNotice *info)
 	{
 		TapAPIOrderInfoNotice *task_data = new TapAPIOrderInfoNotice();
 		*task_data = *info;
+		if (info->OrderInfo)
+		{
+			task_data->OrderInfo = new TapAPIOrderInfo();
+			*task_data->OrderInfo = *info->OrderInfo;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
@@ -182,6 +187,11 @@ void TdApi::OnRspOrderAction(unsigned int sessionID, unsigned int errorCode, con
 	{
 		TapAPIOrderActionRsp *task_data = new TapAPIOrderActionRsp();
 		*task_data = *info;
+		if (info->OrderInfo)
+		{
+			task_data->OrderInfo = new TapAPIOrderInfo();
+			*task_data->OrderInfo = *info->OrderInfo;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
@@ -314,6 +324,11 @@ void TdApi::OnRtnPositionProfit(const TapAPIPositionProfitNotice *info)
 	{
 		TapAPIPositionProfitNotice *task_data = new TapAPIPositionProfitNotice();
 		*task_data = *info;
+		if (info->Data)
+		{
+			task_data->Data = new TapAPIPositionProfit();
+			*task_data->Data = *info->Data;
+		}
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);

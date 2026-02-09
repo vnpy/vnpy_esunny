@@ -428,6 +428,7 @@ void TdApi::processRtnOrder(Task *task)
 		data["HedgeFlag2"] = task_data->OrderInfo->HedgeFlag2;
 		data["MarketLevel"] = task_data->OrderInfo->MarketLevel;
 		data["OrderDeleteByDisConnFlag"] = task_data->OrderInfo->OrderDeleteByDisConnFlag;
+		if (task_data->OrderInfo) delete task_data->OrderInfo;
 		delete task_data;
 	}
 	this->onRtnOrder(data);
@@ -535,6 +536,7 @@ void TdApi::processRspOrderAction(Task *task)
 		data["HedgeFlag2"] = task_data->OrderInfo->HedgeFlag2;
 		data["MarketLevel"] = task_data->OrderInfo->MarketLevel;
 		data["OrderDeleteByDisConnFlag"] = task_data->OrderInfo->OrderDeleteByDisConnFlag;
+		if (task_data->OrderInfo) delete task_data->OrderInfo;
 		delete task_data;
 	}
 	this->onRspOrderAction(task->task_id, task->task_error, data);
@@ -1175,6 +1177,7 @@ void TdApi::processRtnPositionProfit(Task *task)
 		data["OptionMarketValue"] = task_data->Data->OptionMarketValue;
 		data["CalculatePrice"] = task_data->Data->CalculatePrice;
 		data["FloatingPL"] = task_data->Data->FloatingPL;
+		if (task_data->Data) delete task_data->Data;
 		delete task_data;
 	}
 	this->onRtnPositionProfit(data);
