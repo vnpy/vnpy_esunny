@@ -195,10 +195,10 @@ public:
 
 	int disconnect();
 
-	int subscribeQuote(const dict &req); //3
+	int subscribeQuote(int session, const dict &req); //3
 
-	int qryCommodity();
+	int qryCommodity(int session);
 
-	int qryContract(const dict &req);
+	int qryContract(int session, const dict &req);
 
 };

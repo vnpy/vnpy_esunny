@@ -567,9 +567,8 @@ int MdApi::disconnect()
 	return i;
 };
 
-int MdApi::subscribeQuote(const dict &req)
+int MdApi::subscribeQuote(int session, const dict &req)
 {
-	TAPIUINT32 session;
 	TapAPIContract myreq = TapAPIContract();
 	TapAPICommodity info = TapAPICommodity();
 
@@ -586,27 +585,28 @@ int MdApi::subscribeQuote(const dict &req)
 	getString(req, "ContractNo2", myreq.ContractNo2);
 	getString(req, "StrikePrice2", myreq.StrikePrice2);
 	getChar(req, "CallOrPutFlag2", &myreq.CallOrPutFlag2);
-	int i = this->api->SubscribeQuote(&session, &myreq);
+	TAPIUINT32 session_id = static_cast<TAPIUINT32>(session);
+	int i = this->api->SubscribeQuote(&session_id, &myreq);
 	return i;
 };
 
 
-int MdApi::qryCommodity()
+int MdApi::qryCommodity(int session)
 {
-	TAPIUINT32 session;
-	int i = this->api->QryCommodity(&session);
+	TAPIUINT32 session_id = static_cast<TAPIUINT32>(session);
+	int i = this->api->QryCommodity(&session_id);
 	return i;
 };
 
-int MdApi::qryContract(const dict &req)
+int MdApi::qryContract(int session, const dict &req)
 {
-	TAPIUINT32 session;
 	TapAPICommodity myreq = TapAPICommodity();
 	memset(&myreq, 0, sizeof(myreq));
 	getString(req, "ExchangeNo", myreq.ExchangeNo);
 	getChar(req, "CommodityType", &myreq.CommodityType);
 	getString(req, "CommodityNo", myreq.CommodityNo);
-	int i = this->api->QryContract(&session, &myreq);
+	TAPIUINT32 session_id = static_cast<TAPIUINT32>(session);
+	int i = this->api->QryContract(&session_id, &myreq);
 	return i;
 };
 
