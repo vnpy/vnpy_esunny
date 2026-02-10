@@ -64,6 +64,12 @@ ORDERTIF_VT2ES: dict[str, str] = {
     "TAPI_ORDER_TIMEINFORCE_FOK": "4"
 }
 
+# 委托查询类型映射
+ORDERQRYTYPE_VT2ES: dict[str, str] = {
+    "TAPI_ORDER_QRY_TYPE_ALL": "A",
+    "TAPI_ORDER_QRY_TYPE_UNENDED": "U",
+}
+
 # 开平方向映射
 OFFSET_VT2ES: dict[Offset, str] = {
     Offset.OPEN: "O",
@@ -498,7 +504,7 @@ class TradeApi(TdApi):
         self.connect_status: bool = False
         self.reqid: int = 0
 
-        self.account_no: str = ""
+        self.username: str = ""
 
         self.sys_local_map: dict[str, str] = {}
         self.local_sys_map: dict[str, str] = {}
@@ -519,6 +525,7 @@ class TradeApi(TdApi):
     def onAPIReady(self) -> None:
         """API状态通知回报"""
         self.gateway.write_log("交易服务器API准备就绪")
+        self.query_account()
 
     def onDisconnect(self, reason: int) -> None:
         """服务器连接断开回报"""
@@ -526,8 +533,76 @@ class TradeApi(TdApi):
 
     def onRtnFund(self, data: dict) -> None:
         """账户资金推送"""
-        self.account_no = data["AccountNo"]
+        self.update_account(data)
 
+    def onRspQryFund(self, session: int, error: int, last: bool, data: dict) -> None:
+        """"""
+        if error != 0:
+            self.gateway.write_log("查询资金信息失败")
+            return
+
+        self.update_account(data)
+
+        if last == "Y":
+            self.gateway.write_log("查询资金信息成功")
+            self.query_position()
+
+    def onRtnPosition(self, data: dict) -> None:
+        """持仓更新推送"""
+        self.update_position(data)
+
+    def onRspQryPosition(self, session: int, error: int, last: bool, data: dict) -> None:
+        """当日持仓查询回报"""
+        if error != 0:
+            self.gateway.write_log("查询持仓信息失败")
+            return
+
+        if data:
+            self.update_position(data)
+
+        if last == "Y":
+            self.gateway.write_log("查询持仓信息成功")
+            self.query_order()
+
+    def onRtnOrder(self, data: dict) -> None:
+        """委托查询推送"""
+        if data["ErrorCode"] != 0:
+            self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}")
+            return
+
+        self.update_order(data)
+
+    def onRspQryOrder(self, session: int, error: int, last: bool, data: dict) -> None:
+        """当日委托查询回报"""
+        if error != 0:
+            self.gateway.write_log("查询委托信息失败")
+            return
+
+        if data:
+            self.update_order(data)
+
+        if last == "Y":
+            self.gateway.write_log("查询委托信息成功")
+            self.query_trade()
+
+    def onRtnFill(self, data: dict) -> None:
+        """成交数据推送"""
+        self.update_trade(data)
+
+    def onRspQryFill(self, session: int, error: int, last: bool, data: dict) -> None:
+        """当日成交查询回报"""
+        if error != 0:
+            self.gateway.write_log("查询成交信息失败")
+            return
+
+        if data:
+            self.update_trade(data)
+
+        if last == "Y":
+            self.gateway.write_log("查询成交信息成功")
+
+    def update_account(self, data: dict) -> None:
+        """更新并推送资金"""
         account: AccountData = AccountData(
             accountid=data["AccountNo"],
             balance=data["Balance"],
@@ -536,8 +611,8 @@ class TradeApi(TdApi):
         )
         self.gateway.on_account(account)
 
-    def onRtnPosition(self, data: dict) -> None:
-        """持仓更新推送"""
+    def update_position(self, data: dict) -> None:
+        """更新并推送持仓"""
         # 生成合约代码
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
@@ -575,8 +650,8 @@ class TradeApi(TdApi):
 
         self.gateway.on_position(position)
 
-    def onRtnOrder(self, data: dict) -> None:
-        """委托更新推送"""
+    def update_order(self, data: dict) -> None:
+        """更新并推送委托"""
         order_type: OrderType | None = ORDERTYPE_ES2VT.get(data["OrderType"], None)
         if not order_type:
             self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
@@ -616,8 +691,8 @@ class TradeApi(TdApi):
         )
         self.gateway.on_order(order)
 
-    def onRtnFill(self, data: dict) -> None:
-        """成交数据推送"""
+    def update_trade(self, data: dict) -> None:
+        """更新并推送成交"""
         orderid: str = self.sys_local_map[data["OrderNo"]]
 
         if data["ExchangeNo"] == "SGE":
@@ -654,12 +729,14 @@ class TradeApi(TdApi):
         if self.connect_status:
             return
 
+        self.username = username
+
         self.init()
 
         # API基本设置
         path: Path = get_folder_path(self.gateway_name.lower())
         self.setTapTradeAPIDataPath(str(path).encode("GBK"))
-        self.setTapTradeAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
+        self.setTapTradeAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_DEBUG"])
 
         # 创建API
         req: dict = {
@@ -672,7 +749,7 @@ class TradeApi(TdApi):
 
         # 登录
         data: dict = {
-            "UserNo": username,
+            "UserNo": self.username,
             "Password": password,
             "AuthCode": auth_code,
             "AppID": appid,
@@ -713,7 +790,7 @@ class TradeApi(TdApi):
         orderid: str = f"{prefix}_{suffix}"
 
         order_req: dict = {
-            "AccountNo": self.account_no,
+            "AccountNo": self.username,
             "OrderType": ORDERTYPE_VT2ES.get(req.type, ""),
             "TimeInForce": ORDERTIF_VT2ES["TAPI_ORDER_TIMEINFORCE_GTC"],
             "PositionEffect": OFFSET_VT2ES.get(req.offset, ""),
@@ -723,11 +800,17 @@ class TradeApi(TdApi):
             "OrderQty": int(req.volume),
             "RefInt": self.reqid,
             "RefString": orderid,
-            "CallOrPutFlag": "N",
-            "CallOrPutFlag2": "N",
             "IsRiskOrder": FLAG_VT2ES["APIYNFLAG_NO"],
             "AddOneIsValid": FLAG_VT2ES["APIYNFLAG_NO"],
-            "FutureAutoCloseFlag": FLAG_VT2ES["APIYNFLAG_NO"]
+            "FutureAutoCloseFlag": FLAG_VT2ES["APIYNFLAG_NO"],
+            "HedgeFlag": HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"],
+            "HedgeFlag2": HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"],
+            "OrderSource": "A",    # 易盛API
+            "CallOrPutFlag": "N",
+            "CallOrPutFlag2": "N",
+            "TacticsType": "N",
+            "TriggerCondition": "N",
+            "TriggerPriceType": "N",
         }
 
         if req.exchange == Exchange.SGE:
@@ -736,20 +819,21 @@ class TradeApi(TdApi):
             order_req["ContractNo"] = commodity_info.commodity_no
             order_req["CommodityType"] = commodity_info.commodity_type
             order_req["CommodityNo"] = commodity_info.commodity_no
-            order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
-            order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_NONE"]
         else:
             assert contract_info is not None
             order_req["ExchangeNo"] = contract_info.exchange_no
             order_req["ContractNo"] = contract_info.contract_no
             order_req["CommodityType"] = contract_info.commodity_type
             order_req["CommodityNo"] = contract_info.commodity_no
-            order_req["HedgeFlag"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
-            order_req["HedgeFlag2"] = HEDGETYPE_VT2ES["TAPI_HEDGEFLAG_T"]
 
-        self.insertOrder(self.reqid, order_req)
+        error_id = self.insertOrder(self.reqid, order_req)
 
         order: OrderData = req.create_order_data(orderid, self.gateway_name)
+
+        if error_id:
+            self.gateway.write_log(f"委托请求失败，错误号：{error_id}")
+            order.status = Status.REJECTED
+
         self.gateway.on_order(order)
 
         return order.vt_orderid
@@ -766,11 +850,40 @@ class TradeApi(TdApi):
         self.reqid += 1
         self.cancelOrder(self.reqid, cancel_req)
 
+    def query_account(self) -> None:
+        """资金查询"""
+        req: dict = {
+            "AccountNo": self.username
+        }
+
+        self.reqid += 1
+        self.qryFund(self.reqid, req)
+
+    def query_position(self) -> None:
+        """持仓查询"""
+        self.reqid += 1
+        self.qryPosition(self.reqid, {})
+
+    def query_order(self) -> None:
+        """当日委托查询"""
+        req: dict = {
+            "OrderQryType": ORDERQRYTYPE_VT2ES["TAPI_ORDER_QRY_TYPE_ALL"]
+        }
+
+        self.reqid += 1
+        self.qryOrder(self.reqid, req)
+
+    def query_trade(self) -> None:
+        """当日成交查询"""
+        self.reqid += 1
+        self.qryFill(self.reqid, {})
+
     def close(self) -> None:
         """关闭连接"""
         if self.connect_status:
             self.disconnect()
             self.exit()
+
 
 def generate_datetime(timestamp: str) -> datetime:
     """生成时间戳"""
