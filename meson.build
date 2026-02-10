@@ -90,6 +90,7 @@ if host_machine.system() == 'windows'
   api_libs = [
     'vnpy_esunny/api/TapQuoteAPI.dll',
     'vnpy_esunny/api/TapTradeAPI.dll',
+    'vnpy_esunny/api/TapDataCollectAPI.dll',
   ]
   install_data(
     api_libs,
