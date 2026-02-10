@@ -1103,12 +1103,10 @@ void TdApi::processRtnOrder(Task* task)
 		data["UpperUserNo"] = toUtf(task_data->OrderInfo->UpperUserNo);
 		data["OrderInsertUserNo"] = toUtf(task_data->OrderInfo->OrderInsertUserNo);
 		data["OrderInsertTime"] = toUtf(task_data->OrderInfo->OrderInsertTime);
-		cout << "OrderInsertTime " << toUtf(task_data->OrderInfo->OrderInsertTime) << endl;
 		data["OrderCommandUserNo"] = toUtf(task_data->OrderInfo->OrderCommandUserNo);
 		data["OrderUpdateUserNo"] = toUtf(task_data->OrderInfo->OrderUpdateUserNo);
 		data["OrderUpdateTime"] = toUtf(task_data->OrderInfo->OrderUpdateTime);
 		data["OrderState"] = task_data->OrderInfo->OrderState;
-		cout << "OrderState " << task_data->OrderInfo->OrderState << endl;
 		data["OrderMatchPrice"] = task_data->OrderInfo->OrderMatchPrice;
 		data["OrderMatchPrice2"] = task_data->OrderInfo->OrderMatchPrice2;
 		data["OrderMatchQty"] = task_data->OrderInfo->OrderMatchQty;
