@@ -566,10 +566,6 @@ class TradeApi(TdApi):
 
     def onRtnOrder(self, data: dict) -> None:
         """委托查询推送"""
-        if data["ErrorCode"] != 0:
-            self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}")
-            return
-
         self.update_order(data)
 
     def onRspQryOrder(self, session: int, error: int, last: bool, data: dict) -> None:
@@ -579,7 +575,7 @@ class TradeApi(TdApi):
             return
 
         if data:
-            self.update_order(data)
+            self.update_order(data, True)
 
         if last == "Y":
             self.gateway.write_log("查询委托信息成功")
@@ -650,14 +646,14 @@ class TradeApi(TdApi):
 
         self.gateway.on_position(position)
 
-    def update_order(self, data: dict) -> None:
+    def update_order(self, data: dict, query: bool = False) -> None:
         """更新并推送委托"""
         order_type: OrderType | None = ORDERTYPE_ES2VT.get(data["OrderType"], None)
         if not order_type:
             self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
             return
 
-        if data["ErrorCode"] != 0:
+        if data["ErrorCode"] != 0 and not query:
             self.gateway.write_log(f"委托下单失败，错误码: {data['ErrorCode']}, 错误信息: {data['ErrorText']}")
 
         # 过滤委托的临时状态推送
