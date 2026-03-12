@@ -307,8 +307,10 @@ class QuoteApi(MdApi):
 
         if commodity_info.commodity_no == "AU(T+D)":
             commodity_info.size = 1000
+            commodity_info.pricetick = 0.01
         elif commodity_info.commodity_no == "AG(T+D)":
             commodity_info.size = 1
+            commodity_info.pricetick = 1
 
         key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
         commodity_infos[key] = commodity_info
