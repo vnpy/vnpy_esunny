@@ -704,6 +704,7 @@ class TradeApi(TdApi):
             orderid=orderid,
             tradeid=data["MatchNo"],
             direction=DIRECTION_ES2VT[data["MatchSide"]],
+            offset=OFFSET_ES2VT.get(data["PositionEffect"], Offset.NONE),
             price=data["MatchPrice"],
             volume=data["MatchQty"],
             datetime=generate_datetime(data["MatchDateTime"]),
