@@ -650,7 +650,7 @@ class TradeApi(TdApi):
         tp: tuple = (data["OrderType"], data["TimeInForce"])
         order_type: OrderType | None = ORDERTYPE_ES2VT.get(tp, None)
         if not order_type:
-            self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}委托有效类型{data["TimeInForce"]}，委托号{data['OrderNo']}")
+            self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}委托有效类型{data['TimeInForce']}，委托号{data['OrderNo']}")
             return
 
         if data["ErrorCode"] != 0 and not query:
