@@ -52,8 +52,8 @@ DIRECTION_VT2ES: dict[Direction, str] = {v: k for k, v in DIRECTION_ES2VT.items(
 
 # 委托类型映射
 ORDERTYPE_ES2VT: dict[tuple, OrderType] = {
-    ("2", "1"): OrderType.LIMIT,
-    ("1", "1"): OrderType.MARKET,
+    ("2", "0"): OrderType.LIMIT,
+    ("1", "0"): OrderType.MARKET,
     ("2", "3"): OrderType.FAK,
 }
 ORDERTYPE_VT2ES = {v: k for k, v in ORDERTYPE_ES2VT.items()}
