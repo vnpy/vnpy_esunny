@@ -252,6 +252,8 @@ class QuoteApi(MdApi):
         self.port: int = 0
         self.auth_code: str = ""
 
+        self.subscribed: dict[str, SubscribeRequest] = {}
+
     def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
         if error != 0:
@@ -265,6 +267,9 @@ class QuoteApi(MdApi):
         """API状态通知回报"""
         self.reqid += 1
         self.qryCommodity(self.reqid)
+
+        for req in self.subscribed.values():
+            self.subscribe(req)
 
     def onDisconnect(self, reason: int) -> None:
         """服务器连接断开回报"""
@@ -516,6 +521,7 @@ class QuoteApi(MdApi):
             tap_contract["CommodityType"] = commodity_info.commodity_type
             tap_contract["CommodityNo"] = commodity_info.commodity_no
 
+        self.subscribed[req.vt_symbol] = req
         self.reqid += 1
         self.subscribeQuote(self.reqid, tap_contract)
 
