@@ -1,10 +1,12 @@
+import socket
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from vnpy.event import EventEngine
+from vnpy.event import EventEngine, Event
+from vnpy.trader.event import EVENT_TIMER
 from vnpy.trader.utility import get_folder_path, ZoneInfo
 from vnpy.trader.constant import (
     Exchange,
@@ -131,6 +133,7 @@ HEDGETYPE_VT2ES: dict[str, str] = {
 
 # 其他常量
 CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
+COUNT_INTERVAL: int = 5                    # 重连检测间隔（秒）
 
 # 合约数据全局缓存字典
 commodity_infos: dict[tuple[str, str, str], "CommodityInfo"] = {}
@@ -197,6 +200,10 @@ class EsunnyGateway(BaseGateway):
             trade_authcode
         )
 
+        # 注册定时器事件
+        self.event_engine.register(EVENT_TIMER, self.md_api.process_timer_event)
+        self.event_engine.register(EVENT_TIMER, self.td_api.process_timer_event)
+
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
         self.md_api.subscribe(req)
@@ -234,11 +241,21 @@ class QuoteApi(MdApi):
         self.gateway_name: str = gateway.gateway_name
 
         self.reqid: int = 0
+        self.inited: bool = False
         self.connect_status: bool = False
+        self.need_reconnect: bool = False
+        self.count: int = 0
+
+        self.username: str = ""
+        self.password: str = ""
+        self.host: str = ""
+        self.port: int = 0
+        self.auth_code: str = ""
 
     def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
         if error != 0:
+            self.need_reconnect = False
             self.gateway.write_log(f"行情服务器登录失败：{error}")
         else:
             self.connect_status = True
@@ -253,6 +270,10 @@ class QuoteApi(MdApi):
         """服务器连接断开回报"""
         self.connect_status = False
         self.gateway.write_log(f"行情服务器连接断开，原因：{reason}")
+
+        if self.inited:
+            self.need_reconnect = True
+            self.count = 0
 
     def onRspSubscribeQuote(
         self,
@@ -427,35 +448,47 @@ class QuoteApi(MdApi):
         auth_code: str
     ) -> None:
         """连接服务器"""
-        # 禁止重复发起连接，会导致异常崩溃
-        if self.connect_status:
-            return
+        self.username = username
+        self.password = password
+        self.host = host
+        self.port = port
+        self.auth_code = auth_code
 
-        self.init()
+        # 初始化API
+        if not self.inited:
+            self.inited = True
 
-        # API基本设置
-        path: Path = get_folder_path(self.gateway_name.lower())
-        self.setTapQuoteAPIDataPath(str(path).encode("GBK"))
-        self.setTapQuoteAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
+            self.init()
 
-        # 创建API
-        req: dict = {
-            "AuthCode": auth_code,
-            "KeyOperationLogPath": str(path).encode("GBK")
-        }
-        self.createTapQuoteAPI(req, 0)
+            # API基本设置
+            path: Path = get_folder_path(self.gateway_name.lower())
+            self.setTapQuoteAPIDataPath(str(path).encode("GBK"))
+            self.setTapQuoteAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_NONE"])
 
-        # 设置服务器地址
-        self.setHostAddress(host, port)
+            # 创建API
+            req: dict = {
+                "AuthCode": auth_code,
+                "KeyOperationLogPath": str(path).encode("GBK")
+            }
+            self.createTapQuoteAPI(req, 0)
 
-        # 登录
+            # 设置服务器地址
+            self.setHostAddress(host, port)
+
+        self.need_reconnect = False
+        self.login_server()
+
+    def login_server(self) -> None:
+        """发起登录请求"""
         data: dict = {
-            "UserNo": username,
-            "Password": password,
+            "UserNo": self.username,
+            "Password": self.password,
             "ISModifyPassword": FLAG_VT2ES["APIYNFLAG_NO"],
             "ISDDA": FLAG_VT2ES["APIYNFLAG_NO"]
         }
-        self.login(data)
+        result: int = self.login(data)
+        if result != 0:
+            self.gateway.write_log(f"行情服务器登录请求失败（{result}）")
 
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
@@ -486,9 +519,38 @@ class QuoteApi(MdApi):
         self.reqid += 1
         self.subscribeQuote(self.reqid, tap_contract)
 
+    def process_timer_event(self, event: Event) -> None:
+        """定时事件处理"""
+        # 检查是否需要重连
+        if not self.need_reconnect:
+            return
+
+        self.count += 1
+        if self.count < COUNT_INTERVAL:
+            return
+        self.count = 0
+
+        # 尝试重连
+        try:
+            s: socket.socket = socket.create_connection(
+                (self.host, self.port), timeout=1
+            )
+            s.close()
+        except OSError:
+            return
+
+        self.need_reconnect = False
+        self.login_server()
+
     def close(self) -> None:
         """关闭连接"""
-        if self.connect_status:
+        if self.inited:
+
+            # 避免timer事件继续执行
+            self.inited = False
+            self.need_reconnect = False
+
+            # 断开连接
             self.disconnect()
             self.exit()
 
@@ -505,8 +567,16 @@ class TradeApi(TdApi):
 
         self.connect_status: bool = False
         self.reqid: int = 0
+        self.inited: bool = False
+        self.need_reconnect: bool = False
+        self.count: int = 0
 
         self.username: str = ""
+        self.password: str = ""
+        self.host: str = ""
+        self.port: int = 0
+        self.appid: str = ""
+        self.auth_code: str = ""
 
         self.sys_local_map: dict[str, str] = {}
         self.local_sys_map: dict[str, str] = {}
@@ -520,6 +590,7 @@ class TradeApi(TdApi):
     def onRspLogin(self, error: int, data: dict) -> None:
         """用户登录请求回报"""
         if error != 0:
+            self.need_reconnect = False
             self.gateway.write_log(f"交易服务器登录失败，错误码：{error}")
         else:
             self.gateway.write_log("交易服务器登录成功")
@@ -531,14 +602,19 @@ class TradeApi(TdApi):
 
     def onDisconnect(self, reason: int) -> None:
         """服务器连接断开回报"""
+        self.connect_status = False
         self.gateway.write_log(f"交易服务器连接断开，原因：{reason}")
+
+        if self.inited:
+            self.need_reconnect = True
+            self.count = 0
 
     def onRtnFund(self, data: dict) -> None:
         """账户资金推送"""
         self.update_account(data)
 
     def onRspQryFund(self, session: int, error: int, last: bool, data: dict) -> None:
-        """"""
+        """当日资金查询回报"""
         if error != 0:
             self.gateway.write_log("查询资金信息失败")
             return
@@ -724,38 +800,49 @@ class TradeApi(TdApi):
         auth_code: str
     ) -> None:
         """连接交易接口"""
-        # 禁止重复发起连接，会导致异常崩溃
-        if self.connect_status:
-            return
-
         self.username = username
+        self.password = password
+        self.host = host
+        self.port = port
+        self.appid = appid
+        self.auth_code = auth_code
 
-        self.init()
+        # 初始化API
+        if not self.inited:
+            self.inited = True
 
-        # API基本设置
-        path: Path = get_folder_path(self.gateway_name.lower())
-        self.setTapTradeAPIDataPath(str(path).encode("GBK"))
-        self.setTapTradeAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_DEBUG"])
+            self.init()
 
-        # 创建API
-        req: dict = {
-            "KeyOperationLogPath": str(path).encode("GBK")
-        }
-        self.createTapTradeAPI(req, 0)
+            # API基本设置
+            path: Path = get_folder_path(self.gateway_name.lower())
+            self.setTapTradeAPIDataPath(str(path).encode("GBK"))
+            self.setTapTradeAPILogLevel(LOGLEVEL_VT2ES["APILOGLEVEL_DEBUG"])
 
-        # 设置服务器地址
-        self.setHostAddress(host, port)
+            # 创建API
+            req: dict = {
+                "KeyOperationLogPath": str(path).encode("GBK")
+            }
+            self.createTapTradeAPI(req, 0)
 
-        # 登录
+            # 设置服务器地址
+            self.setHostAddress(host, port)
+
+        self.need_reconnect = False
+        self.login_server()
+
+    def login_server(self) -> None:
+        """发起登录请求"""
         data: dict = {
             "UserNo": self.username,
-            "Password": password,
-            "AuthCode": auth_code,
-            "AppID": appid,
+            "Password": self.password,
+            "AuthCode": self.auth_code,
+            "AppID": self.appid,
             "ISModifyPassword": FLAG_VT2ES["APIYNFLAG_NO"],
             "ISDDA": FLAG_VT2ES["APIYNFLAG_NO"]
         }
-        self.login(data)
+        result: int = self.login(data)
+        if result != 0:
+            self.gateway.write_log(f"交易服务器登录请求失败（{result}）")
 
     def send_order(self, req: OrderRequest) -> str:
         """委托下单"""
@@ -877,9 +964,38 @@ class TradeApi(TdApi):
         self.reqid += 1
         self.qryFill(self.reqid, {})
 
+    def process_timer_event(self, event: Event) -> None:
+        """定时事件处理"""
+        # 检查是否需要重连
+        if not self.need_reconnect:
+            return
+
+        self.count += 1
+        if self.count < COUNT_INTERVAL:
+            return
+        self.count = 0
+
+        # 尝试重连
+        try:
+            s: socket.socket = socket.create_connection(
+                (self.host, self.port), timeout=1
+            )
+            s.close()
+        except OSError:
+            return
+
+        self.need_reconnect = False
+        self.login_server()
+
     def close(self) -> None:
         """关闭连接"""
-        if self.connect_status:
+        if self.inited:
+
+            # 避免timer事件继续执行
+            self.inited = False
+            self.need_reconnect = False
+
+            # 断开连接
             self.disconnect()
             self.exit()
 
