@@ -51,18 +51,12 @@ DIRECTION_ES2VT: dict[str, Direction] = {
 DIRECTION_VT2ES: dict[Direction, str] = {v: k for k, v in DIRECTION_ES2VT.items()}
 
 # 委托类型映射
-ORDERTYPE_ES2VT: dict[str, OrderType] = {
-    "1": OrderType.MARKET,
-    "2": OrderType.LIMIT
+ORDERTYPE_ES2VT: dict[tuple, OrderType] = {
+    ("2", "0"): OrderType.LIMIT,
+    ("1", "0"): OrderType.MARKET,
+    ("2", "3"): OrderType.FAK,
 }
 ORDERTYPE_VT2ES = {v: k for k, v in ORDERTYPE_ES2VT.items()}
-
-# 委托有效类型映射
-ORDERTIF_VT2ES: dict[str, str] = {
-    "TAPI_ORDER_TIMEINFORCE_GTC": "1",
-    "TAPI_ORDER_TIMEINFORCE_FAK": "3",
-    "TAPI_ORDER_TIMEINFORCE_FOK": "4"
-}
 
 # 委托查询类型映射
 ORDERQRYTYPE_VT2ES: dict[str, str] = {
@@ -328,6 +322,9 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """交易合约查询回报"""
+        if not data:
+            return
+
         if error != 0:
             self.gateway.write_log("查询交易合约信息失败")
             return
@@ -650,9 +647,10 @@ class TradeApi(TdApi):
 
     def update_order(self, data: dict, query: bool = False) -> None:
         """更新并推送委托"""
-        order_type: OrderType | None = ORDERTYPE_ES2VT.get(data["OrderType"], None)
+        tp: tuple = (data["OrderType"], data["TimeInForce"])
+        order_type: OrderType | None = ORDERTYPE_ES2VT.get(tp, None)
         if not order_type:
-            self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}，委托号{data['OrderNo']}")
+            self.gateway.write_log(f"收到不支持的委托类型{data['OrderType']}委托有效类型{data['TimeInForce']}，委托号{data['OrderNo']}")
             return
 
         if data["ErrorCode"] != 0 and not query:
@@ -691,7 +689,9 @@ class TradeApi(TdApi):
 
     def update_trade(self, data: dict) -> None:
         """更新并推送成交"""
-        orderid: str = self.sys_local_map[data["OrderNo"]]
+        orderid: str = self.sys_local_map.get(data["OrderNo"], "")
+        if not orderid:
+            return
 
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
@@ -788,10 +788,13 @@ class TradeApi(TdApi):
         suffix: str = str(self.reqid).rjust(6, "0")
         orderid: str = f"{prefix}_{suffix}"
 
+        tp: tuple = ORDERTYPE_VT2ES[req.type]
+        price_type, time_condition = tp
+
         order_req: dict = {
             "AccountNo": self.username,
-            "OrderType": ORDERTYPE_VT2ES.get(req.type, ""),
-            "TimeInForce": ORDERTIF_VT2ES["TAPI_ORDER_TIMEINFORCE_GTC"],
+            "OrderType": price_type,
+            "TimeInForce": time_condition,
             "PositionEffect": OFFSET_VT2ES.get(req.offset, ""),
             "PositionEffect2": OFFSET_VT2ES[Offset.NONE],
             "OrderSide": DIRECTION_VT2ES.get(req.direction, ""),
