@@ -164,6 +164,8 @@ class EsunnyGateway(BaseGateway):
         self.md_api: QuoteApi = QuoteApi(self)
         self.td_api: TradeApi = TradeApi(self)
 
+        self.event_registered: bool = False
+
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
         quote_username: str = setting["行情账号"]
@@ -194,9 +196,7 @@ class EsunnyGateway(BaseGateway):
             trade_authcode
         )
 
-        # 注册定时器事件
-        self.event_engine.register(EVENT_TIMER, self.md_api.process_timer_event)
-        self.event_engine.register(EVENT_TIMER, self.td_api.process_timer_event)
+        self.register_event()
 
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
@@ -222,6 +222,19 @@ class EsunnyGateway(BaseGateway):
         """关闭接口"""
         self.td_api.close()
         self.md_api.close()
+
+    def register_event(self) -> None:
+        """注册事件"""
+        if self.event_registered:
+            return
+        self.event_registered = True
+
+        self.event_engine.register(EVENT_TIMER, self.process_timer_event)
+
+    def process_timer_event(self, event: Event) -> None:
+        """定时事件处理"""
+        self.md_api.check_reconnect()
+        self.td_api.check_reconnect()
 
 
 class QuoteApi(MdApi):
@@ -522,18 +535,19 @@ class QuoteApi(MdApi):
         self.reqid += 1
         self.subscribeQuote(self.reqid, tap_contract)
 
-    def process_timer_event(self, event: Event) -> None:
-        """定时事件处理"""
+    def check_reconnect(self) -> None:
+        """检查是否需要重连"""
         # 检查是否需要重连
         if not self.need_reconnect:
             return
 
+        # 检查重连间隔
         self.count += 1
         if self.count < COUNT_INTERVAL:
             return
         self.count = 0
 
-        # 尝试重连
+        # 检查网络连接
         try:
             s: socket.socket = socket.create_connection(
                 (self.host, self.port), timeout=1
@@ -542,13 +556,13 @@ class QuoteApi(MdApi):
         except OSError:
             return
 
+        # 发起登录重连
         self.need_reconnect = False
         self.login_server()
 
     def close(self) -> None:
         """关闭连接"""
         if self.inited:
-
             # 避免timer事件继续执行
             self.inited = False
             self.need_reconnect = False
@@ -973,18 +987,19 @@ class TradeApi(TdApi):
         self.reqid += 1
         self.qryFill(self.reqid, {})
 
-    def process_timer_event(self, event: Event) -> None:
-        """定时事件处理"""
-        # 检查是否需要重连
+    def check_reconnect(self) -> None:
+        """检查是否需要重连"""
+        # 检查重连标志
         if not self.need_reconnect:
             return
 
+        # 检查重连间隔
         self.count += 1
         if self.count < COUNT_INTERVAL:
             return
         self.count = 0
 
-        # 尝试重连
+        # 检查网络连接
         try:
             s: socket.socket = socket.create_connection(
                 (self.host, self.port), timeout=1
@@ -993,6 +1008,7 @@ class TradeApi(TdApi):
         except OSError:
             return
 
+        # 发起登录重连
         self.need_reconnect = False
         self.login_server()
 
