@@ -322,6 +322,9 @@ class QuoteApi(MdApi):
         data: dict
     ) -> None:
         """交易合约查询回报"""
+        if last == "Y":
+            self.gateway.write_log("查询交易合约信息成功")
+
         if not data:
             return
 
@@ -334,7 +337,7 @@ class QuoteApi(MdApi):
         key: tuple = (data["ExchangeNo"], data["CommodityNo"], data["CommodityType"])
         commodity_info: CommodityInfo | None = commodity_infos.get(key, None)
 
-        if not data or not exchange or not commodity_info:
+        if not exchange or not commodity_info:
             return
 
         # 只处理期货和现货
@@ -361,9 +364,6 @@ class QuoteApi(MdApi):
                 exchange_no=data["ExchangeNo"]
             )
             contract_infos[(contract.symbol, contract.exchange)] = contract_info
-
-        if last == "Y":
-            self.gateway.write_log("查询交易合约信息成功")
 
     def update_tick(self, data: dict) -> None:
         """切片数据类型转换"""
