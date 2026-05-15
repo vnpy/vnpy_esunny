@@ -165,6 +165,7 @@ class EsunnyGateway(BaseGateway):
         self.td_api: TradeApi = TradeApi(self)
 
         self.event_registered: bool = False
+        self.count: int = 0
 
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
@@ -216,7 +217,7 @@ class EsunnyGateway(BaseGateway):
 
     def query_position(self) -> None:
         """查询持仓"""
-        pass
+        self.td_api.query_position()
 
     def close(self) -> None:
         """关闭接口"""
@@ -235,6 +236,13 @@ class EsunnyGateway(BaseGateway):
         """定时事件处理"""
         self.md_api.check_reconnect()
         self.td_api.check_reconnect()
+
+        self.count += 1
+        if self.count < 4:
+            return
+        self.count = 0
+
+        self.query_position()
 
 
 class QuoteApi(MdApi):
@@ -598,6 +606,7 @@ class TradeApi(TdApi):
         self.sys_local_map: dict[str, str] = {}
         self.local_sys_map: dict[str, str] = {}
         self.position_details: dict[tuple, dict[str, dict]] = defaultdict(dict)
+        self.positions: dict[tuple, PositionData] = {}
 
     def onConnect(self) -> None:
         """服务器连接成功回报"""
@@ -640,11 +649,30 @@ class TradeApi(TdApi):
 
         if last == "Y":
             self.gateway.write_log("查询资金信息成功")
-            self.query_position()
+            self.query_order()
 
     def onRtnPosition(self, data: dict) -> None:
-        """持仓更新推送"""
-        self.update_position(data)
+        """持仓推送：仅更新持仓量为 0的仓位"""
+        qty: float = float(data["PositionQty"])
+        if qty != 0.0:
+            return
+
+        if data["ExchangeNo"] == "SGE":
+            symbol: str = data["CommodityNo"]
+        else:
+            symbol = data["CommodityNo"] + data["ContractNo"]
+
+        position_exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], Exchange.LOCAL)
+        position: PositionData = PositionData(
+            symbol=symbol,
+            exchange=position_exchange,
+            direction=DIRECTION_ES2VT[data["MatchSide"]],
+            volume=0,
+            yd_volume=0,
+            price=0,
+            gateway_name=self.gateway_name,
+        )
+        self.gateway.on_position(position)
 
     def onRspQryPosition(self, session: int, error: int, last: bool, data: dict) -> None:
         """当日持仓查询回报"""
@@ -656,8 +684,8 @@ class TradeApi(TdApi):
             self.update_position(data)
 
         if last == "Y":
-            self.gateway.write_log("查询持仓信息成功")
-            self.query_order()
+            for position in self.positions.values():
+                self.gateway.on_position(position)
 
     def onRtnOrder(self, data: dict) -> None:
         """委托查询推送"""
@@ -703,7 +731,7 @@ class TradeApi(TdApi):
         self.gateway.on_account(account)
 
     def update_position(self, data: dict) -> None:
-        """更新并推送持仓"""
+        """汇总持仓明细写入 self.positions；查询收尾时再由 onRspQryPosition 批量推送。"""
         # 生成合约代码
         if data["ExchangeNo"] == "SGE":
             symbol: str = data["CommodityNo"]
@@ -739,7 +767,7 @@ class TradeApi(TdApi):
         if position.volume:
             position.price = cost / position.volume
 
-        self.gateway.on_position(position)
+        self.positions[key] = position
 
     def update_order(self, data: dict, query: bool = False) -> None:
         """更新并推送委托"""
@@ -970,6 +998,9 @@ class TradeApi(TdApi):
 
     def query_position(self) -> None:
         """持仓查询"""
+        self.position_details = defaultdict(dict)
+        self.positions.clear()
+
         self.reqid += 1
         self.qryPosition(self.reqid, {})
 
