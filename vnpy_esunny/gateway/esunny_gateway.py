@@ -652,27 +652,8 @@ class TradeApi(TdApi):
             self.query_order()
 
     def onRtnPosition(self, data: dict) -> None:
-        """持仓推送：仅更新持仓量为 0的仓位"""
-        qty: float = float(data["PositionQty"])
-        if qty != 0.0:
-            return
-
-        if data["ExchangeNo"] == "SGE":
-            symbol: str = data["CommodityNo"]
-        else:
-            symbol = data["CommodityNo"] + data["ContractNo"]
-
-        position_exchange: Exchange = EXCHANGE_ES2VT.get(data["ExchangeNo"], Exchange.LOCAL)
-        position: PositionData = PositionData(
-            symbol=symbol,
-            exchange=position_exchange,
-            direction=DIRECTION_ES2VT[data["MatchSide"]],
-            volume=0,
-            yd_volume=0,
-            price=0,
-            gateway_name=self.gateway_name,
-        )
-        self.gateway.on_position(position)
+        """持仓推送（统一由查询回报路径处理，此处不再单独推送）"""
+        pass
 
     def onRspQryPosition(self, session: int, error: int, last: bool, data: dict) -> None:
         """当日持仓查询回报"""
@@ -738,36 +719,39 @@ class TradeApi(TdApi):
         else:
             symbol = data["CommodityNo"] + data["ContractNo"]
 
-        # 缓存持仓明细
+        # 缓存持仓明细（本轮查询累加）
         key: tuple = (symbol, data["MatchSide"])
         details: dict = self.position_details[key]
         details[data["PositionNo"]] = data
 
-        # 汇总持仓明细
-        position: PositionData = PositionData(
-            symbol=symbol,
-            exchange=EXCHANGE_ES2VT[data["ExchangeNo"]],
-            direction=DIRECTION_ES2VT[data["MatchSide"]],
-            gateway_name=self.gateway_name
-        )
+        # 复用已存在的PositionData，否则新建并放入缓存
+        position: PositionData | None = self.positions.get(key, None)
+        if position is None:
+            position = PositionData(
+                symbol=symbol,
+                exchange=EXCHANGE_ES2VT[data["ExchangeNo"]],
+                direction=DIRECTION_ES2VT[data["MatchSide"]],
+                gateway_name=self.gateway_name
+            )
+            self.positions[key] = position
+
+        # 基于details全量重算（每笔回报都重新累加同key下所有明细）
+        position.volume = 0
+        position.yd_volume = 0
         cost: float = 0
 
         for d in details.values():
-            # 汇总持仓量
             position.volume += d["PositionQty"]
 
-            # 汇总昨仓量
             if d["IsHistory"] == "Y":
                 position.yd_volume += d["PositionQty"]
 
-            # 累加成本
             cost += d["PositionPrice"] * d["PositionQty"]
 
-        # 计算均价
         if position.volume:
             position.price = cost / position.volume
-
-        self.positions[key] = position
+        else:
+            position.price = 0
 
     def update_order(self, data: dict, query: bool = False) -> None:
         """更新并推送委托"""
@@ -998,8 +982,16 @@ class TradeApi(TdApi):
 
     def query_position(self) -> None:
         """持仓查询"""
-        self.position_details = defaultdict(dict)
-        self.positions.clear()
+        # 清空本轮查询用的明细暂存（对象本身保留）
+        self.position_details.clear()
+
+        # 仅清空持仓的数值字段，保留key
+        # 这样本轮查询不返回的合约（已全部平仓）会以volume=0推送给上层
+        for position in self.positions.values():
+            position.volume = 0
+            position.yd_volume = 0
+            position.price = 0
+            position.frozen = 0
 
         self.reqid += 1
         self.qryPosition(self.reqid, {})
