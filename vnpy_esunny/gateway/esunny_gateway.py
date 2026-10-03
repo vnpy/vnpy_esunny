@@ -1,3 +1,5 @@
+"""实现易盛交易接口。"""
+
 import socket
 from collections import defaultdict
 from dataclasses import dataclass

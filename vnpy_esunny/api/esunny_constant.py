@@ -1,3 +1,5 @@
+"""易盛接口常量。"""
+
 APIYNFLAG_YES = "Y"
 APIYNFLAG_NO = "N"
 APILOGLEVEL_NONE = "N"
