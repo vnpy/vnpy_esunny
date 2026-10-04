@@ -28,7 +28,7 @@ import sys
 # Windows: 穿透 API 会动态加载 TapDataCollectAPI.dll，需把包内 api 目录加入搜索路径，
 # 否则登录失败（除非把该 DLL 放到进程运行目录）
 if sys.platform == "win32":
-    _api_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "api"))
+    _api_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "api"))
     if os.path.isdir(_api_dir):
         os.add_dll_directory(_api_dir)
         os.environ["PATH"] = _api_dir + os.pathsep + os.environ.get("PATH", "")

@@ -60,7 +60,7 @@ ORDERTYPE_ES2VT: dict[tuple, OrderType] = {
     ("1", "0"): OrderType.MARKET,
     ("2", "3"): OrderType.FAK,
 }
-ORDERTYPE_VT2ES = {v: k for k, v in ORDERTYPE_ES2VT.items()}
+ORDERTYPE_VT2ES: dict[OrderType, tuple[str, str]] = {v: k for k, v in ORDERTYPE_ES2VT.items()}
 
 # 委托查询类型映射
 ORDERQRYTYPE_VT2ES: dict[str, str] = {
@@ -128,7 +128,7 @@ HEDGETYPE_VT2ES: dict[str, str] = {
 }
 
 # 其他常量
-CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
+CHINA_TZ: ZoneInfo = ZoneInfo("Asia/Shanghai")       # 中国时区
 COUNT_INTERVAL: int = 5                    # 重连检测间隔（秒）
 
 # 合约数据全局缓存字典
@@ -285,6 +285,7 @@ class QuoteApi(MdApi):
         self.reqid += 1
         self.qryCommodity(self.reqid)
 
+        req: SubscribeRequest
         for req in self.subscribed.values():
             self.subscribe(req)
 
@@ -421,7 +422,7 @@ class QuoteApi(MdApi):
             return
 
         if data["ContractNo1"]:
-            symbol = data["CommodityNo"] + data["ContractNo1"]
+            symbol: str = data["CommodityNo"] + data["ContractNo1"]
         else:
             symbol = data["CommodityNo"]
         exchange: Exchange = EXCHANGE_ES2VT[data["ExchangeNo"]]
@@ -517,7 +518,7 @@ class QuoteApi(MdApi):
 
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
-        contract_info = contract_infos.get((req.symbol, req.exchange), None)
+        contract_info: ContractInfo | None = contract_infos.get((req.symbol, req.exchange), None)
         if not contract_info:
             if req.exchange == Exchange.SGE:
                 key: tuple = ("SGE", req.symbol, "Y")
@@ -667,6 +668,7 @@ class TradeApi(TdApi):
             self.update_position(data)
 
         if last == "Y":
+            position: PositionData
             for position in self.positions.values():
                 self.gateway.on_position(position)
 
@@ -742,6 +744,7 @@ class TradeApi(TdApi):
         position.yd_volume = 0
         cost: float = 0
 
+        d: dict
         for d in details.values():
             position.volume += d["PositionQty"]
 
@@ -910,6 +913,8 @@ class TradeApi(TdApi):
         orderid: str = f"{prefix}_{suffix}"
 
         tp: tuple = ORDERTYPE_VT2ES[req.type]
+        price_type: str
+        time_condition: str
         price_type, time_condition = tp
 
         order_req: dict = {
@@ -949,7 +954,7 @@ class TradeApi(TdApi):
             order_req["CommodityType"] = contract_info.commodity_type
             order_req["CommodityNo"] = contract_info.commodity_no
 
-        error_id = self.insertOrder(self.reqid, order_req)
+        error_id: int = self.insertOrder(self.reqid, order_req)
 
         order: OrderData = req.create_order_data(orderid, self.gateway_name)
 
@@ -989,6 +994,7 @@ class TradeApi(TdApi):
 
         # 仅清空持仓的数值字段，保留key
         # 这样本轮查询不返回的合约（已全部平仓）会以volume=0推送给上层
+        position: PositionData
         for position in self.positions.values():
             position.volume = 0
             position.yd_volume = 0
