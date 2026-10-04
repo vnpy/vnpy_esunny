@@ -38,7 +38,7 @@ jobs:
 
       - name: Install ta-lib
         run: |
-          uv pip install "ta-lib==0.6.4" --index https://pypi.vnpy.com --system
+          python -m pip install "ta-lib==0.6.4" --index-url https://pypi.vnpy.com
           python -m pip install "vnpy==4.4.0"
 
       - name: Lint
